@@ -635,7 +635,7 @@ test('every screen: what can be read, and what can be hit', async ({ page }) => 
   await page.locator('.ui-corner-pause').click();
   await expect(page.locator('.ui-heading')).toBeVisible();
   all.push(await census(page, 'paused'));
-  await page.getByRole('button', { name: /resume|folytat/i }).click();
+  await page.getByRole('button', { name: /resume/i }).click();
   await page.waitForFunction(() => window.__slowblue!.metrics().mode === 'playing');
 
   await page.evaluate(() => window.__slowblue!.world.run.fail('depleted'));
@@ -973,7 +973,7 @@ test('the primary action is on the glass when the screen opens', async ({ page }
     await page.locator('.ui-corner-pause').click();
     await expect(page.locator('.ui-heading')).toBeVisible();
     await take(glass.name, 'paused');
-    await page.getByRole('button', { name: /resume|folytat/i }).click();
+    await page.getByRole('button', { name: /resume/i }).click();
     await page.waitForFunction(() => window.__slowblue!.metrics().mode === 'playing');
     await page.evaluate(() => window.__slowblue!.world.run.fail('depleted'));
     await page.waitForFunction(() => window.__slowblue!.metrics().mode === 'over');
@@ -1045,7 +1045,7 @@ test('the pinned primary clears the cutout and lets go at the end of the column'
     // The shell's own gutter, and no more: an offset that repeated the inset
     // arithmetic the scrollport has already done would seat it two gutters up.
     expect(clearance).toBeCloseTo(20, 1);
-    await page.getByRole('button', { name: /^back$|^vissza$/i }).last().click();
+    await page.getByRole('button', { name: /^back$/i }).last().click();
     await expect(page.locator('.ui-journey')).toBeVisible();
   }
 

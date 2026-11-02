@@ -390,7 +390,7 @@ function well(motif: Motif, v: BackdropView): void {
 }
 
 /**
- * Station 6. Rálátás - the turn.
+ * Station 6. The Overview - the turn.
  *
  * The whole planet, the whole atmosphere, and nothing else. This is the frame the
  * campaign has been climbing toward for four acts, and everything about it is

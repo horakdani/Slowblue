@@ -32,7 +32,6 @@ function view(rec: FakeContext, over: Partial<BannerView> = {}): BannerView {
     life: BANNER_LIFE - 2,
     final: false,
     dark: false,
-    lang: 'hu',
     ...over,
   };
 }
@@ -60,24 +59,18 @@ describe('the station banner', () => {
     const rec = shoot();
     const said = inked(rec).map((t) => t.text);
     expect(said).toEqual([
-      `ÁLLOMÁS 1 / ${WATER.levels.length}`,
-      WATER.levels[0]!.name.hu.toUpperCase(),
+      `STATION 1 / ${WATER.levels.length}`,
+      WATER.levels[0]!.name.toUpperCase(),
       // Through the same function rather than a literal: the digit grouping is
       // the runtime's, and `tests/levels.test.ts` is where the label's own shape
       // - the range form act VI and act VII got wrong - is asserted.
-      stationDepthLabel(WATER.levels, 0, 'hu-HU'),
-      WATER.levels[0]!.subtitle.hu,
+      stationDepthLabel(WATER.levels, 0),
+      WATER.levels[0]!.subtitle,
     ]);
     expect(said[2]).toContain('6');
     expectFinite(rec, 'banner');
   });
 
-  it('speaks whichever language the settings are in', () => {
-    const en = inked(shoot({ lang: 'en' })).map((t) => t.text);
-    expect(en[0]).toBe(`STATION 1 / ${WATER.levels.length}`);
-    expect(en[1]).toBe(WATER.levels[0]!.name.en.toUpperCase());
-    expect(en[3]).toBe(WATER.levels[0]!.subtitle.en);
-  });
 
   /**
    * The lie told six times, from the other side. `finale` is what decides this
@@ -85,8 +78,7 @@ describe('the station banner', () => {
    * that the banner really has two eyebrows and prints the one it is given.
    */
   it('closes an act rather than opening a station when it is final', () => {
-    expect(inked(shoot({ final: true }))[0]!.text).toBe('KÜLDETÉS TELJESÍTVE');
-    expect(inked(shoot({ final: true, lang: 'en' }))[0]!.text).toBe('MISSION COMPLETE');
+    expect(inked(shoot({ final: true }))[0]!.text).toBe('MISSION COMPLETE');
   });
 
   it('fades up and away rather than arriving', () => {
@@ -113,22 +105,19 @@ describe('the station banner', () => {
     expect([rec.textAlign, rec.textBaseline, rec.lineJoin]).toEqual(['left', 'top', 'bevel']);
   });
 
-  /** Every station of every act, in both languages: nothing draws a `NaN` or an `undefined`. */
+  /** Every station of every act: nothing draws a `NaN` or an `undefined`. */
   it('draws every station of all seven acts', () => {
     for (const act of CAMPAIGN_ACTS) {
       for (let i = 0; i < act.levels.length; i++) {
-        for (const lang of ['hu', 'en'] as const) {
-          const rec = shoot({
-            levels: act.levels,
-            index: i,
-            lang,
-            final: i === act.levels.length - 1,
-          });
-          expectFinite(rec, `${act.key}/${i}/${lang}`);
-          for (const t of rec.texts) {
-            expect(t.text.length, `${act.key}/${i}/${lang} drew an empty line`).toBeGreaterThan(0);
-            expect(t.text, `${act.key}/${i}/${lang}`).not.toContain('undefined');
-          }
+        const rec = shoot({
+          levels: act.levels,
+          index: i,
+          final: i === act.levels.length - 1,
+        });
+        expectFinite(rec, `${act.key}/${i}`);
+        for (const t of rec.texts) {
+          expect(t.text.length, `${act.key}/${i} drew an empty line`).toBeGreaterThan(0);
+          expect(t.text, `${act.key}/${i}`).not.toContain('undefined');
         }
       }
     }
@@ -137,10 +126,10 @@ describe('the station banner', () => {
   /** An index past the end clamps rather than throwing, which is what it always did. */
   it('clamps an index past the last station', () => {
     expect(inked(shoot({ index: 99 }))[1]!.text).toBe(
-      WATER.levels[WATER.levels.length - 1]!.name.hu.toUpperCase(),
+      WATER.levels[WATER.levels.length - 1]!.name.toUpperCase(),
     );
     expect(inked(shoot({ levels: HOME.levels, index: 99 }))[1]!.text).toBe(
-      HOME.levels[HOME.levels.length - 1]!.name.hu.toUpperCase(),
+      HOME.levels[HOME.levels.length - 1]!.name.toUpperCase(),
     );
   });
 });

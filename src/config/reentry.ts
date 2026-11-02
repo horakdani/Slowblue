@@ -6,7 +6,7 @@ import { ZONE_REENTRY } from './zones';
  *
  * ## The first act that goes down
  *
- * The campaign turns over at Rálátás and this is the other side of it. Everything
+ * The campaign turns over at the Overview and this is the other side of it. Everything
  * about the course runs backwards from here - `direction` is +1, the camera holds
  * the swarm a third of the way down the frame instead of two thirds, and every
  * authored `dy` still means "met earlier", because `World.u()` and
@@ -261,25 +261,25 @@ import { ZONE_REENTRY } from './zones';
  *
  * ## Six stations
  *
- *   1. **Letérés** (The Deorbit) - still orbit. One long burn, and the trajectory
+ *   1. **The Deorbit** - still orbit. One long burn, and the trajectory
  *      bends until it stops being an orbit and becomes a fall. The widest gaps in
  *      the act and still the quietest station in it: five obstacles in 4.2
  *      minutes, where it used to be two in 2.9. The campaign's last unwritten
  *      shape is here - orbit's `hulk`, authored for the first time anywhere.
- *   2. **Éjszakai oldal** (The Night Side) - coming down over the unlit half. The
+ *   2. **The Night Side** - coming down over the unlit half. The
  *      last quiet station in the campaign's second half, the first couplet, and
  *      **the first thing that hunts the swarm since act II**.
  *   3. **Aurora** - through the curtains rather than over them, which is the same
  *      light act IV looked down on, met from underneath. The last debris in the
  *      act is here, and so is the first thing in the campaign that walks - twice,
  *      because the first scissor is here too.
- *   4. **Plazmaöv** (The Plasma) - the loudest frame in the game. The air is here
+ *   4. **The Plasma** - the loudest frame in the game. The air is here
  *      and it is on fire. Seventeen obstacles, 10 640 px, two embers, and no rest
  *      anywhere in it.
- *   5. **Meteorpor** (The Meteor Dust) - cooling. The gold has stopped burning and
+ *   5. **The Meteor Dust** - cooling. The gold has stopped burning and
  *      started being dust, and the gaps start opening again. The longest station
  *      in the act, and the counter-phase pair is here because it needs the room.
- *   6. **Felhőmag** (The Nucleus) - and that dust is what a raindrop condenses on,
+ *   6. **The Nucleus** - and that dust is what a raindrop condenses on,
  *      which is what act III's fifth station was quietly promising. The act relaxes
  *      all the way out: its last gap is the longest anywhere in act V.
  *
@@ -289,7 +289,7 @@ import { ZONE_REENTRY } from './zones';
  * **scatter**: the swarm arrives at the plasma spread out, loses its stragglers to
  * the margin, and comes out of it as much less than it went in. What the player is
  * asked for is to slow the swarm without tearing it apart, which is the one thing
- * they have never been asked for before, because until Rálátás nothing in this
+ * they have never been asked for before, because until the Overview nothing in this
  * game had momentum worth braking.
  *
  * ## The fourth demand, which the first pass named and did not build
@@ -478,9 +478,9 @@ function ember(
 export const REENTRY_LEVELS: Level[] = [
   {
     key: 'deorbit',
-    name: { hu: 'Letérés', en: 'The Deorbit' },
+    name: 'The Deorbit',
     depthMeters: -380000,
-    subtitle: { hu: 'A pálya, ami zuhanássá válik', en: 'The orbit that becomes a fall' },
+    subtitle: 'The orbit that becomes a fall',
     zone: ZONE_REENTRY,
     // Still orbit, and only just beginning to be anything else. A station that
     // named a different medium here would throw away the one thing the handover
@@ -618,9 +618,9 @@ export const REENTRY_LEVELS: Level[] = [
   },
   {
     key: 'nightside',
-    name: { hu: 'Éjszakai oldal', en: 'The Night Side' },
+    name: 'The Night Side',
     depthMeters: -300000,
-    subtitle: { hu: 'A világ sötét fele', en: 'The dark half of the world' },
+    subtitle: 'The dark half of the world',
     zone: ZONE_REENTRY + 1,
     // The first thinning of the vacuum. `vacuum` starts falling here, so a stroke
     // begins - very slightly - to push as well as to bend.
@@ -770,9 +770,9 @@ export const REENTRY_LEVELS: Level[] = [
   },
   {
     key: 'auroraBelow',
-    name: { hu: 'Aurora', en: 'The Aurora' },
+    name: 'The Aurora',
     depthMeters: -200000,
-    subtitle: { hu: 'Most belülről', en: 'From the inside now' },
+    subtitle: 'From the inside now',
     zone: ZONE_REENTRY + 2,
     medium: 'plasma',
     mediumTo: 'plasma',
@@ -952,9 +952,9 @@ export const REENTRY_LEVELS: Level[] = [
   },
   {
     key: 'plasma',
-    name: { hu: 'Plazmaöv', en: 'The Plasma' },
+    name: 'The Plasma',
     depthMeters: -80000,
-    subtitle: { hu: 'A levegő megérkezik', en: 'The air arrives' },
+    subtitle: 'The air arrives',
     zone: ZONE_REENTRY + 3,
     medium: 'plasma',
     mediumTo: 'plasma',
@@ -964,7 +964,7 @@ export const REENTRY_LEVELS: Level[] = [
     // slow: the difficulty peak is not the finale.
     //
     // Slowblue: 0.70 rather than 0.62, because at 0.62 it was the *same speed* as act
-    // VI's Záporfüggöny, which claims the same superlative in its own file. Two
+    // VI's Downpour, which claims the same superlative in its own file. Two
     // files cannot both hold it. The descent's declared peak is this station, so
     // this one takes the pace and act VI's claim is scoped to act VI.
     pace: 0.7,
@@ -1211,9 +1211,9 @@ export const REENTRY_LEVELS: Level[] = [
   },
   {
     key: 'meteordust',
-    name: { hu: 'Meteorpor', en: 'The Meteor Dust' },
+    name: 'The Meteor Dust',
     depthMeters: -40000,
-    subtitle: { hu: 'Ami a tűz után marad', en: 'What is left after the fire' },
+    subtitle: 'What is left after the fire',
     zone: ZONE_REENTRY + 4,
     // The air, arriving properly. From here the input is wind and the last of the
     // gravity goes out of it under the player's hand.
@@ -1410,9 +1410,9 @@ export const REENTRY_LEVELS: Level[] = [
   },
   {
     key: 'nucleus',
-    name: { hu: 'Felhőmag', en: 'The Nucleus' },
+    name: 'The Nucleus',
     depthMeters: -12000,
-    subtitle: { hu: 'Amire az eső ráfagy', en: 'What the rain grows on' },
+    subtitle: 'What the rain grows on',
     zone: ZONE_REENTRY + 5,
     // Fully weather. The handover is complete and nothing announced it.
     medium: 'cloud',

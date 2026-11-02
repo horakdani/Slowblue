@@ -273,7 +273,7 @@ test('captures the key states', async ({ page }) => {
   await page.waitForFunction(() => (window.__slowblue!.metrics().fps as number) > 0);
   await shootScreen(page, 'docs/screens/10-title.png');
 
-  await page.getByRole('button', { name: /^the circuit\b|^a kör\b/i }).click();
+  await page.getByRole('button', { name: /^the circuit\b/i }).click();
   await expect(page.locator('button.ui-map-act')).toHaveCount(7);
   await expect(page.locator('button.ui-map-act.locked')).toHaveCount(0);
   // The map is the screen; a shot of it without the world drawn is a shot of the

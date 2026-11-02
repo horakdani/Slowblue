@@ -20,7 +20,7 @@
  *   3. **It is late.** A current moves a body inside a second. A well *bends* a
  *      trajectory, which takes as long as it takes - which is exactly the act's
  *      subject. One bad stroke stays correctable and stops being correctable
- *      cheaply, and that is the difference between "elengedés" and "irányítás".
+ *      cheaply, and that is the difference between "letting go" and "steering".
  *
  * ## The profile, and why it has a hole in the middle
  *

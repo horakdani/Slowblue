@@ -192,18 +192,18 @@ import { ZONE_HOME } from './zones';
  *
  * ## Six stations, and the circle closing
  *
- *   1. **Sós határ** (The Salt Line) — brackish water, and the gold has come back
+ *   1. **The Salt Line** — brackish water, and the gold has come back
  *      as something alive for the first time since the surface. The last four
  *      stones in the campaign are here and they get smaller until there are none.
- *   2. **Napfényzóna** (The Sunlit Zone) — act I's blue, met going the other way,
+ *   2. **The Sunlit Zone** — act I's blue, met going the other way,
  *      and the busiest water in the act: five curtains and five blooms.
- *   3. **Alkonyzóna** (The Twilight Zone) — the light starting to go, and the last
+ *   3. **The Twilight Zone** — the light starting to go, and the last
  *      station with anything in it at all.
- *   4. **Mélytenger** (The Deep Sea) — nothing can be lost from here.
- *   5. **Tengeri hó** (Marine Snow) — the one station in the game where the whole
+ *   4. **The Deep Sea** — nothing can be lost from here.
+ *   5. **Marine Snow** — the one station in the game where the whole
  *      world is falling the way the player is. For the first time the swarm is not
  *      passing through the world; it is descending with it.
- *   6. **Árokfenék** (The Trench Floor) — six thousand metres, and the first frame
+ *   6. **The Trench Floor** — six thousand metres, and the first frame
  *      of the game. The last golden motes reach the floor, small fish gather
  *      around them, and out of that light the first shoal forms.
  *
@@ -297,9 +297,9 @@ const PULSE_SHUT = { kind: 'aperture', reach: 0.05, phase: 0.75 } as const;
 export const HOME_LEVELS: Level[] = [
   {
     key: 'brackish',
-    name: { hu: 'Sós határ', en: 'The Salt Line' },
+    name: 'The Salt Line',
     depthMeters: 20,
-    subtitle: { hu: 'Ahol az édes sóssá válik', en: 'Where the fresh turns salt' },
+    subtitle: 'Where the fresh turns salt',
     zone: ZONE_HOME,
     // The last of the river, becoming the first of the sea. Same continuous
     // handover grammar act V used for the air: the medium is resolved across the
@@ -486,9 +486,9 @@ export const HOME_LEVELS: Level[] = [
   },
   {
     key: 'sunlit',
-    name: { hu: 'Napfényzóna', en: 'The Sunlit Zone' },
+    name: 'The Sunlit Zone',
     depthMeters: 150,
-    subtitle: { hu: 'A fény, amit itt hagytunk', en: 'The light we left behind' },
+    subtitle: 'The light we left behind',
     zone: ZONE_HOME + 1,
     medium: 'water',
     decor: 'meadow',
@@ -685,9 +685,9 @@ export const HOME_LEVELS: Level[] = [
   },
   {
     key: 'twilight',
-    name: { hu: 'Alkonyzóna', en: 'The Twilight Zone' },
+    name: 'The Twilight Zone',
     depthMeters: 800,
-    subtitle: { hu: 'A fény utolsó nyoma', en: 'The last trace of light' },
+    subtitle: 'The last trace of light',
     zone: ZONE_HOME + 2,
     medium: 'water',
     decor: 'jelly',
@@ -854,9 +854,9 @@ export const HOME_LEVELS: Level[] = [
   },
   {
     key: 'midnightHome',
-    name: { hu: 'Mélytenger', en: 'The Deep Sea' },
+    name: 'The Deep Sea',
     depthMeters: 2500,
-    subtitle: { hu: 'Innen már nem lehet elveszni', en: 'Nothing can be lost from here' },
+    subtitle: 'Nothing can be lost from here',
     zone: ZONE_HOME + 3,
     medium: 'water',
     decor: 'abyss',
@@ -890,9 +890,9 @@ export const HOME_LEVELS: Level[] = [
   },
   {
     key: 'snow',
-    name: { hu: 'Tengeri hó', en: 'Marine Snow' },
+    name: 'Marine Snow',
     depthMeters: 4000,
-    subtitle: { hu: 'Az egész világ süllyed', en: 'The whole world is sinking' },
+    subtitle: 'The whole world is sinking',
     zone: ZONE_HOME + 4,
     medium: 'water',
     decor: 'abyss',
@@ -929,9 +929,9 @@ export const HOME_LEVELS: Level[] = [
   },
   {
     key: 'trenchHome',
-    name: { hu: 'Árokfenék', en: 'The Trench Floor' },
+    name: 'The Trench Floor',
     depthMeters: 6000,
-    subtitle: { hu: 'Ahol elkezdődött', en: 'Where it began' },
+    subtitle: 'Where it began',
     zone: ZONE_HOME + 5,
     medium: 'water',
     decor: 'trench',

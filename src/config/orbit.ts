@@ -58,7 +58,7 @@ import { ZONE_SPACE } from './zones';
  *   * **and its last demand is not a gate.** A compulsory ring asks the swarm to
  *     stop and hold a body still, which is the exact opposite of what the pressure
  *     peak asks. The old three-section stations never collided the two because
- *     they all happened to end on a `coast`; two of them - Törmeléköv and A kút -
+ *     they all happened to end on a `coast`; two of them - the Debris Belt and the Well -
  *     ended on a wall, and one of those walls carried a required ring.
  *
  * A doubled station therefore gets **two** rests, one in each half, and the
@@ -87,11 +87,11 @@ import { ZONE_SPACE } from './zones';
  * A station is two movements now - A, a breath, and B - and the thing that
  * escalates across the act is how many things are in a cluster:
  *
- *   * Szabadesés  - clusters of two and three, at 320-340 px
- *   * Sarkifény   - three, and the first of them is already moving
- *   * Földárnyék  - three, with the pair inside it half a cycle out of step
- *   * Törmeléköv  - four, twice, and two of them walking against each other
- *   * A kút       - four, and the last one is a gap inside a well
+ *   * Free Fall    - clusters of two and three, at 320-340 px
+ *   * The Aurora   - three, and the first of them is already moving
+ *   * The Umbra    - three, with the pair inside it half a cycle out of step
+ *   * Debris Belt  - four, twice, and two of them walking against each other
+ *   * The Well     - four, and the last one is a gap inside a well
  *
  * The long falls pay for it and are the other half of the rhythm: 980 to 1180 px
  * in front of each station's first demand, 560 to 620 across its middle, and 420
@@ -130,19 +130,19 @@ import { ZONE_SPACE } from './zones';
  *     is and the sweep reads that, so the guarantee is the strong one: there is a
  *     line past it whenever you arrive, not only on the beat.
  *   * **A scissor is two masses on one clock and opposite halves of it.** There is
- *     no phase at which either is where you last saw it. Törmeléköv, which is the
+ *     no phase at which either is where you last saw it. The Debris Belt, which is the
  *     one station in the campaign made of things people left behind, and therefore
  *     the only place two derelicts tumbling against each other is a fact rather
  *     than a set-piece.
  *   * **A counter-phase pair is two breathing gaps two breaths apart**, the second
  *     shut while the first is open, so taking the first the moment it opens arrives
- *     at the second at its narrowest. It is in Földárnyék, in the dark, where
+ *     at the second at its narrowest. It is in the Umbra, in the dark, where
  *     neither gap can be read early - and where the act's own demand (commit before
  *     you can see) and this one (do not commit yet) are the same question asked
  *     from both ends.
  *
  * They arrive in teaching order and each one is introduced alone: the first
- * aperture is in Szabadesés at 0.50 of the width with nothing else in the frame,
+ * aperture is in Free Fall at 0.50 of the width with nothing else in the frame,
  * the first walking mass is one station later with the ring in a channel it can
  * never reach, and the pair and the scissor are two stations after that.
  *
@@ -157,7 +157,7 @@ import { ZONE_SPACE } from './zones';
  * compulsory ring's `x`**, across station boundaries as well as inside them. The
  * act runs 0.50, 0.24, 0.72, 0.30 | 0.78, 0.26, 0.70 | 0.28, 0.74, 0.30 | 0.70,
  * 0.35, 0.74, 0.28 | 0.68, 0.36, 0.74, 0.26, 0.64 - nineteen of them, no step
- * under a third of the width except the one A kút is allowed. Every ring is still
+ * under a third of the width except the one the Well is allowed. Every ring is still
  * on the line its own section asks for - the demand is never "guess" - but in a
  * medium with no drag, a reward on the far side of the field means the arc that
  * takes it had to be started before the section carrying it was on screen.
@@ -167,7 +167,7 @@ import { ZONE_SPACE } from './zones';
  * carries one of them, not two.** 320 px buys 128 px of lateral and half the field
  * is 195, so a reward the swarm cannot be aimed at is not a grammar, it is a bug.
  * The tightest budget any consecutive pair gets is 202 px against a 164 px step,
- * in Szabadesés. The one exception is the pair in A kút, whose two rings are 125 px
+ * in Free Fall. The one exception is the pair in the Well, whose two rings are 125 px
  * apart across 320 - and that station has no geometry in it at all, so the rings'
  * own radii cover the rest.
  *
@@ -178,22 +178,22 @@ import { ZONE_SPACE } from './zones';
  *
  * ## Six stations
  *
- *   1. **Szabadesés** (Free Fall) - momentum, alone, with almost nothing in the
+ *   1. **Free Fall** - momentum, alone, with almost nothing in the
  *      way. The teaching station keeps its share of the silence: six obstacles in
  *      3.8 minutes, where the rest of the act runs at nine and ten.
- *   2. **Sarkifény** (The Aurora) - the first thing up here that can hurt a mote,
+ *   2. **The Aurora** - the first thing up here that can hurt a mote,
  *      and the first thing in the act that walks.
- *   3. **Földárnyék** (The Umbra) - the Earth's own shadow, the darkest frame in
+ *   3. **The Umbra** - the Earth's own shadow, the darkest frame in
  *      the game, and the counter-phase pair, which is a timing demand authored
  *      where timing cannot be read.
- *   4. **Törmeléköv** (The Debris Belt) - the act's densest station, the only one
+ *   4. **The Debris Belt** - the act's densest station, the only one
  *      with anything man-made in it, and the scissor.
- *   5. **A kút** (The Well) - the slingshot, the deepest bow in the campaign, and
+ *   5. **The Well** - the slingshot, the deepest bow in the campaign, and
  *      a lane inside a well that will not hold still.
- *   6. **Rálátás** (The Overview) - the emotional peak of the campaign, and the
+ *   6. **The Overview** - the emotional peak of the campaign, and the
  *      one station in this rebuild that did not gain a single pixel. See below.
  *
- * ## Rálátás, and why it is authored as almost nothing
+ * ## The Overview, and why it is authored as almost nothing
  *
  * The camera turns for the first time, the whole Earth appears, and the entire
  * atmosphere - everything this game has ever happened in - resolves into one
@@ -311,9 +311,9 @@ const PULSE_SHUT = { kind: 'aperture', reach: 0.055, phase: 0.75 } as const;
 export const ORBIT_LEVELS: Level[] = [
   {
     key: 'freefall',
-    name: { hu: 'Szabadesés', en: 'Free Fall' },
+    name: 'Free Fall',
     depthMeters: -140000,
-    subtitle: { hu: 'Semmi sem húz vissza', en: 'Nothing pulls you back' },
+    subtitle: 'Nothing pulls you back',
     zone: ZONE_SPACE,
     medium: 'space',
     decor: 'void',
@@ -444,7 +444,7 @@ export const ORBIT_LEVELS: Level[] = [
       {
         // The act's narrows, at its widest anywhere: two debris streams converging
         // into a lane, and the mouth starts inside the field on both sides. See
-        // Földárnyék for what happens when it does not.
+        // the Umbra for what happens when it does not.
         kind: 'strait',
         centre: 0.64,
         gap: 0.48,
@@ -457,7 +457,7 @@ export const ORBIT_LEVELS: Level[] = [
         // The station's last demand, and it carries no gate - see the header. A
         // well that pushes, with the debris that collected at its radius drawn as
         // a line through it, so the first repelling node the player meets is one
-        // they can *see*. The invisible pair is A kút's, four stations later, and
+        // they can *see*. The invisible pair is the Well's, four stations later, and
         // it only works because of this one.
         kind: 'node',
         centre: 0.34,
@@ -472,9 +472,9 @@ export const ORBIT_LEVELS: Level[] = [
   },
   {
     key: 'aurora',
-    name: { hu: 'Sarkifény', en: 'The Aurora' },
+    name: 'The Aurora',
     depthMeters: -180000,
-    subtitle: { hu: 'A fény, ami éget', en: 'The light that burns' },
+    subtitle: 'The light that burns',
     zone: ZONE_SPACE + 1,
     medium: 'space',
     decor: 'void',
@@ -598,7 +598,7 @@ export const ORBIT_LEVELS: Level[] = [
         // dy 0 sits just *behind* the attractor - in a medium with no damping the
         // well spends the hold pulling the swarm forward off the thing it is being
         // asked to hold. It is optional here; the compulsory version of the same
-        // mistake is what A kút's first section is written around.
+        // mistake is what the Well's first section is written around.
         kind: 'node',
         centre: 0.3,
         radius: 0.34,
@@ -632,9 +632,9 @@ export const ORBIT_LEVELS: Level[] = [
   },
   {
     key: 'umbra',
-    name: { hu: 'Földárnyék', en: 'The Umbra' },
+    name: 'The Umbra',
     depthMeters: -240000,
-    subtitle: { hu: 'A Föld saját árnyéka', en: "The Earth's own shadow" },
+    subtitle: "The Earth's own shadow",
     zone: ZONE_SPACE + 2,
     medium: 'space',
     decor: 'void',
@@ -650,7 +650,7 @@ export const ORBIT_LEVELS: Level[] = [
      *
      * Mechanically that makes this the station about **committing early**, because
      * the geometry arrives later than anywhere else in the campaign. So its gaps
-     * are the widest in the act - 0.46 to 0.52 where Törmeléköv runs 0.44 - and
+     * are the widest in the act - 0.46 to 0.52 where the Debris Belt runs 0.44 - and
      * what is hard here is knowing rather than fitting.
      *
      * 1080, 320, 320, 560, 600, 580, 520, 340, 570, 320, 420 - 5630 px. The 1080
@@ -793,9 +793,9 @@ export const ORBIT_LEVELS: Level[] = [
   },
   {
     key: 'debris',
-    name: { hu: 'Törmeléköv', en: 'The Debris Belt' },
+    name: 'The Debris Belt',
     depthMeters: -320000,
-    subtitle: { hu: 'Amit magunk hagytunk itt', en: 'What we left behind' },
+    subtitle: 'What we left behind',
     zone: ZONE_SPACE + 3,
     medium: 'space',
     decor: 'void',
@@ -810,7 +810,7 @@ export const ORBIT_LEVELS: Level[] = [
      * It is also where the act's ramp lands. Act IV does not escalate by narrowing
      * any more than act III did - its gaps stay wide - it escalates on **how early
      * you have to have decided**, which is `bow`, and the bow steps 0.22 to 0.34
-     * here. Every other station in the act steps 0.02 to 0.08. A kút's arc is
+     * here. Every other station in the act steps 0.02 to 0.08. The Well's arc is
      * deeper by eight hundredths because the ramp is not allowed to run downhill,
      * but the station that changes what the act costs is this one.
      *
@@ -824,7 +824,7 @@ export const ORBIT_LEVELS: Level[] = [
      * Two hulks 360 px apart, walking on opposite halves of one clock. It is the
      * hardest thing in the act and it is authored in the only station where it is
      * not a set-piece: a debris belt is by definition a place where things nobody
-     * is flying any more are crossing each other's tracks. Sarkifény taught the
+     * is flying any more are crossing each other's tracks. The Aurora taught the
      * single walking mass with nothing else in the frame; this is that object
      * doubled rather than a new one to learn, and there is no phase at which
      * either of them is where you last saw it.
@@ -950,9 +950,9 @@ export const ORBIT_LEVELS: Level[] = [
   },
   {
     key: 'well',
-    name: { hu: 'A kút', en: 'The Well' },
+    name: 'The Well',
     depthMeters: -400000,
-    subtitle: { hu: 'Ahol minden lefelé esik', en: 'Where everything falls' },
+    subtitle: 'Where everything falls',
     zone: ZONE_SPACE + 4,
     medium: 'space',
     decor: 'void',
@@ -1025,7 +1025,7 @@ export const ORBIT_LEVELS: Level[] = [
       },
       coast(620, 0.74, 12),
       {
-        // The act's ramp is `bow`, and Törmeléköv stepped it 0.22 -> 0.34. A 0.02
+        // The act's ramp is `bow`, and the Debris Belt stepped it 0.22 -> 0.34. A 0.02
         // step after that made 'the last hard thing in the climb' the thinnest
         // station in the act; 0.42 is a real step, and the gap opens by the same
         // two hundredths so the demand stays commitment rather than width.
@@ -1113,9 +1113,9 @@ export const ORBIT_LEVELS: Level[] = [
   },
   {
     key: 'overview',
-    name: { hu: 'Rálátás', en: 'The Overview' },
+    name: 'The Overview',
     depthMeters: -460000,
-    subtitle: { hu: 'Ahonnan az egész látszik', en: 'Where the whole of it shows' },
+    subtitle: 'Where the whole of it shows',
     zone: ZONE_SPACE + 5,
     medium: 'space',
     decor: 'void',

@@ -5,7 +5,7 @@ import { collectErrors } from './helpers';
  * Slowblue: every station of every act, shot.
  *
  * This is the spec that exists because a test can say "something was drawn" and
- * be wrong about whether anyone can see it. The Partfal backdrop passed a
+ * be wrong about whether anyone can see it. The Cliff backdrop passed a
  * draws-geometry test twice: once while it was rendering entirely off-screen, and
  * once while it had a hard visible edge running across the middle of the flyable
  * course. Both times the assertion that would have caught it was a person looking

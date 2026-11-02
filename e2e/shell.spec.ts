@@ -169,16 +169,13 @@ test('the drawer opens with the held layers down, and the fader is the whole row
   // layers that never stop are the two that start off.
   const rows = page.locator('.ui-mix-list .ui-audio-track');
   await expect(rows).toHaveCount(9);
-  const layer = (en: string, hu: string): ReturnType<typeof page.getByRole> =>
-    page.getByRole('switch', { name: new RegExp(`^(${en}|${hu})$`, 'i') });
-  await expect(layer('Bubbles', 'Buborékok')).toHaveAttribute('aria-checked', 'true');
-  await expect(layer('Deep drone', 'Mély zengés')).toHaveAttribute('aria-checked', 'false');
-  await expect(layer('Surface shimmer', 'Felszíni csillogás')).toHaveAttribute(
-    'aria-checked',
-    'false',
-  );
-  await expect(layer('Distant bells', 'Távoli harangok')).toHaveAttribute('aria-checked', 'true');
-  await expect(layer('Whale song', 'Bálnaének')).toHaveAttribute('aria-checked', 'true');
+  const layer = (name: string): ReturnType<typeof page.getByRole> =>
+    page.getByRole('switch', { name: new RegExp(`^${name}$`, 'i') });
+  await expect(layer('Bubbles')).toHaveAttribute('aria-checked', 'true');
+  await expect(layer('Deep drone')).toHaveAttribute('aria-checked', 'false');
+  await expect(layer('Surface shimmer')).toHaveAttribute('aria-checked', 'false');
+  await expect(layer('Distant bells')).toHaveAttribute('aria-checked', 'true');
+  await expect(layer('Whale song')).toHaveAttribute('aria-checked', 'true');
   // ...and it is the stored setting that says so, not a class on a button.
   const stored = await page.evaluate(
     () => JSON.parse(localStorage.getItem('tide.settings') ?? '{}').audio,
@@ -240,17 +237,14 @@ test('the circuit map offers neither the mode nor the wipe on a fresh profile', 
   // that captions itself. The name it used to carry is on the dialog, where a
   // reader still gets it and nothing on the screen has to spend height on it.
   await expect(page.locator('.ui-heading')).toHaveCount(0);
-  await expect(page.locator('.ui-panel')).toHaveAttribute(
-    'aria-label',
-    /the circuit|a kör/i,
-  );
+  await expect(page.locator('.ui-panel')).toHaveAttribute('aria-label', /the circuit/i);
   await expect(page.locator('svg.ui-map-world')).toBeVisible();
 
   // Locked until a circuit has been closed: offering to remove the results screen
   // to somebody who has never reached one is offering nothing. With that the only
   // mode left, the list holding it is not built at all.
   await expect(
-    page.getByRole('switch', { name: /continuous circuit|folyamatos kör/i }),
+    page.getByRole('switch', { name: /continuous circuit/i }),
   ).toHaveCount(0);
   await expect(page.locator('.ui-list')).toHaveCount(0);
   // ...and so is the wipe, on a profile with nothing in it to lose.
@@ -293,19 +287,19 @@ test('the wipe asks twice, clears both stores, and disarms when left', async ({ 
 
   // A closed circuit unlocks the second switch.
   await expect(
-    page.getByRole('switch', { name: /continuous circuit|folyamatos kör/i }),
+    page.getByRole('switch', { name: /continuous circuit/i }),
   ).toBeVisible();
 
   const danger = page.locator('.ui-btn.danger');
-  await expect(danger).toHaveText(/erase every station|minden állomás/i);
+  await expect(danger).toHaveText(/erase every station/i);
   await danger.click();
-  await expect(danger).toHaveText(/whole journey|az egész utat/i);
+  await expect(danger).toHaveText(/whole journey/i);
 
   // Leaving disarms it. A confirm that is still armed when you come back is a
   // confirm that goes off on a stray tap three screens later.
-  await page.getByRole('button', { name: /^back$|^vissza$/i }).click();
+  await page.getByRole('button', { name: /^back$/i }).click();
   await page.locator('.ui-journey').click();
-  await expect(page.locator('.ui-btn.danger')).toHaveText(/erase every station|minden állomás/i);
+  await expect(page.locator('.ui-btn.danger')).toHaveText(/erase every station/i);
 
   await page.locator('.ui-btn.danger').click();
   await page.locator('.ui-btn.danger').click();
@@ -344,9 +338,9 @@ test('the map offers to start the journey again, and keeps the record when it do
   await page.goto('/?skipIntro');
   await page.locator('.ui-journey').click();
   await expect(
-    page.getByRole('button', { name: /start a new journey|új út indítása/i }),
+    page.getByRole('button', { name: /start a new journey/i }),
   ).toHaveCount(0);
-  await page.getByRole('button', { name: /^back$|^vissza$/i }).click();
+  await page.getByRole('button', { name: /^back$/i }).click();
 
   // ...and now a circuit two acts in, with a record behind it.
   await page.evaluate(() => {
@@ -376,23 +370,23 @@ test('the map offers to start the journey again, and keeps the record when it do
 
   const again = page.locator('.ui-btn.ui-restart');
   await expect(again).toBeVisible();
-  await expect(again).toHaveText(/start a new journey|új út indítása/i);
+  await expect(again).toHaveText(/start a new journey/i);
   // It is not the destructive one, and must never be dressed as it.
   await expect(again).not.toHaveClass(/danger/);
 
   // Arming it disarms the wipe below, so the screen never asks two questions.
   const danger = page.locator('.ui-btn.danger');
   await danger.click();
-  await expect(danger).toHaveText(/whole journey|az egész utat/i);
+  await expect(danger).toHaveText(/whole journey/i);
   await again.click();
-  await expect(again).toHaveText(/back to act i|az i\. felvonástól/i);
-  await expect(danger).toHaveText(/erase every station|minden állomás/i);
+  await expect(again).toHaveText(/back to act i/i);
+  await expect(danger).toHaveText(/erase every station/i);
 
   // Leaving disarms it too.
-  await page.getByRole('button', { name: /^back$|^vissza$/i }).click();
+  await page.getByRole('button', { name: /^back$/i }).click();
   await page.locator('.ui-journey').click();
   const armed = page.locator('.ui-btn.ui-restart');
-  await expect(armed).toHaveText(/start a new journey|új út indítása/i);
+  await expect(armed).toHaveText(/start a new journey/i);
 
   // Pressed through, it opens act I from the top - and takes nothing with it.
   await armed.click();
@@ -421,9 +415,9 @@ test('the map offers to start the journey again, and keeps the record when it do
 test('there is no settings screen left to reach', async ({ page }) => {
   const errors = collectErrors(page);
   await page.goto('/?skipIntro');
-  await expect(page.getByRole('button', { name: /^settings$|^beállítások$/i })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /^settings$/i })).toHaveCount(0);
   await boot(page);
   await page.locator('.ui-corner-pause').click();
-  await expect(page.getByRole('button', { name: /^settings$|^beállítások$/i })).toHaveCount(0);
+  await expect(page.getByRole('button', { name: /^settings$/i })).toHaveCount(0);
   expect(errors).toEqual([]);
 });

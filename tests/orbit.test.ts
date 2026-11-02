@@ -164,7 +164,7 @@ describe('orbit', () => {
      * stations and requires each one's widest bow to beat the last one's, which is
      * a stronger statement than any number of arcs and is the one that would fail
      * if the escalation were ever flattened. Measured on the rebuilt act: 0.10,
-     * 0.18, 0.22, 0.34, 0.42, and nothing in Rálátás.
+     * 0.18, 0.22, 0.34, 0.42, and nothing in the Overview.
      */
     const perStation = ORBIT_LEVELS.map((l) => l.sections.filter((s) => s.kind === 'arc').length);
     for (let i = 0; i < ORBIT_LEVELS.length - 1; i++) {
@@ -230,7 +230,7 @@ describe('orbit', () => {
   });
 
   /**
-   * Rálátás is the emotional peak and asks for the least. Every other act ramps
+   * The Overview is the emotional peak and asks for the least. Every other act ramps
    * to its last station; this one runs down into it, because the camera is about
    * to turn and a station with anything to do in it could not carry that.
    */
@@ -331,7 +331,7 @@ describe('orbit playability', () => {
    * is what stops the two drifting apart again. It is deliberately an *ordering*
    * rather than a value - the numbers move whenever `potentialStrength` does,
    * and what must not move is which way round they are, because that is the
-   * claim printed on the act-select screen in two languages.
+   * claim printed on the act-select screen.
    *
    * Short runs and a wide margin: `tools/space.sweep.ts` is where the precise
    * table lives, and this only has to catch an inversion.

@@ -193,7 +193,7 @@ export interface PlacedLife extends Life {
  * verb, its sentence and two buttons, all of them centred and most of them the
  * full width of the panel. There is no horizontal line that can be put across
  * that column, at any height, that does not go through a word - the gaps are ten
- * pixels tall on a phone and they move when the language, the act or the station
+ * pixels tall on a phone and they move when the copy, the act or the station
  * list changes.
  *
  * So the floor keeps the depth and gives up the edge. No stroke, no ridges: a

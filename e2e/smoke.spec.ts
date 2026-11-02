@@ -137,7 +137,7 @@ test.describe('Slowblue mobile smoke', () => {
 
     await page.locator('.ui-corner-pause').click();
     await page.waitForFunction(() => window.__slowblue!.metrics().mode === 'paused');
-    await page.getByRole('button', { name: /quit|kilépés/i }).click();
+    await page.getByRole('button', { name: /quit/i }).click();
     await page.waitForFunction(() => window.__slowblue!.metrics().mode === 'attract');
     await expect(page.locator('.ui-title')).toBeVisible();
     expect(errors).toEqual([]);
@@ -173,15 +173,15 @@ test.describe('Slowblue mobile smoke', () => {
 
     // Act I, named as act I. The bed heading and the body layer are both the
     // deep's, not a generic "water".
-    await expect(drawer.locator('.ui-mix-title')).toHaveText(/mélység|the deep/i);
-    await expect(drawer.getByRole('switch', { name: /buborékok|bubbles/i })).toBeVisible();
+    await expect(drawer.locator('.ui-mix-title')).toHaveText(/the deep/i);
+    await expect(drawer.getByRole('switch', { name: /bubbles/i })).toBeVisible();
     // ...and act I has no motion layer, so the drawer does not draw a dead one.
-    await expect(drawer.getByRole('switch', { name: /tengeri hó|marine snow/i })).toHaveCount(0);
+    await expect(drawer.getByRole('switch', { name: /marine snow/i })).toHaveCount(0);
 
     // A layer switched off in the drawer is stored off, and is still off after
     // the drawer has been closed and reopened.
-    await drawer.getByRole('switch', { name: /buborékok|bubbles/i }).click();
-    await expect(drawer.getByRole('switch', { name: /buborékok|bubbles/i })).toHaveAttribute(
+    await drawer.getByRole('switch', { name: /bubbles/i }).click();
+    await expect(drawer.getByRole('switch', { name: /bubbles/i })).toHaveAttribute(
       'aria-checked',
       'false',
     );
@@ -190,10 +190,10 @@ test.describe('Slowblue mobile smoke', () => {
         () => JSON.parse(localStorage.getItem('tide.settings') ?? '{}').audio.ocean.enabled,
       ),
     ).toBe(false);
-    await drawer.getByRole('button', { name: /close|bezár/i }).click();
+    await drawer.getByRole('button', { name: /close/i }).click();
     await expect(drawer).toBeHidden();
     await page.locator('.ui-corner-mix').click();
-    await expect(drawer.getByRole('switch', { name: /buborékok|bubbles/i })).toHaveAttribute(
+    await expect(drawer.getByRole('switch', { name: /bubbles/i })).toHaveAttribute(
       'aria-checked',
       'false',
     );
@@ -256,12 +256,12 @@ test.describe('Slowblue mobile smoke', () => {
     await page.locator('.ui-corner-mix').click();
 
     const drawer = page.locator('.ui-mix');
-    await expect(drawer.locator('.ui-mix-title')).toHaveText(/keringés|orbit/i);
+    await expect(drawer.locator('.ui-mix-title')).toHaveText(/orbit/i);
     // §13's three sounds, named. None of them can be in act I and none of act I's
     // can be here - which is the whole bug this drawer made visible.
-    await expect(drawer.getByRole('switch', { name: /szívverés|heartbeat/i })).toBeVisible();
+    await expect(drawer.getByRole('switch', { name: /heartbeat/i })).toBeVisible();
     await expect(drawer.getByRole('switch', { name: /whistler/i })).toBeVisible();
-    await expect(drawer.getByRole('switch', { name: /bálnaének|whale song/i })).toHaveCount(0);
+    await expect(drawer.getByRole('switch', { name: /whale song/i })).toHaveCount(0);
     expect(errors).toEqual([]);
   });
 
@@ -283,14 +283,14 @@ test.describe('Slowblue mobile smoke', () => {
     await oceanVolume.fill('37');
     await expect(oceanVolume).toHaveValue('37');
 
-    const danger = drawer.getByRole('switch', { name: /danger|veszélyhangok/i });
+    const danger = drawer.getByRole('switch', { name: /danger/i });
     await expect(danger).toHaveAttribute('aria-checked', 'true');
     await danger.click();
     await expect(
-      drawer.getByRole('switch', { name: /danger|veszélyhangok/i }),
+      drawer.getByRole('switch', { name: /danger/i }),
     ).toHaveAttribute('aria-checked', 'false');
 
-    await drawer.getByRole('button', { name: /close|bezár/i }).click();
+    await drawer.getByRole('button', { name: /close/i }).click();
 
     await page.goto('/?seed=12345&second=1');
     await page.waitForFunction(() => window.__slowblue !== undefined);
@@ -447,9 +447,9 @@ test.describe('Slowblue mobile smoke', () => {
     // results arrive. Six and a half seconds of it, deliberately.
     await expect(surface).toBeVisible({ timeout: 12_000 });
     await expect(surface.locator('.ui-complete-kicker')).toHaveText(
-      /mission complete|küldetés teljesítve/i,
+      /mission complete/i,
     );
-    await expect(surface.locator('.ui-heading')).toHaveText(/surface|felszín/i);
+    await expect(surface.locator('.ui-heading')).toHaveText(/surface/i);
   });
 
   /**

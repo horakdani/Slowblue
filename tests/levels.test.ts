@@ -125,14 +125,10 @@ describe('authored levels', () => {
  * `stationDepthLabel`.
  */
 describe('where a station says it is', () => {
-  const hu = 'hu-HU';
-  /**
-   * Hungarian groups thousands with a *non-breaking* space, which is correct and
-   * is invisible in a diff, so the expectations are built from `toLocaleString`
-   * rather than typed out with a space that only looks the same.
-   */
-  const label = (levels: readonly Level[], i: number): string => stationDepthLabel(levels, i, hu);
-  const n = (v: number): string => v.toLocaleString(hu);
+  // The expectations are built from `toLocaleString` rather than typed out, so the
+  // digit grouping is the runtime's and not a comma that only looks the same.
+  const label = (levels: readonly Level[], i: number): string => stationDepthLabel(levels, i);
+  const n = (v: number): string => v.toLocaleString('en-US');
 
   it('writes a depth as a depth and an altitude as an altitude', () => {
     expect(label(ACT_WATER.levels, 0)).toBe(`${n(6000)} M`);
@@ -150,7 +146,6 @@ describe('where a station says it is', () => {
   it('never claims an act ends at the surface when it ends six kilometres down', () => {
     const last = ACT_HOME.levels.length - 1;
     expect(ACT_HOME.levels[last]!.depthMeters).toBe(6000);
-    // Hungarian groups from five digits, so four is written closed up.
     expect(label(ACT_HOME.levels, last)).toBe(`${n(6000)} M`);
     expect(label(ACT_HOME.levels, last)).not.toContain('→');
   });

@@ -35,7 +35,7 @@
  * correct outcome: a heartbeat that is *audible* is a horror cue.
  *
  * The rate falls across the act, which is the only bit of dramaturgy in this file
- * and is earned - by Rálátás the player has stopped doing anything.
+ * and is earned - by the Overview the player has stopped doing anything.
  *
  * ## The whistlers
  *
@@ -58,7 +58,7 @@ function clamp01(v: number): number {
   return v < 0 ? 0 : v > 1 ? 1 : v;
 }
 
-/** Beats per minute at the start of the act, and at Rálátás. */
+/** Beats per minute at the start of the act, and at the Overview. */
 export const HEART_BPM_START = 58;
 export const HEART_BPM_END = 46;
 

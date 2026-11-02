@@ -34,7 +34,6 @@ export interface BannerView {
   final: boolean;
   /** Whether the picture underneath is daylit, which decides the ink. */
   dark: boolean;
-  lang: 'hu' | 'en';
 }
 
 /**
@@ -72,17 +71,11 @@ export function drawBanner(v: BannerView): void {
     ctx.fillText(text, x, cy + dy);
   };
 
-  const station = v.lang === 'hu' ? 'ÁLLOMÁS' : 'STATION';
-  const eyebrow = v.final
-    ? v.lang === 'hu'
-      ? 'KÜLDETÉS TELJESÍTVE'
-      : 'MISSION COMPLETE'
-    : `${station} ${index + 1} / ${v.levels.length}`;
+  const eyebrow = v.final ? 'MISSION COMPLETE' : `STATION ${index + 1} / ${v.levels.length}`;
   say(eyebrow, 10, 500, 0.44, -27);
-  say(level.name[v.lang].toUpperCase(), 15, 600, 0.78, -6);
-  const locale = v.lang === 'hu' ? 'hu-HU' : 'en-US';
-  say(stationDepthLabel(v.levels, index, locale), 9, 500, 0.46, 14);
-  say(level.subtitle[v.lang], 10, 400, 0.38, 31);
+  say(level.name.toUpperCase(), 15, 600, 0.78, -6);
+  say(stationDepthLabel(v.levels, index), 9, 500, 0.46, 14);
+  say(level.subtitle, 10, 400, 0.38, 31);
 
   // The rule draws itself outward from the middle as the banner lands.
   const half = 54 * Math.min(1, age / 1.1);

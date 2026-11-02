@@ -198,7 +198,7 @@ export class FakeContext {
    *
    * The banner is the only text in the game drawn on the canvas, and what it
    * *says* is half of what it has to get right - which act it is closing, in
-   * which language - so the strings are kept alongside the numbers.
+   * which words - so the strings are kept alongside the numbers.
    */
   texts: {
     text: string;

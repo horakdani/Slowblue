@@ -25,16 +25,16 @@ import { ZONE_RAIN } from './zones';
  *
  *   1. **Cirrus** (11 km) - ice again, briefly, and the top of the weather from
  *      above it for the last time.
- *   2. **Üllő alulról** (9 km) - **the same cloud act II climbed over, from
+ *   2. **Under the Anvil** (9 km) - **the same cloud act II climbed over, from
  *      underneath.** The first moment the campaign lets the player recognise
  *      somewhere they have been, and it is never remarked on.
- *   3. **Záporfüggöny** (2 km) - the downpour. Gravity takes over from wind.
- *   4. **Lombkorona** (100 m) - the canopy. The first green in the game, and the
+ *   3. **The Downpour** (2 km) - gravity takes over from wind.
+ *   4. **The Canopy** (100 m) - the first green in the game, and the
  *      first solid obstacle since act I.
- *   5. **Hegyipatak** (400 m) - running water, and the medium changes to `stream`:
+ *   5. **The Mountain Brook** (400 m) - running water, and the medium changes to `stream`:
  *      it grips harder than the sea and forgets faster, because the whole medium
  *      is already going somewhere and what the player adds is a nudge on top.
- *   6. **Torkolat** (0 m) - the estuary. The separate drops have become one
+ *   6. **The Estuary** (0 m) - the separate drops have become one
  *      flowing body, and where the fresh water meets the salt the gold comes back
  *      as something alive.
  *
@@ -114,11 +114,11 @@ import { ZONE_RAIN } from './zones';
  *
  * Per-station totals: 7280, 7470, 7490, 7190, 7630, 7370 - **44 430 px**, and
  * they even out where they used to run 2800 to 3940. Two are still deliberate
- * rather than arithmetic. **Záporfüggöny** is the act's hardest station and keeps
+ * rather than arithmetic. **The Downpour** is the act's hardest station and keeps
  * the shortest quiets in the campaign - nothing in it is further than 880 px from
  * the thing before it, where every other station here has a crossing of 1180 or
  * more - because it is the part of the journey that is genuinely falling.
- * **Torkolat** is the longest at 4.1 minutes and the thinnest at 1.7 obstacles a
+ * **The Estuary** is the longest at 4.1 minutes and the thinnest at 1.7 obstacles a
  * minute, because an estuary opens out, and the last station of the last act that
  * asks for anything should stop asking before it ends.
  *
@@ -352,9 +352,9 @@ const PULSE_SHUT = { kind: 'aperture', reach: 0.055, phase: 0.75 } as const;
 export const RAIN_LEVELS: Level[] = [
   {
     key: 'cirrus',
-    name: { hu: 'Cirrus', en: 'The Cirrus' },
+    name: 'The Cirrus',
     depthMeters: -11000,
-    subtitle: { hu: 'Jég, még egyszer', en: 'Ice, one more time' },
+    subtitle: 'Ice, one more time',
     zone: ZONE_RAIN,
     medium: 'cloud',
     decor: 'void',
@@ -502,9 +502,9 @@ export const RAIN_LEVELS: Level[] = [
   },
   {
     key: 'underanvil',
-    name: { hu: 'Üllő alulról', en: 'Under the Anvil' },
+    name: 'Under the Anvil',
     depthMeters: -9000,
-    subtitle: { hu: 'Ugyanaz a felhő, alulról', en: 'The same cloud, from below' },
+    subtitle: 'The same cloud, from below',
     zone: ZONE_RAIN + 1,
     medium: 'cloud',
     decor: 'void',
@@ -637,14 +637,14 @@ export const RAIN_LEVELS: Level[] = [
   },
   {
     key: 'downpour',
-    name: { hu: 'Záporfüggöny', en: 'The Downpour' },
+    name: 'The Downpour',
     depthMeters: -2000,
-    subtitle: { hu: 'Minden lefelé tart', en: 'Everything is going down' },
+    subtitle: 'Everything is going down',
     zone: ZONE_RAIN + 2,
     medium: 'cloud',
     decor: 'void',
     // The act's fastest station: this is the part of the journey that is actually
-    // *falling*. Not the campaign's - act V's Plazmaöv is faster and says so in its
+    // *falling*. Not the campaign's - act V's Plasma station is faster and says so in its
     // own file, and for a while both files claimed the superlative at the identical
     // pace 0.62 and the identical roughness 0.85.
     pace: 0.6,
@@ -790,9 +790,9 @@ export const RAIN_LEVELS: Level[] = [
   },
   {
     key: 'canopy',
-    name: { hu: 'Lombkorona', en: 'The Canopy' },
+    name: 'The Canopy',
     depthMeters: -100,
-    subtitle: { hu: 'Az első zöld', en: 'The first green' },
+    subtitle: 'The first green',
     zone: ZONE_RAIN + 3,
     medium: 'cloud',
     decor: 'canopy',
@@ -915,9 +915,9 @@ export const RAIN_LEVELS: Level[] = [
   },
   {
     key: 'brook',
-    name: { hu: 'Hegyipatak', en: 'The Mountain Brook' },
+    name: 'The Mountain Brook',
     depthMeters: -400,
-    subtitle: { hu: 'A víz, ami visz', en: 'Water that carries you' },
+    subtitle: 'Water that carries you',
     zone: ZONE_RAIN + 4,
     // Running water. It grips harder than the sea and forgets faster, because the
     // whole medium is already going somewhere - what the player adds is a nudge on
@@ -1079,9 +1079,9 @@ export const RAIN_LEVELS: Level[] = [
   },
   {
     key: 'estuary',
-    name: { hu: 'Torkolat', en: 'The Estuary' },
+    name: 'The Estuary',
     depthMeters: 0,
-    subtitle: { hu: 'Ahol a folyó megérkezik', en: 'Where the river arrives' },
+    subtitle: 'Where the river arrives',
     zone: ZONE_RAIN + 5,
     medium: 'stream',
     decor: 'kelp',

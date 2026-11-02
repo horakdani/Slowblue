@@ -9,7 +9,7 @@ import {
   type SectionSpec,
 } from '../config/levels';
 import { BEDS, BED_LIST, type BedKey } from '../audio/Beds';
-import type { AudioTrackKey, LangCode } from '../config/settings';
+import type { AudioTrackKey } from '../config/settings';
 
 /**
  * Slowblue: the admin surface. Every authored thing in the game, one click away.
@@ -46,7 +46,6 @@ export interface AdminHost {
   audible(track: AudioTrackKey): boolean;
   /** Turns every mixer track back on, so a sound test is never silent by accident. */
   unmuteAll(): void;
-  lang(): LangCode;
   /**
    * While the sound tab is up, the panel owns the bed: `main` stops pushing the
    * medium, the depth and the ring hold at it every frame. Without this a slider
@@ -357,7 +356,6 @@ export class AdminPanel {
   // --- the map ------------------------------------------------------------
 
   private levelRows(): HTMLElement[] {
-    const lang = this.host.lang();
     return this.act.levels.map((level, i) => {
       const start = levelStartSectionIn(this.act, i);
       const row = document.createElement('button');
@@ -365,9 +363,9 @@ export class AdminPanel {
       row.className = 'slowblue-admin-row';
       row.append(
         el('span', 'slowblue-admin-index', ROMAN[i] ?? String(i + 1)),
-        el('span', 'slowblue-admin-name', level.name[lang]),
+        el('span', 'slowblue-admin-name', level.name),
         el('span', 'slowblue-admin-meta', altitudeLabel(level)),
-        el('span', 'slowblue-admin-sub', `${level.subtitle[lang]} · ${summarise(level)}`),
+        el('span', 'slowblue-admin-sub', `${level.subtitle} · ${summarise(level)}`),
       );
       row.addEventListener('click', () => this.jump(start));
       return row;
@@ -375,7 +373,6 @@ export class AdminPanel {
   }
 
   private sectionRows(): HTMLElement[] {
-    const lang = this.host.lang();
     const out: HTMLElement[] = [];
     let level = -1;
     this.act.script.forEach((entry: ScriptEntry, section: number) => {
@@ -384,7 +381,7 @@ export class AdminPanel {
         const head = el(
           'div',
           'slowblue-admin-group',
-          `${ROMAN[level] ?? level + 1} · ${this.act.levels[level]!.name[lang]}`,
+          `${ROMAN[level] ?? level + 1} · ${this.act.levels[level]!.name}`,
         );
         out.push(head);
       }
@@ -444,7 +441,7 @@ export class AdminPanel {
       b.type = 'button';
       b.className = 'slowblue-admin-act';
       b.classList.toggle('on', this.bed.key === spec.key);
-      b.textContent = spec.name.en;
+      b.textContent = spec.name;
       b.addEventListener('click', () => {
         this.bed.key = spec.key;
         this.pushBed();
@@ -496,7 +493,7 @@ export class AdminPanel {
   }
 
   private bedName(): string {
-    return BEDS[this.bed.key].name.en.toUpperCase();
+    return BEDS[this.bed.key].name.toUpperCase();
   }
 
   private soundButton(label: string, track: AudioTrackKey, play: () => void): HTMLElement {

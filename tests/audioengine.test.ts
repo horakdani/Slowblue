@@ -111,7 +111,7 @@ describe('the bed, dealt', () => {
 
   /**
    * The headline claim: every act's bed is busy, and no two of them are busy in
-   * the same shape. This is "minden állomás hanganyaga különbözzön" as an
+   * the same shape. This is "every act's audio must differ" as an
    * assertion - if two acts ever came to deal the same voices at the same rates,
    * this is where it would be caught.
    */

@@ -8,7 +8,7 @@ import {
   whalePhrase,
 } from '../src/audio/Whale';
 import { AUDIO_TRACK_KEYS, defaultSettings, sanitizeSettings } from '../src/config/settings';
-import { TABLES } from '../src/i18n/strings';
+import { STRINGS } from '../src/i18n/strings';
 
 /** A deterministic stand-in for `Math.random`, so a phrase can be asserted exactly. */
 function seq(values: number[]): () => number {
@@ -105,7 +105,7 @@ describe('whale song', () => {
     expect(WHALE_GAP_MAX).toBeGreaterThan(WHALE_GAP_MIN);
   });
 
-  it('is its own mixer track, mutable and nameable in both languages', () => {
+  it('is its own mixer track, mutable and nameable', () => {
     expect(AUDIO_TRACK_KEYS).toContain('whale');
     expect(defaultSettings().audio.whale).toEqual({ enabled: true, volume: 1 });
     // Muting it is the one thing a mixer track has to be able to do.
@@ -114,6 +114,6 @@ describe('whale song', () => {
     );
     // ...and a settings blob written before the track existed still gets it, on.
     expect(sanitizeSettings({ muted: false }).audio.whale.enabled).toBe(true);
-    for (const table of Object.values(TABLES)) expect(table.audioWhale.length).toBeGreaterThan(0);
+    expect(STRINGS.audioWhale.length).toBeGreaterThan(0);
   });
 });

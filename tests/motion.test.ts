@@ -44,9 +44,9 @@ function openSpan(o: ObstacleSystem, y: number): number {
 function oneSection(spec: SectionSpec, direction: -1 | 1 = -1): ObstacleSystem {
   const level: Level = {
     key: 'probe',
-    name: { hu: 'x', en: 'x' },
+    name: 'x',
     depthMeters: 0,
-    subtitle: { hu: 'x', en: 'x' },
+    subtitle: 'x',
     zone: 0,
     decor: 'void',
     pace: 1,

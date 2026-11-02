@@ -33,12 +33,12 @@ import { makeAct, type Act, type Level, type RingSpec, type SectionSpec } from '
  * where the highest-flying bird ever recorded was found, and it is therefore
  * exactly where the flock has to hand over.
  *
- *   1. **Permet** (60 m) - haze off the sea, torn shreds of cloud.
- *   2. **Partfal** (300 m) - the coast, and the first solid thing in the air.
- *   3. **Gomolymező** (1 200 m) - the fair-weather cumulus field.
- *   4. **Vonulás** (2 500 m) - the altitude birds actually migrate at.
- *   5. **Zivatar** (4 000 m) - rain, and the first air that turns.
- *   6. **Üllő** (11 000 m) - the top of the storm, where the air runs out.
+ *   1. **The Spray** (60 m) - haze off the sea, torn shreds of cloud.
+ *   2. **The Cliff** (300 m) - the coast, and the first solid thing in the air.
+ *   3. **The Cumulus Field** (1 200 m) - the fair-weather cumulus field.
+ *   4. **The Passage** (2 500 m) - the altitude birds actually migrate at.
+ *   5. **The Squall** (4 000 m) - rain, and the first air that turns.
+ *   6. **The Anvil** (11 000 m) - the top of the storm, where the air runs out.
  *
  * ## The length, and the one argument this file used to win
  *
@@ -327,10 +327,10 @@ const PULSE_SHUT = { kind: 'aperture', reach: 0.05, phase: 0.75 } as const;
 export const AIR_LEVELS: Level[] = [
   {
     key: 'spray',
-    name: { hu: 'Permet', en: 'The Spray' },
+    name: 'The Spray',
     // Negative metres are height above the sea. The shell reads the sign.
     depthMeters: -60,
-    subtitle: { hu: 'A hullámok fölött', en: 'Just off the water' },
+    subtitle: 'Just off the water',
     zone: ZONE_AIR,
     medium: 'air',
     decor: 'void',
@@ -536,9 +536,9 @@ export const AIR_LEVELS: Level[] = [
   },
   {
     key: 'cliff',
-    name: { hu: 'Partfal', en: 'The Cliff' },
+    name: 'The Cliff',
     depthMeters: -300,
-    subtitle: { hu: 'Ahol a szél falnak ütközik', en: 'Where the wind meets the wall' },
+    subtitle: 'Where the wind meets the wall',
     zone: ZONE_AIR + 1,
     medium: 'air',
     decor: 'void',
@@ -729,9 +729,9 @@ export const AIR_LEVELS: Level[] = [
   },
   {
     key: 'cumulus',
-    name: { hu: 'Gomolymező', en: 'The Cumulus Field' },
+    name: 'The Cumulus Field',
     depthMeters: -1200,
-    subtitle: { hu: 'Ahol a felhők nőnek', en: 'Where the clouds are built' },
+    subtitle: 'Where the clouds are built',
     zone: ZONE_AIR + 2,
     medium: 'air',
     decor: 'void',
@@ -910,9 +910,9 @@ export const AIR_LEVELS: Level[] = [
   },
   {
     key: 'passage',
-    name: { hu: 'Vonulás', en: 'The Passage' },
+    name: 'The Passage',
     depthMeters: -2500,
-    subtitle: { hu: 'Amerre mindenki tart', en: 'The way everything is going' },
+    subtitle: 'The way everything is going',
     zone: ZONE_AIR + 3,
     medium: 'air',
     decor: 'void',
@@ -1095,9 +1095,9 @@ export const AIR_LEVELS: Level[] = [
   },
   {
     key: 'squall',
-    name: { hu: 'Zivatar', en: 'The Squall' },
+    name: 'The Squall',
     depthMeters: -4000,
-    subtitle: { hu: 'A levegő láthatóvá válik', en: 'The air becomes visible' },
+    subtitle: 'The air becomes visible',
     zone: ZONE_AIR + 4,
     medium: 'air',
     decor: 'void',
@@ -1281,9 +1281,9 @@ export const AIR_LEVELS: Level[] = [
   },
   {
     key: 'anvil',
-    name: { hu: 'Üllő', en: 'The Anvil' },
+    name: 'The Anvil',
     depthMeters: -11000,
-    subtitle: { hu: 'Ahol az időjárás véget ér', en: 'Where the weather stops' },
+    subtitle: 'Where the weather stops',
     zone: ZONE_AIR + 5,
     medium: 'air',
     decor: 'void',

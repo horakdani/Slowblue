@@ -1656,7 +1656,7 @@ export class World {
          * **overtakes from behind**: a stooping raptor was being built a screen and
          * a third *ahead* of its target, outside its own 300 px sense radius, and
          * a target-less stoop then cruises up the course at 0.8 of its speed - away
-         * from the flock. Measured on three seeds, act II's Vonulás stoop never
+         * from the flock. Measured on three seeds, act II's Passage stoop never
          * came within 1 041 px of the flock and took zero individuals in its whole
          * life; the Anvil's was caught only because the flock closed on *it*, fifty
          * seconds and 1 300 px later, at the wrong section, head-on. The one hazard

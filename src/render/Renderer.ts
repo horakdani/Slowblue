@@ -103,8 +103,6 @@ export interface RenderStyle {
    * of work - which is why `setStyle` fits the populations instead of reseeding.
    */
   quality: number;
-  /** Which language the two words of on-canvas text use. */
-  lang: 'hu' | 'en';
 }
 
 /**
@@ -228,7 +226,6 @@ export class Renderer {
   private paint: ZonePaint = clonePaint(paintFor(0));
   private style: RenderStyle = {
     quality: 1,
-    lang: 'hu',
   };
   private shake = 0;
   /** Full-screen white flash, 0..1. Used only for a re-form and a record. */
@@ -2299,7 +2296,7 @@ export class Renderer {
     // it is the other way round: act VII opens in the estuary at 20 m and ends on
     // the trench floor at 6000 m, and a trench floor belongs at the bottom of a
     // rail rather than six thousand metres above the water it started in.
-    const fmt = (m: number): string => `${Math.abs(m).toLocaleString('hu-HU')} m`;
+    const fmt = (m: number): string => `${Math.abs(m).toLocaleString('en-US')} m`;
     const first = this.levels[0]!.depthMeters;
     const last = this.levels[this.levels.length - 1]!.depthMeters;
     ctx.fillText(fmt(world.direction < 0 ? last : first), x + 2, top + 13);
@@ -2376,7 +2373,6 @@ export class Renderer {
       life: this.bannerLife,
       final: this.bannerFinal,
       dark: this.bannerDark,
-      lang: this.style.lang,
     });
   }
 

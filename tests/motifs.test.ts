@@ -7,27 +7,27 @@ describe('level background motifs', () => {
     expect(
       LEVELS.map((level, index) => ({
         key: level.key,
-        hu: level.name.hu,
+        name: level.name,
         decor: level.decor,
         backdrop: MOTIFS[index]?.backdrop,
       })),
     ).toEqual([
-      { key: 'trench-floor', hu: 'Árokfenék', decor: 'trench', backdrop: 'walls' },
-      { key: 'black-water', hu: 'Fekete víz', decor: 'abyss', backdrop: 'void' },
+      { key: 'trench-floor', name: 'Trench Floor', decor: 'trench', backdrop: 'walls' },
+      { key: 'black-water', name: 'Black Water', decor: 'abyss', backdrop: 'void' },
       {
         key: 'midnight-current',
-        hu: 'Éjféli sodrás',
+        name: 'Midnight Current',
         decor: 'jelly',
         backdrop: 'stream',
       },
-      { key: 'blue-rise', hu: 'Kék emelkedő', decor: 'garden', backdrop: 'rise' },
+      { key: 'blue-rise', name: 'The Blue Rise', decor: 'garden', backdrop: 'rise' },
       {
         key: 'light-line',
-        hu: 'Fényhatár',
+        name: 'The Light Line',
         decor: 'meadow',
         backdrop: 'light-line',
       },
-      { key: 'surface', hu: 'Felszín', decor: 'kelp', backdrop: 'surface' },
+      { key: 'surface', name: 'The Surface', decor: 'kelp', backdrop: 'surface' },
     ]);
     expect(new Set(MOTIFS.map((motif) => motif.backdrop))).toHaveLength(LEVELS.length);
   });

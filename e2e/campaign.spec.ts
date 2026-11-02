@@ -85,7 +85,7 @@ test('offers the acts the player has reached, and only those', async ({ page }) 
   // unlit ring, and none of the forty-two behind them. It used to be hidden until
   // there was a journey to look at, which meant the one screen that shows what
   // "seven acts, one circuit" means was the last thing the game showed you.
-  const map = page.getByRole('button', { name: /^the circuit\b|^a kör\b/i });
+  const map = page.getByRole('button', { name: /^the circuit\b/i });
   await expect(map).toBeVisible();
   await expect(map).toHaveText(/0\/42/);
 
@@ -109,11 +109,11 @@ test('offers the acts the player has reached, and only those', async ({ page }) 
 
   // A circuit was put down, so the first button continues it rather than
   // offering to start one.
-  await expect(page.locator('button.ui-btn.primary').first()).toHaveText(/continue|folytatás/i);
+  await expect(page.locator('button.ui-btn.primary').first()).toHaveText(/continue/i);
   // The one number the title screen carries: how much of the circuit is behind
   // them. It rides on the button that opens the map rather than on a line of its
   // own, because the title screen's whole job is to get out of the way.
-  const open = page.getByRole('button', { name: /^the circuit\b|^a kör\b/i });
+  const open = page.getByRole('button', { name: /^the circuit\b/i });
   await expect(open).toHaveText(/24\/42/);
   await open.click();
 
@@ -175,7 +175,7 @@ test('offers the acts the player has reached, and only those', async ({ page }) 
   await expect(page.locator('button.ui-map-act.sel')).toHaveCount(1);
   await expect(marks.nth(3)).toHaveClass(/sel/);
   const core = page.locator('.ui-map-core');
-  await expect(core).toContainText(/orbit|keringés/i);
+  await expect(core).toContainText(/orbit/i);
   await expect(core.locator('.ui-map-arc')).toHaveText(/\S/);
   await expect(world.locator('circle.ui-map-station.sel')).toHaveCount(6);
   // Every act is ringed where its road is entered, and one of the seven is the
@@ -196,14 +196,14 @@ test('offers the acts the player has reached, and only those', async ({ page }) 
    * CONTINUE would be the button promising a journey it is about to replace.
    */
   const go = page.locator('button.ui-btn.primary').first();
-  await expect(go).toHaveText(/continue|folytatás/i);
+  await expect(go).toHaveText(/continue/i);
 
   // Pressing one moves the writing and the marks; it does not start anything.
   await marks.nth(4).click();
   await expect(marks.nth(4)).toHaveClass(/sel/);
   await expect(marks.nth(3)).not.toHaveClass(/sel/);
-  await expect(core).toContainText(/fallback|visszatérés/i);
-  await expect(go).toHaveText(/begin|indulás/i);
+  await expect(core).toContainText(/fallback/i);
+  await expect(go).toHaveText(/begin/i);
   // Act V has not been touched, and the map says so in the same six stops.
   await expect(world.locator('circle.ui-map-station.sel')).toHaveCount(6);
   await expect(world.locator('circle.ui-map-station.sel.on')).toHaveCount(0);
@@ -219,7 +219,7 @@ test('offers the acts the player has reached, and only those', async ({ page }) 
   await expect(list.locator('li')).toHaveCount(6);
   await expect(list.locator('li.done')).toHaveCount(0);
   await marks.nth(0).click();
-  await expect(list.locator('li').first()).toContainText(/trench floor|árokfenék/i);
+  await expect(list.locator('li').first()).toContainText(/trench floor/i);
   await expect(list.locator('li.done')).toHaveCount(6);
   await page.locator('button.ui-map-core-open').click();
   await expect(page.locator('ol.ui-stations')).toHaveCount(0);
@@ -306,8 +306,8 @@ test('keeps a cleared station across a reload, and says where it is', async ({ p
 
   // The title screen says where it will drop them, and it is the second station.
   const go = page.locator('button.ui-btn.primary').first();
-  await expect(go).toHaveText(/continue|folytatás/i);
-  await expect(go).toHaveText(/station 2\/6|állomás 2\/6/i);
+  await expect(go).toHaveText(/continue/i);
+  await expect(go).toHaveText(/station 2\/6/i);
 
   // ...and pressing it opens exactly that water, not act I from the top.
   await go.click();
@@ -503,9 +503,9 @@ test('keeps the circle turning when the player asks it to', async ({ page }) => 
   // than in a list of preferences three taps away from anything it changes.
   await page.locator('.ui-journey').click();
   await expect(
-    page.getByRole('switch', { name: /continuous circuit|folyamatos kör/i }),
+    page.getByRole('switch', { name: /continuous circuit/i }),
   ).toHaveCount(0);
-  await page.getByRole('button', { name: /^back$|^vissza$/i }).click();
+  await page.getByRole('button', { name: /^back$/i }).click();
 
   // ...and now one who has, standing at the last act of the next circuit.
   await page.evaluate(() => {
@@ -523,7 +523,7 @@ test('keeps the circle turning when the player asks it to', async ({ page }) => 
   // The toggle exists now, and it did not before: that is the unlock, and it is
   // the only part of this feature the player can see before they use it.
   await page.locator('.ui-journey').click();
-  const toggle = page.getByRole('switch', { name: /continuous circuit|folyamatos kör/i });
+  const toggle = page.getByRole('switch', { name: /continuous circuit/i });
   await expect(toggle).toBeVisible();
   await toggle.click();
   await expect(toggle).toHaveAttribute('aria-checked', 'true');

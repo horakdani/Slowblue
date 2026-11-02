@@ -3,14 +3,13 @@ import {
   isBedTrack,
   type AudioTrackKey,
   type AudioTrackSettings,
-  type LangCode,
   type Settings,
 } from '../config/settings';
 import { bedSpec, type BedKey } from '../audio/Beds';
 import type { Profile } from '../meta/Profile';
 import type { RecordDelta, RunResult } from '../meta/Profile';
 import { stationDepthLabel } from '../config/levels';
-import { strings, resolveLang, endingsFor, type StringTable } from '../i18n/strings';
+import { STRINGS, endingsFor, type StringTable } from '../i18n/strings';
 import { CAMPAIGN, ACT_COUNT, TOTAL_STATIONS, type ActInfo } from '../config/campaign';
 import {
   ATLAS_LINKS,
@@ -222,7 +221,7 @@ export class Shell {
    * distinction exists for.
    */
   private soundLocked = true;
-  private t: StringTable;
+  private readonly t: StringTable = STRINGS;
 
   constructor(
     private readonly host: HTMLElement,
@@ -230,8 +229,6 @@ export class Shell {
     private profile: Profile,
     private readonly hooks: ShellHooks,
   ) {
-    this.t = strings(settings.lang);
-
     this.root = document.createElement('div');
     this.root.className = 'ui';
 
@@ -342,8 +339,6 @@ export class Shell {
 
   setSettings(settings: Settings): void {
     this.settings = settings;
-    this.t = strings(settings.lang);
-    document.documentElement.lang = resolveLang(settings.lang);
     // Our own echo. The control that started this is mid-gesture and owns its
     // node; redrawing here is what tore the range input out from under a drag.
     //
@@ -629,7 +624,6 @@ export class Shell {
       return;
     }
     const t = this.t;
-    const lang = resolveLang(this.settings.lang);
     const spec = bedSpec(this.bedKey);
     const list = el('div', 'ui-mix-list');
 
@@ -648,7 +642,7 @@ export class Shell {
       this.hooks.onPress(false);
       this.setMixOpen(false);
     });
-    head.append(el('h2', 'ui-mix-title', spec.name[lang]), close);
+    head.append(el('h2', 'ui-mix-title', spec.name), close);
     // The masthead: what this is, the way out, and the one switch that answers
     // "not now" without touching the mix underneath it. It is a plane of its own
     // rather than the first two rows of the list, and it is outside the
@@ -659,7 +653,7 @@ export class Shell {
 
     list.append(el('h3', 'ui-section-title', t.stationLayers));
     for (const layer of spec.layers) {
-      list.append(this.audioTrack(layer.track, layer.name[lang], this.settings.audio[layer.track]));
+      list.append(this.audioTrack(layer.track, layer.name, this.settings.audio[layer.track]));
     }
 
     list.append(el('h3', 'ui-section-title', t.gameSounds));
@@ -706,7 +700,7 @@ export class Shell {
    */
   private trackLabel(track: AudioTrackKey): string {
     const named = bedSpec(this.bedKey).layers.find((l) => l.track === track);
-    if (named !== undefined) return named.name[resolveLang(this.settings.lang)];
+    if (named !== undefined) return named.name;
     const t = this.t;
     const fallback: Record<AudioTrackKey, string> = {
       ocean: t.audioOcean,
@@ -758,7 +752,6 @@ export class Shell {
    */
   private titleScreen(): Node[] {
     const t = this.t;
-    const lang = resolveLang(this.settings.lang);
     const saved = this.profile.saved;
     const out: Node[] = [];
 
@@ -788,7 +781,7 @@ export class Shell {
     actions.append(
       this.cta(
         saved === null ? t.play : t.continueRun,
-        `${t.actLabel} ${ROMAN[act.number - 1]} · ${act.name[lang]} · ` +
+        `${t.actLabel} ${ROMAN[act.number - 1]} · ${act.name} · ` +
           `${t.levelLabel} ${Math.min(act.act.levels.length, station + 1)}/${act.act.levels.length}`,
         () => this.hooks.onStart(),
       ),
@@ -822,8 +815,8 @@ export class Shell {
     if (this.profile.bestScore > 0) {
       parts.push(el('span', 'ui-best', `${t.best} ${this.profile.bestScore}`));
     }
-    // Label first, value second - `runs` is a plural noun ("Futamok", "Runs"),
-    // and "23 Futamok" is not a sentence in either language the game speaks.
+    // Label first, value second: "Runs 23" reads as a stat, where "23 Runs" reads
+    // as a count of something that happened.
     if (this.profile.runs > 0) parts.push(el('span', '', `${t.runs} ${this.profile.runs}`));
     if (this.profile.cycles > 0) {
       parts.push(el('span', '', `${this.profile.cycles} ${t.cycleLabel}`));
@@ -1054,7 +1047,7 @@ export class Shell {
     // the sea's and the air's, chosen by a boolean - are now seven, because five
     // more acts arrived behind them and every one of them was announcing that the
     // player had broken through the waterline. See `i18n/strings.ts`.
-    const ending = endingsFor(resolveLang(this.settings.lang), view.act);
+    const ending = endingsFor(view.act);
     const circuit = view.circuit;
     // ...and the circuit closing is not an act ending at all. It is the only
     // screen in the game that speaks about the whole journey.
@@ -1176,7 +1169,6 @@ export class Shell {
    */
   private circuitScreen(): Node[] {
     const t = this.t;
-    const lang = resolveLang(this.settings.lang);
     const stations = this.profile.stations;
     const here = this.profile.saved?.position ?? null;
     const picked = this.selectedAct();
@@ -1204,7 +1196,7 @@ export class Shell {
      * this screen instead, so a screen reader still opens "The circuit" and only
      * the pixels are gone.
      */
-    const out: Node[] = [this.atlasMap(stations, here, picked, lang)];
+    const out: Node[] = [this.atlasMap(stations, here, picked)];
     /*
      * The whole circuit in two numbers, and they are the caption of the picture
      * rather than a second footer under the act.
@@ -1225,7 +1217,7 @@ export class Shell {
           `${actsCleared(stations)}/${ACT_COUNT} ${t.actsLabel}`,
       ),
     );
-    out.push(this.actCard(stations, here, picked, lang));
+    out.push(this.actCard(stations, here, picked));
     /**
      * The mode, above the button that starts water.
      *
@@ -1411,8 +1403,7 @@ export class Shell {
    * picture overhead says it, and the `<ol>` still carries the ordinal for anyone
    * listening rather than looking.
    */
-  private stationList(info: ActInfo, done: number, here: number, lang: LangCode): HTMLElement {
-    const locale = lang === 'hu' ? 'hu-HU' : 'en-US';
+  private stationList(info: ActInfo, done: number, here: number): HTMLElement {
     const list = el('ol', 'ui-stations');
     info.act.levels.forEach((level, i) => {
       const item = el('li', i < done ? 'done' : '');
@@ -1421,9 +1412,9 @@ export class Shell {
       stop.setAttribute('aria-hidden', 'true');
       item.append(
         stop,
-        el('span', 'ui-station-name', level.name[lang]),
-        el('span', 'ui-station-depth', stationDepthLabel(info.act.levels, i, locale)),
-        el('span', 'ui-station-note', level.subtitle[lang]),
+        el('span', 'ui-station-name', level.name),
+        el('span', 'ui-station-depth', stationDepthLabel(info.act.levels, i)),
+        el('span', 'ui-station-note', level.subtitle),
       );
       list.append(item);
     });
@@ -1473,7 +1464,6 @@ export class Shell {
     stations: StationRecord,
     here: CampaignPosition | null,
     picked: number,
-    lang: LangCode,
   ): HTMLElement {
     const t = this.t;
     const wrap = el('div', 'ui-map');
@@ -1612,7 +1602,7 @@ export class Shell {
         y: (band.labelY - NAME_RISE).toFixed(1),
         'text-anchor': band.anchor,
       });
-      name.textContent = info.name[lang];
+      name.textContent = info.name;
       const meta = svgEl('text', {
         class: `ui-stop-meta${on}`,
         x: band.labelX.toFixed(1),
@@ -1628,10 +1618,10 @@ export class Shell {
       x: MAP_W / 2,
       y: MAP_H - 20,
     });
-    seam.textContent = CAMPAIGN[0].act.levels[0].name[lang];
+    seam.textContent = CAMPAIGN[0].act.levels[0].name;
     svg.append(seam);
 
-    wrap.append(svg, ...this.actTargets(stations, here, picked, lang));
+    wrap.append(svg, ...this.actTargets(stations, here, picked));
     return wrap;
   }
 
@@ -1727,7 +1717,6 @@ export class Shell {
     stations: StationRecord,
     here: CampaignPosition | null,
     picked: number,
-    lang: LangCode,
   ): HTMLElement[] {
     const t = this.t;
     return CIRCUIT_ACTS.map((band) => {
@@ -1758,7 +1747,7 @@ export class Shell {
           : `${done}/${band.count} ${t.levelsCleared}`;
       b.setAttribute(
         'aria-label',
-        `${t.actLabel} ${roman}: ${info.name[lang]} — ${state}${current ? `, ${t.hereLabel}` : ''}`,
+        `${t.actLabel} ${roman}: ${info.name} — ${state}${current ? `, ${t.hereLabel}` : ''}`,
       );
       if (open) {
         b.addEventListener('click', () => {
@@ -1817,7 +1806,6 @@ export class Shell {
     stations: StationRecord,
     here: CampaignPosition | null,
     picked: number,
-    lang: LangCode,
   ): HTMLElement {
     const t = this.t;
     const info = CAMPAIGN[picked]!;
@@ -1831,7 +1819,7 @@ export class Shell {
     b.type = 'button';
     b.className = `ui-map-core-open${open ? ' open' : ''}`;
     b.setAttribute('aria-expanded', open ? 'true' : 'false');
-    b.setAttribute('aria-label', `${info.name[lang]} — ${t.stationList}`);
+    b.setAttribute('aria-label', `${info.name} — ${t.stationList}`);
     b.dataset.focus = 'stations';
 
     // The eyebrow: which of the seven, and - only when there is something to say
@@ -1844,11 +1832,11 @@ export class Shell {
 
     b.append(
       kicker,
-      el('strong', 'ui-map-core-name', info.name[lang]),
-      el('span', 'ui-map-core-verb', info.verb[lang]),
+      el('strong', 'ui-map-core-name', info.name),
+      el('span', 'ui-map-core-verb', info.verb),
       // A `<span>` and not a `<p>`: it is inside the button, because the sentence
       // is what a player would press, and a button may only hold phrasing content.
-      el('span', 'ui-map-arc', info.arc[lang]),
+      el('span', 'ui-map-arc', info.arc),
     );
 
     // The foot, and the only thing on the card that admits to being a control:
@@ -1864,7 +1852,7 @@ export class Shell {
     });
 
     core.append(b);
-    if (open) core.append(this.stationList(info, done, at, lang));
+    if (open) core.append(this.stationList(info, done, at));
     return core;
   }
 
@@ -1872,7 +1860,6 @@ export class Shell {
 
   private patch(delta: Partial<Settings>, rerender = true): void {
     this.settings = { ...this.settings, ...delta };
-    this.t = strings(this.settings.lang);
     // Whatever `applySettings` hands back during this call is an echo of what we
     // just sent it, and this shell has already stored it. Suppressing the round
     // trip is what makes `rerender` mean anything at all: without it the slider's

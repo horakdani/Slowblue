@@ -10,7 +10,7 @@ import {
 import { ProfileStore, emptyProfile, sanitizeProfile } from '../src/meta/Profile';
 import { RunState } from '../src/sim/RunState';
 import { runResult } from '../src/meta/Profile';
-import { detectLang, resolveLang, strings, TABLES } from '../src/i18n/strings';
+import { STRINGS } from '../src/i18n/strings';
 
 /** Minimal in-memory Storage, plus a switch to make it throw like Safari private mode. */
 class FakeStorage {
@@ -94,10 +94,8 @@ describe('settings', () => {
   it('merges a partial blob onto the defaults', () => {
     const s = sanitizeSettings({
       audio: { movement: { enabled: false, volume: 0.35 } },
-      lang: 'hu',
     });
     expect(s.audio.movement).toEqual({ enabled: false, volume: 0.35 });
-    expect(s.lang).toBe('hu');
     expect(s.audio.ocean).toEqual(defaultSettings().audio.ocean);
   });
 
@@ -133,7 +131,7 @@ describe('settings', () => {
     const chosen = sanitizeSettings({ ...stored, rev: SETTINGS_REV });
     for (const key of QUIET_BY_DEFAULT) expect(chosen.audio[key].enabled, key).toBe(true);
     // Everything else the old blob said survives the step untouched.
-    expect(sanitizeSettings({ rev: 0, lang: 'hu', muted: true }).lang).toBe('hu');
+    expect(sanitizeSettings({ rev: 0, muted: true }).muted).toBe(true);
   });
 
   it('starts every act with the two held layers off and the rest on', () => {
@@ -154,10 +152,10 @@ describe('settings', () => {
         ocean: { enabled: 'sometimes', volume: 4 },
         movement: { enabled: false, volume: 'loud' },
       },
-      lang: 'klingon',
-      // Three keys that were settings once. A blob written by an older build
-      // still carries them, and the merge has to drop them rather than carry
-      // them forward into an object nothing will ever read again.
+      // Keys that were settings once, `lang` among them. A blob written by an
+      // older build still carries them, and the merge has to drop them rather
+      // than carry them forward into an object nothing will ever read again.
+      lang: 'auto',
       quality: 'ultra',
       showHud: null,
       haptics: false,
@@ -165,7 +163,7 @@ describe('settings', () => {
     });
     expect(s.audio.ocean).toEqual({ enabled: true, volume: 1 });
     expect(s.audio.movement).toEqual({ enabled: false, volume: 1 });
-    expect(s.lang).toBe('en');
+    expect('lang' in s).toBe(false);
     expect('quality' in s).toBe(false);
     expect('showHud' in s).toBe(false);
     expect('haptics' in s).toBe(false);
@@ -179,23 +177,11 @@ describe('settings', () => {
 });
 
 describe('i18n', () => {
-  it('has the same keys in every language', () => {
-    expect(Object.keys(TABLES.hu).sort()).toEqual(Object.keys(TABLES.en).sort());
-    for (const table of Object.values(TABLES)) {
-      for (const [key, value] of Object.entries(table)) {
-        if (key === 'zonePrefix') continue;
-        expect(value.length, key).toBeGreaterThan(0);
-      }
+  it('has no empty string in the table', () => {
+    for (const [key, value] of Object.entries(STRINGS)) {
+      if (key === 'zonePrefix') continue;
+      expect(value.length, key).toBeGreaterThan(0);
     }
-  });
-
-  it('resolves every language setting to English', () => {
-    // The game is English-only: every setting, including an 'hu' left over in an
-    // old saved blob, resolves to English.
-    expect(detectLang()).toBe('en');
-    expect(resolveLang('hu')).toBe('en');
-    expect(resolveLang('auto')).toBe('en');
-    expect(strings('hu').play).toBe(TABLES.en.play);
   });
 });
 

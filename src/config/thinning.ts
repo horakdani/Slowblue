@@ -28,21 +28,21 @@ import { ZONE_THIN } from './zones';
  *
  * ## Six stations, and two of them are inherited
  *
- * Gyöngyház and Világító felhők used to be act II's last two, flown by birds. No
+ * The Nacreous and The Noctilucent used to be act II's last two, flown by birds. No
  * bird has ever been to either - there is no air at 25 km to fly in, let alone at
  * 82 - and they are the two most beautiful places in the game, so they were not
  * cut, they were given to a carrier that can actually be there. That is the
  * single largest structural change the campaign made, and it is the one that
  * makes the rest of it honest.
  *
- *   1. **Futóáramlat** (11 km) - the tropopause, and the fastest air on Earth.
- *   2. **Ózonkék** (20 km) - the deepest blue there is, and the first wave.
- *   3. **Gyöngyház** (25 km) - nacreous cloud, which *is* a standing wave made
+ *   1. **The Jet Stream** (11 km) - the tropopause, and the fastest air on Earth.
+ *   2. **Ozone Blue** (20 km) - the deepest blue there is, and the first wave.
+ *   3. **The Nacreous** (25 km) - nacreous cloud, which *is* a standing wave made
  *      visible, so the station where the wave matters most is the one where the
  *      player can see it.
- *   4. **Fekete ég** (50 km) - stars in daylight. Almost nothing left to steer.
- *   5. **Világító felhők** (82 km) - the last cloud on the planet.
- *   6. **A vonal** (100 km) - the Karman line. The winds go to nearly nothing,
+ *   4. **The Black Sky** (50 km) - stars in daylight. Almost nothing left to steer.
+ *   5. **The Noctilucent** (82 km) - the last cloud on the planet.
+ *   6. **The Line** (100 km) - the Karman line. The winds go to nearly nothing,
  *      and the act ends on the discovery that a stroke has stopped working.
  *
  * ## The rebuild, and the one thing it was not allowed to spend
@@ -361,9 +361,9 @@ const PULSE_SHUT = { kind: 'aperture', reach: 0.06, phase: 0.75 } as const;
 export const THIN_LEVELS: Level[] = [
   {
     key: 'jet',
-    name: { hu: 'Futóáramlat', en: 'The Jet Stream' },
+    name: 'The Jet Stream',
     depthMeters: -11000,
-    subtitle: { hu: 'A leggyorsabb levegő', en: 'The fastest air there is' },
+    subtitle: 'The fastest air there is',
     zone: ZONE_THIN,
     medium: 'thinAir',
     decor: 'void',
@@ -528,9 +528,9 @@ export const THIN_LEVELS: Level[] = [
   },
   {
     key: 'ozone',
-    name: { hu: 'Ózonkék', en: 'Ozone Blue' },
+    name: 'Ozone Blue',
     depthMeters: -20000,
-    subtitle: { hu: 'A leglassabb hullám', en: 'The slowest wave' },
+    subtitle: 'The slowest wave',
     zone: ZONE_THIN + 1,
     medium: 'thinAir',
     decor: 'void',
@@ -658,9 +658,9 @@ export const THIN_LEVELS: Level[] = [
   },
   {
     key: 'nacre',
-    name: { hu: 'Gyöngyház', en: 'The Nacreous' },
+    name: 'The Nacreous',
     depthMeters: -25000,
-    subtitle: { hu: 'A hullám, amit látni lehet', en: 'The wave you can see' },
+    subtitle: 'The wave you can see',
     zone: ZONE_THIN + 2,
     medium: 'thinAir',
     decor: 'void',
@@ -836,9 +836,9 @@ export const THIN_LEVELS: Level[] = [
   },
   {
     key: 'blacksky',
-    name: { hu: 'Fekete ég', en: 'The Black Sky' },
+    name: 'The Black Sky',
     depthMeters: -50000,
-    subtitle: { hu: 'Csillagok nappal', en: 'Stars in daylight' },
+    subtitle: 'Stars in daylight',
     zone: ZONE_THIN + 3,
     medium: 'thinAir',
     decor: 'void',
@@ -1025,9 +1025,9 @@ export const THIN_LEVELS: Level[] = [
   },
   {
     key: 'noctilucent',
-    name: { hu: 'Világító felhők', en: 'The Noctilucent' },
+    name: 'The Noctilucent',
     depthMeters: -82000,
-    subtitle: { hu: 'Az utolsó felhő', en: 'The last cloud there is' },
+    subtitle: 'The last cloud there is',
     zone: ZONE_THIN + 4,
     medium: 'thinAir',
     decor: 'void',
@@ -1183,9 +1183,9 @@ export const THIN_LEVELS: Level[] = [
   },
   {
     key: 'line',
-    name: { hu: 'A vonal', en: 'The Line' },
+    name: 'The Line',
     depthMeters: -100000,
-    subtitle: { hu: 'Ahol a levegő elfogy', en: 'Where the air runs out' },
+    subtitle: 'Where the air runs out',
     zone: ZONE_THIN + 5,
     medium: 'thinAir',
     decor: 'void',

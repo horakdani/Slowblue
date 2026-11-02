@@ -16,7 +16,6 @@ import { clamp } from './core/math';
 import { ACT_WATER, levelAtIn, levelStartSectionIn, type Act } from './config/levels';
 import { actByKey } from './config/campaign';
 import { AUDIO_TRACK_KEYS, loadSettings, saveSettings, type Settings } from './config/settings';
-import { resolveLang } from './i18n/strings';
 import { haptic } from './platform/Haptics';
 import type { HapticCueName } from './platform/Haptics';
 import { registerServiceWorker } from './platform/pwa';
@@ -509,7 +508,6 @@ function buildAdminPanel(): AdminPanel {
         }
         applySettings({ ...settings, audio: next, muted: false });
       },
-      lang: () => resolveLang(settings.lang),
       setAudioOverride: (on) => {
         audioOverride = on;
         // Hand the bed back the way the game left it, so closing the tab mid-run
@@ -637,7 +635,6 @@ function resize(): void {
 function renderStyle(): RenderStyle {
   return {
     quality: particleScale,
-    lang: resolveLang(settings.lang),
   };
 }
 
@@ -653,7 +650,6 @@ function applySettings(next: Settings): void {
   // screen, so the mixer drawer on the glass, which lives on `playing`, had every
   // fader torn out from under the drag that was moving it.
   shell.setSettings(settings);
-  document.documentElement.lang = resolveLang(settings.lang);
 }
 
 /** Slowblue: if the device cannot hold the frame, spend resolution, never latency. */

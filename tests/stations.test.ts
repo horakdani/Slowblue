@@ -52,13 +52,13 @@ const STATIONS: { act: string; level: Level }[] = CAMPAIGN_ACTS.flatMap((act) =>
  * defended digit for digit - `tests/playability.test.ts` holds a reference score
  * to sixteen places - and its stations are 1.4 to 2.0 minutes where a rebuilt
  * one is 2.5 to 5.5. It breaks two of the rules below and has always broken
- * them: Fekete víz ends its demands on a compulsory ring, and Kék emelkedő's
+ * them: Black Water ends its demands on a compulsory ring, and the Blue Rise's
  * rock asks for both of its channel rings.
  *
  * Neither is a defect at act I's scale, and that is the point of the exemption
  * rather than an excuse for it. The rule about a station's last demand was
  * measured on a station of *fifteen* sections, where the pressure ramp has four
- * minutes to build; Fekete víz is seven sections and ninety seconds, and the
+ * minutes to build; Black Water is seven sections and ninety seconds, and the
  * ramp never gets anywhere. The rule about two compulsory rings was measured at
  * act V's pace on a swarm the rings had already doubled. A rule learned at one
  * scale is not automatically true at the other, and act I is the act that says

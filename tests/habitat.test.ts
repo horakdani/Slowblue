@@ -222,7 +222,7 @@ describe('the world behind the route', () => {
    * ...and never under the shell's own column either.
    *
    * The panel is not in the atlas - it is an act's name, its verb, a sentence, a
-   * count and two buttons, and how tall that is depends on the language and on
+   * count and two buttons, and how tall that is depends on the copy and on
    * whether the station list is open - so the rule the world obeys is the blunt
    * one: inside the width of the picture, stay inside the height of it.
    */

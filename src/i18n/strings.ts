@@ -1,10 +1,7 @@
-import type { LangCode, LangSetting } from '../config/settings';
-
 /**
  * Slowblue: the game is still almost wordless - the water teaches the water. These are
  * the strings around it: the shell, the settings and the two failure sentences.
- * Hungarian is the first-audience language and stays the reference text; English
- * exists so the build can be handed to anyone.
+ * The game ships in English only, so this is one table, not one per language.
  */
 export interface StringTable {
   /**
@@ -19,8 +16,8 @@ export interface StringTable {
    * occasions is the same thing: this string and the five store-facing ones say
    * one name between them.
    *
-   * Not localised, and it is the only string in this table that is not: a name
-   * is a name in both languages.
+   * A name rather than a sentence, so it is the one string here that is not
+   * copy to be tuned.
    */
   title: string;
   /**
@@ -186,92 +183,7 @@ export interface StringTable {
   installHint: string;
 }
 
-const hu: StringTable = {
-  title: 'SLOWBLUE',
-  mission: 'A quiet place beneath the noise',
-  missionComplete: 'KÜLDETÉS TELJESÍTVE',
-  play: 'INDULÁS',
-  playAgain: 'ÚJRA',
-  newWater: 'ÚJ VÍZ',
-  sameWater: 'UGYANEZ A VÍZ',
-  resume: 'FOLYTATÁS',
-  restart: 'ÚJRAKEZDÉS',
-  quit: 'KILÉPÉS',
-  paused: 'SZÜNET',
-  saveNote:
-    'A játék minden teljesített állomás után automatikusan ment, és megszakítás után ' +
-    'az aktuális állomás elejéről folytathatod. Egy felvonáson belül két újrakezdésed ' +
-    'van; a harmadik bukás a felvonás elejére tesz vissza.',
-  close: 'BEZÁR',
-  back: 'VISSZA',
-  best: 'Legjobb',
-  newRecord: 'ÚJ REKORD',
-  depth: 'Emelkedés',
-  ascent: 'emelkedés',
-  shoal: 'Raj',
-  score: 'Pont',
-  gates: 'kapu',
-  rescued: 'megmentve',
-  lost: 'elveszve',
-  reforms: 'újraegyesülés',
-  runs: 'Futamok',
-  failDepleted: 'A RAJ SZÉTHULLOTT',
-  failSwept: 'A RAJ LEMARADT',
-  failRing: 'A GYŰRŰ ÜRESEN MARADT',
-  failDepletedHint: 'A sziklák és a pánik felőrölték. Vezesd tisztábban.',
-  failSweptHint: 'Az áramlat elhúzott mellettetek. Kezdeményezz korábban.',
-  failRingHint: 'A szaggatott gyűrűt teljesíteni kell. Vidd bele a raj nagyját, és tartsd ott.',
-  completeTitle: 'FELSZÍNRE ÉRTETEK',
-  completeHint: 'Hat állomás után áttörtétek a víz tükrét. A raj együtt maradt.',
-  circuitComplete: 'A KÖR BEZÁRULT',
-  circuitHint:
-    'Hét felvonás, egyetlen út. Nem felfelé mentetek — körbe. Az árok fenekéről indultatok, és oda értetek vissza.',
-  campaignScore: 'A teljes útért',
-  carried: 'megőrizve',
-  actLabel: 'Felvonás',
-  circuit: 'A KÖR',
-  actsLabel: 'felvonás',
-  actLocked: 'ZÁRVA',
-  hereLabel: 'ITT TARTASZ',
-  actCleared: 'TELJESÍTVE',
-  stationList: 'Állomások',
-  openMap: 'A térkép megnyitása',
-  continueRun: 'FOLYTATÁS',
-  cycleLabel: 'kör',
-  levelLabel: 'Állomás',
-  levelsCleared: 'állomás',
-  ringsHeld: 'gyűrű',
-  allSound: 'Minden hang',
-  audioOcean: 'A közeg',
-  audioMotion: 'Áramlás',
-  audioDrone: 'Mély zengés',
-  audioShimmer: 'Csillogás',
-  audioAmbience: 'Távoli harangok',
-  // The rare distant voice: a whale below the surface, thunder above it.
-  audioWhale: 'Távoli hangok',
-  audioMovement: 'Kézmozdulat',
-  audioObjectives: 'Céljelzések',
-  audioDanger: 'Veszélyhangok',
-  audioInterface: 'Kezelőfelület',
-  volume: 'Hangerő',
-  mixer: 'Hangsávok',
-  stationLayers: 'Az állomás hangjai',
-  gameSounds: 'Játékhangok',
-  circuitMode: 'Folyamatos kör',
-  circuitModeHint: 'Folyamatos kör: az árokfenék nem a vég, hanem a kezdet.',
-  eraseStations: 'MINDEN ÁLLOMÁS TÖRLÉSE',
-  eraseConfirm: 'AZ EGÉSZ UTAT?',
-  restartJourney: 'ÚJ ÚT INDÍTÁSA',
-  restartJourneyConfirm: 'AZ I. FELVONÁSTÓL?',
-  on: 'BE',
-  off: 'KI',
-  seedLabel: 'Víz',
-  zonePrefix: '',
-  comboLabel: 'sorozat',
-  installHint: 'Add a kezdőképernyőhöz a teljes képernyős játékhoz.',
-};
-
-const en: StringTable = {
+export const STRINGS: StringTable = {
   title: 'SLOWBLUE',
   mission: 'A quiet place beneath the noise',
   missionComplete: 'MISSION COMPLETE',
@@ -355,8 +267,6 @@ const en: StringTable = {
   installHint: 'Add to home screen for a full-screen game.',
 };
 
-export const TABLES: Record<LangCode, StringTable> = { hu, en };
-
 /**
  * Slowblue: how each act ends, in its own words.
  *
@@ -385,57 +295,7 @@ export interface ActEndings {
   sweptHint: string;
 }
 
-const ENDINGS_HU: Record<string, ActEndings> = {
-  water: {
-    complete: 'FELSZÍNRE ÉRTETEK',
-    completeHint: 'Hat állomás után áttörtétek a víz tükrét. A raj együtt maradt.',
-    swept: 'A RAJ LEMARADT',
-    sweptHint: 'Az áramlat elhúzott mellettetek. Kezdeményezz korábban.',
-  },
-  air: {
-    complete: 'AZ ÜLLŐ TETEJÉRE ÉRTETEK',
-    completeHint:
-      'Tizenegy kilométer: ahol az időjárás véget ér. Szárnnyal feljebb nincs — de amit a raj idáig hozott, nélküle is tovább emelkedik.',
-    swept: 'A RAJ LEMARADT',
-    sweptHint: 'A szél nélküled is megy tovább. Terelgesd a levegőt korábban.',
-  },
-  thin: {
-    complete: 'ÁTLÉPTÉTEK A VONALAT',
-    completeHint:
-      'Száz kilométer. Innen a levegő nem visz tovább semmit — a lendület viszont igen.',
-    swept: 'ROSSZ RÉTEGBEN MARADTATOK',
-    sweptHint: 'Odafent a réteg megválasztása többet ér minden húzásnál. Várj, és válassz.',
-  },
-  orbit: {
-    complete: 'RÁLÁTÁS',
-    completeHint:
-      'Innen az egész látszik: minden, ami eddig történt, egyetlen vékony fénycsík a perem fölött. Innen az út lefelé megy.',
-    swept: 'A PÁLYA ELHAGYOTT',
-    sweptHint: 'Egy kút későn hat. Ne oda célozz, ahol vannak — oda, ahová tartanak.',
-  },
-  reentry: {
-    complete: 'ÁTJUTOTTATOK',
-    completeHint:
-      'A por lehűlt, és felhőmaggá lett. Minden csepp, ami ezután esik, egy ilyenre épül.',
-    swept: 'ROSSZ SZÖGBEN ÉRKEZTETEK',
-    sweptHint: 'Fékezz korábban. A levegő minden kilométerrel sűrűbb, és nem vár meg.',
-  },
-  rain: {
-    complete: 'A TENGERHEZ ÉRTETEK',
-    completeHint:
-      'Felhőből csepp, cseppből patak, patakból folyó. Ahol az édesvíz sóssá válik, a fény újra élővé lesz.',
-    swept: 'A SODRÁS ELHAGYOTT',
-    sweptHint: 'Lefelé minden gyorsabb. Gyűjtsd össze őket, mielőtt szétszóródnak.',
-  },
-  home: {
-    complete: 'HAZAÉRTETEK',
-    completeHint: 'Az árok fenekére, ahol az első kép készült.',
-    swept: 'A RAJ LEMARADT',
-    sweptHint: 'Odalent semmi sem sürget. Hagyd, hogy leüljenek.',
-  },
-};
-
-const ENDINGS_EN: Record<string, ActEndings> = {
+const ENDINGS: Record<string, ActEndings> = {
   water: {
     complete: 'YOU REACHED THE SURFACE',
     completeHint: 'After six stations, you broke through the waterline. The shoal held together.',
@@ -485,32 +345,7 @@ const ENDINGS_EN: Record<string, ActEndings> = {
   },
 };
 
-const ENDINGS: Record<LangCode, Record<string, ActEndings>> = {
-  hu: ENDINGS_HU,
-  en: ENDINGS_EN,
-};
-
-/** How this act ends, in this language. Falls back to act I for an unknown key. */
-export function endingsFor(lang: LangCode, actKey: string): ActEndings {
-  return ENDINGS[lang][actKey] ?? ENDINGS[lang].water!;
-}
-
-/**
- * The game ships in English only.
- *
- * The Hungarian table stays in the file - it is still the reference text every
- * English string was written against, and the tests read both - but nothing
- * reaches it at runtime any more: there is no language picker, and a `lang: 'hu'`
- * left in an old saved settings blob resolves to English like everything else.
- */
-export function detectLang(): LangCode {
-  return 'en';
-}
-
-export function resolveLang(_setting: LangSetting): LangCode {
-  return 'en';
-}
-
-export function strings(setting: LangSetting): StringTable {
-  return TABLES[resolveLang(setting)];
+/** How this act ends. Falls back to act I for an unknown key. */
+export function endingsFor(actKey: string): ActEndings {
+  return ENDINGS[actKey] ?? ENDINGS.water!;
 }

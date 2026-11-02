@@ -55,7 +55,7 @@ import type { Act } from '../src/config/levels';
  * descriptions describe - tips *after* the opening rather than before it, and less
  * of the course blocked the deeper the bow. Act IV's one escalation axis ran
  * backwards. Flipping the sign took it to 3/11 on its own; the Umbra's `strait`
- * being symmetric about the field, A kút's ramp stepping 0.08 rather than 0.02,
+ * being symmetric about the field, the Well's ramp stepping 0.08 rather than 0.02,
  * and its compulsory rings moving off the eye of an attractor took it to 6/11 and
  * 14.5/18, score 3252 to 10 642.
  *

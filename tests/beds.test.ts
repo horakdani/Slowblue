@@ -82,7 +82,7 @@ describe('the bed table', () => {
     expect(bedFor('nonsense', 'water')).toBe('deep');
   });
 
-  it('names every layer it lists, in both languages, on a real mixer slot', () => {
+  it('names every layer it lists, on a real mixer slot', () => {
     for (const spec of BED_LIST) {
       expect(spec.layers.length).toBeGreaterThanOrEqual(5);
       const seen = new Set<string>();
@@ -91,16 +91,14 @@ describe('the bed table', () => {
         // One row per slot: two layers on one slider is two labels for one control.
         expect(seen.has(layer.track)).toBe(false);
         seen.add(layer.track);
-        expect(layer.name.hu.length).toBeGreaterThan(0);
-        expect(layer.name.en.length).toBeGreaterThan(0);
+        expect(layer.name.length).toBeGreaterThan(0);
       }
       // Every bed has a chord, a bell and a body. Those three are what makes it a
       // room rather than a sound effect.
       for (const required of ['ocean', 'drone', 'ambience'] as const) {
         expect(seen.has(required)).toBe(true);
       }
-      expect(spec.name.hu.length).toBeGreaterThan(0);
-      expect(spec.name.en.length).toBeGreaterThan(0);
+      expect(spec.name.length).toBeGreaterThan(0);
     }
   });
 
@@ -114,7 +112,7 @@ describe('the bed table', () => {
     const fingerprints = new Map<string, BedKey>();
     for (const spec of BED_LIST) {
       const print = JSON.stringify([
-        spec.layers.map((l) => l.name.en),
+        spec.layers.map((l) => l.name),
         spec.drone,
         spec.shimmer,
         spec.bell,
@@ -124,7 +122,7 @@ describe('the bed table', () => {
     }
     // ...and the labels themselves are distinct act to act, which is what the
     // player actually sees in the drawer.
-    const bodies = BED_LIST.map((s) => s.layers.find((l) => l.track === 'ocean')?.name.en);
+    const bodies = BED_LIST.map((s) => s.layers.find((l) => l.track === 'ocean')?.name);
     expect(new Set(bodies).size).toBe(BED_LIST.length);
   });
 

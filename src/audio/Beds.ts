@@ -1,4 +1,4 @@
-import type { BedTrackKey, LangCode } from '../config/settings';
+import type { BedTrackKey } from '../config/settings';
 import type { MediumKind } from '../config/tuning';
 
 /**
@@ -17,10 +17,10 @@ import type { MediumKind } from '../config/tuning';
  *      (`bedFor`) - not from the medium alone, because two acts share the water
  *      and mean opposite things by it, and two acts share the brook and mean the
  *      same thing by it.
- *   2. **What each bed's six layers are called**, in both languages, because the
- *      mixer the player opens mid-station has to say *rain* in the rain and
- *      *heartbeat* in orbit. The slots are shared (see `config/settings.ts`); only
- *      the names and the voices behind them change.
+ *   2. **What each bed's six layers are called**, because the mixer the player
+ *      opens mid-station has to say *rain* in the rain and *heartbeat* in orbit.
+ *      The slots are shared (see `config/settings.ts`); only the names and the
+ *      voices behind them change.
  *   3. **How the three continuous layers are voiced** - the chord, the high layer
  *      and the bell. These are the parts of the bed that never stop, so they
  *      cannot be swapped at an act boundary; the engine holds one of each and
@@ -68,7 +68,7 @@ export interface BedLayer {
   /** Which mixer slot it is levelled and muted on. */
   track: BedTrackKey;
   /** What the mixer calls it while this bed is playing. */
-  name: Record<LangCode, string>;
+  name: string;
 }
 
 /**
@@ -122,7 +122,7 @@ export interface BellVoicing {
 export interface BedSpec {
   key: BedKey;
   /** What the mixer heading calls this bed. */
-  name: Record<LangCode, string>;
+  name: string;
   /** Its layers, in mixer order. A bed only lists the slots it actually fills. */
   layers: BedLayer[];
   drone: DroneVoicing;
@@ -130,8 +130,8 @@ export interface BedSpec {
   bell: BellVoicing;
 }
 
-function layer(track: BedTrackKey, hu: string, en: string): BedLayer {
-  return { track, name: { hu, en } };
+function layer(track: BedTrackKey, name: string): BedLayer {
+  return { track, name };
 }
 
 /** The chord and the bell act I has always had. Four beds quote it. */
@@ -145,13 +145,13 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   deep: {
     key: 'deep',
-    name: { hu: 'Mélység', en: 'The Deep' },
+    name: 'The Deep',
     layers: [
-      layer('ocean', 'Buborékok', 'Bubbles'),
-      layer('drone', 'Mély zengés', 'Deep drone'),
-      layer('shimmer', 'Felszíni csillogás', 'Surface shimmer'),
-      layer('ambience', 'Távoli harangok', 'Distant bells'),
-      layer('whale', 'Bálnaének', 'Whale song'),
+      layer('ocean', 'Bubbles'),
+      layer('drone', 'Deep drone'),
+      layer('shimmer', 'Surface shimmer'),
+      layer('ambience', 'Distant bells'),
+      layer('whale', 'Whale song'),
     ],
     drone: WATER_DRONE,
     shimmer: { hz: 1500, q: 1.6, gain: 0.05, rate: 1.7 },
@@ -165,14 +165,14 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   flight: {
     key: 'flight',
-    name: { hu: 'Repülés', en: 'Flight' },
+    name: 'Flight',
     layers: [
-      layer('ocean', 'Szárnycsapások', 'Wingbeats'),
-      layer('motion', 'Széllökések', 'Gusts'),
-      layer('drone', 'Mély zengés', 'Deep drone'),
-      layer('shimmer', 'Magaslati szél', 'High wind'),
-      layer('ambience', 'Távoli harangok', 'Distant bells'),
-      layer('whale', 'Távoli égzengés', 'Distant thunder'),
+      layer('ocean', 'Wingbeats'),
+      layer('motion', 'Gusts'),
+      layer('drone', 'Deep drone'),
+      layer('shimmer', 'High wind'),
+      layer('ambience', 'Distant bells'),
+      layer('whale', 'Distant thunder'),
     ],
     drone: { partials: [1, 1.5, 2, 3], cutoff: 640, gain: 0.05, spread: 8 },
     shimmer: { hz: 2100, q: 2.1, gain: 0.042, rate: 2.1 },
@@ -187,14 +187,14 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   thin: {
     key: 'thin',
-    name: { hu: 'Ritkulás', en: 'The Thinning' },
+    name: 'The Thinning',
     layers: [
-      layer('ocean', 'Jégkristályok', 'Ice crystals'),
-      layer('motion', 'Rétegek súrlódása', 'Layer shear'),
-      layer('drone', 'Ritka zengés', 'Thin drone'),
-      layer('shimmer', 'Gyöngyházfény', 'Nacreous halo'),
-      layer('ambience', 'Üvegharangok', 'Glass bells'),
-      layer('whale', 'Infrahang', 'Infrasound'),
+      layer('ocean', 'Ice crystals'),
+      layer('motion', 'Layer shear'),
+      layer('drone', 'Thin drone'),
+      layer('shimmer', 'Nacreous halo'),
+      layer('ambience', 'Glass bells'),
+      layer('whale', 'Infrasound'),
     ],
     // No root: the fifth is the lowest voice, and the stack runs up to the
     // twelfth. High, open and airless.
@@ -210,14 +210,14 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   orbit: {
     key: 'orbit',
-    name: { hu: 'Keringés', en: 'Orbit' },
+    name: 'Orbit',
     layers: [
-      layer('ocean', 'Lélegzet', 'Breath'),
-      layer('motion', 'Szívverés', 'Heartbeat'),
-      layer('drone', 'Alsó zengés', 'Sub drone'),
-      layer('shimmer', 'A csend csengése', 'The ring of silence'),
-      layer('ambience', 'Tiszta harang', 'Pure bell'),
-      layer('whale', 'Whistlerek', 'Whistlers'),
+      layer('ocean', 'Breath'),
+      layer('motion', 'Heartbeat'),
+      layer('drone', 'Sub drone'),
+      layer('shimmer', 'The ring of silence'),
+      layer('ambience', 'Pure bell'),
+      layer('whale', 'Whistlers'),
     ],
     drone: { partials: [0.5, 0.75, 1, 1.5], cutoff: 210, gain: 0.045, spread: 3 },
     // Very high, very narrow, very quiet: the ringing you notice in a silent room.
@@ -233,14 +233,14 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   fire: {
     key: 'fire',
-    name: { hu: 'Visszatérés', en: 'The Fallback' },
+    name: 'The Fallback',
     layers: [
-      layer('ocean', 'Plazmaburok', 'The sheath'),
-      layer('motion', 'Lökéshullámok', 'Shock waves'),
-      layer('drone', 'Forró zengés', 'Hot drone'),
-      layer('shimmer', 'Izzó szemcsék', 'Ablation sparks'),
-      layer('ambience', 'Mély harangok', 'Low bells'),
-      layer('whale', 'Hangrobbanás', 'Sonic boom'),
+      layer('ocean', 'The sheath'),
+      layer('motion', 'Shock waves'),
+      layer('drone', 'Hot drone'),
+      layer('shimmer', 'Ablation sparks'),
+      layer('ambience', 'Low bells'),
+      layer('whale', 'Sonic boom'),
     ],
     drone: { partials: [1, 1.5, 2, 3], cutoff: 380, gain: 0.058, spread: 22 },
     shimmer: { hz: 4200, q: 2.6, gain: 0.02, rate: 3 },
@@ -254,14 +254,14 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   rain: {
     key: 'rain',
-    name: { hu: 'Eső', en: 'The Rain' },
+    name: 'The Rain',
     layers: [
-      layer('ocean', 'Esőcseppek', 'Raindrops'),
-      layer('motion', 'Zápor', 'The shower'),
-      layer('drone', 'Meleg zengés', 'Warm drone'),
-      layer('shimmer', 'Levélkopogás', 'Leaf patter'),
-      layer('ambience', 'Távoli harangok', 'Distant bells'),
-      layer('whale', 'Égzengés', 'Thunder'),
+      layer('ocean', 'Raindrops'),
+      layer('motion', 'The shower'),
+      layer('drone', 'Warm drone'),
+      layer('shimmer', 'Leaf patter'),
+      layer('ambience', 'Distant bells'),
+      layer('whale', 'Thunder'),
     ],
     drone: { partials: [1, 1.5, 2, 3], cutoff: 700, gain: 0.05, spread: 7 },
     // The shimmer slot is the patter's, so the held layer under it is almost
@@ -277,14 +277,14 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   brook: {
     key: 'brook',
-    name: { hu: 'Patak', en: 'The Brook' },
+    name: 'The Brook',
     layers: [
-      layer('ocean', 'Csobogás', 'The riffle'),
-      layer('motion', 'Sodrás', 'The current'),
-      layer('drone', 'Közeli zengés', 'Close drone'),
-      layer('shimmer', 'Fodrok', 'Ripples'),
-      layer('ambience', 'Fa harangok', 'Wooden bells'),
-      layer('whale', 'Kövek a mederben', 'Stones on the bed'),
+      layer('ocean', 'The riffle'),
+      layer('motion', 'The current'),
+      layer('drone', 'Close drone'),
+      layer('shimmer', 'Ripples'),
+      layer('ambience', 'Wooden bells'),
+      layer('whale', 'Stones on the bed'),
     ],
     drone: { partials: [1, 1.5, 2, 3], cutoff: 820, gain: 0.045, spread: 5 },
     shimmer: { hz: 3600, q: 2.8, gain: 0.022, rate: 2.6 },
@@ -302,16 +302,16 @@ export const BEDS: Record<BedKey, BedSpec> = {
    */
   homecoming: {
     key: 'homecoming',
-    name: { hu: 'Hazatérés', en: 'The Homecoming' },
+    name: 'The Homecoming',
     layers: [
       // The same voice as act I's and named for the direction, because that is
       // the only thing about it that is different and it is the whole act.
-      layer('ocean', 'Süllyedő buborékok', 'Sinking bubbles'),
-      layer('motion', 'Tengeri hó', 'Marine snow'),
-      layer('drone', 'Leszálló zengés', 'Sinking drone'),
-      layer('shimmer', 'A fogyó fény', 'The fading light'),
-      layer('ambience', 'Mély harangok', 'Low bells'),
-      layer('whale', 'Közeli bálna', 'The near whale'),
+      layer('ocean', 'Sinking bubbles'),
+      layer('motion', 'Marine snow'),
+      layer('drone', 'Sinking drone'),
+      layer('shimmer', 'The fading light'),
+      layer('ambience', 'Low bells'),
+      layer('whale', 'The near whale'),
     ],
     drone: WATER_DRONE,
     shimmer: { hz: 1300, q: 1.5, gain: 0.045, rate: 1.5 },

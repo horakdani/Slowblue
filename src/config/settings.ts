@@ -1,8 +1,5 @@
 import { readJson, writeJson } from '../core/storage';
 
-export type LangCode = 'hu' | 'en';
-export type LangSetting = LangCode | 'auto';
-
 /**
  * The six layers every bed is built out of.
  *
@@ -82,7 +79,6 @@ export interface Settings {
    * mix a player built is exactly what comes back when they press it again.
    */
   muted: boolean;
-  lang: LangSetting;
   /**
    * Continuous circuit mode: the seventh act hands back to the first instead of
    * to the title.
@@ -146,7 +142,6 @@ export function defaultSettings(): Settings {
     rev: SETTINGS_REV,
     audio: defaultAudioSettings(),
     muted: false,
-    lang: 'en',
     circuit: false,
   };
 }
@@ -195,8 +190,7 @@ export function sanitizeSettings(input: unknown, base = defaultSettings()): Sett
       }
     }
   }
-  if (rec.lang === 'hu' || rec.lang === 'en' || rec.lang === 'auto') out.lang = rec.lang;
-  // `quality`, `haptics`, `showHud`, `calm`, `reducedMotion` and `highContrast`
+  // `lang`, `quality`, `haptics`, `showHud`, `calm`, `reducedMotion` and `highContrast`
   // are read from nothing now and are simply dropped from any blob that still
   // carries them - they are not in `BOOL_KEYS`, so the loop above never looks for
   // them. The picture budget moved to `main.adaptQuality`, which measures instead

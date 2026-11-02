@@ -5,7 +5,6 @@ import {
   type FailurePolicy,
 } from '../sim/Failure';
 import type { LayerSpec } from '../sim/LayeredFlow';
-import type { LangCode } from './settings';
 import type { MediumKind } from './tuning';
 
 /**
@@ -507,7 +506,7 @@ export type DecorTheme =
 
 export interface Level {
   key: string;
-  name: Record<LangCode, string>;
+  name: string;
   /**
    * The station's distance below the surface, in metres. Negative is height
    * *above* the sea, so one signed number carries the whole campaign: 6000 on the
@@ -515,7 +514,7 @@ export interface Level {
    */
   depthMeters: number;
   /** One quiet line under the station title, naming what changed on the ascent. */
-  subtitle: Record<LangCode, string>;
+  subtitle: string;
   /** Which zone palette this level is painted in. */
   zone: number;
   /** The medium this level is played in. Absent means water: all of act I. */
@@ -589,9 +588,9 @@ const BREATH: SectionSpec = { kind: 'open', spacing: 900 };
 export const LEVELS: Level[] = [
   {
     key: 'trench-floor',
-    name: { hu: 'Árokfenék', en: 'Trench Floor' },
+    name: 'Trench Floor',
     depthMeters: 6000,
-    subtitle: { hu: 'Ahol még nincs fény', en: 'Where light cannot reach' },
+    subtitle: 'Where light cannot reach',
     zone: 0,
     decor: 'trench',
     pace: 0.72,
@@ -638,9 +637,9 @@ export const LEVELS: Level[] = [
   },
   {
     key: 'black-water',
-    name: { hu: 'Fekete víz', en: 'Black Water' },
+    name: 'Black Water',
     depthMeters: 4000,
-    subtitle: { hu: 'A mélység nyílt vize', en: 'Open water of the abyss' },
+    subtitle: 'Open water of the abyss',
     zone: 1,
     decor: 'abyss',
     pace: 0.78,
@@ -686,9 +685,9 @@ export const LEVELS: Level[] = [
   },
   {
     key: 'midnight-current',
-    name: { hu: 'Éjféli sodrás', en: 'Midnight Current' },
+    name: 'Midnight Current',
     depthMeters: 2500,
-    subtitle: { hu: 'Az első áramlat felfelé', en: 'The first current upward' },
+    subtitle: 'The first current upward',
     zone: 1,
     decor: 'jelly',
     pace: 0.84,
@@ -740,9 +739,9 @@ export const LEVELS: Level[] = [
   },
   {
     key: 'blue-rise',
-    name: { hu: 'Kék emelkedő', en: 'The Blue Rise' },
+    name: 'The Blue Rise',
     depthMeters: 1000,
-    subtitle: { hu: 'A fény első nyoma', en: 'The first trace of light' },
+    subtitle: 'The first trace of light',
     zone: 2,
     decor: 'garden',
     pace: 0.9,
@@ -789,9 +788,9 @@ export const LEVELS: Level[] = [
   },
   {
     key: 'light-line',
-    name: { hu: 'Fényhatár', en: 'The Light Line' },
+    name: 'The Light Line',
     depthMeters: 200,
-    subtitle: { hu: 'A sötétség pereme', en: 'The edge of darkness' },
+    subtitle: 'The edge of darkness',
     zone: 2,
     decor: 'meadow',
     pace: 0.95,
@@ -849,9 +848,9 @@ export const LEVELS: Level[] = [
   },
   {
     key: 'surface',
-    name: { hu: 'Felszín', en: 'The Surface' },
+    name: 'The Surface',
     depthMeters: 0,
-    subtitle: { hu: 'Áttörés a fénybe', en: 'Break through into light' },
+    subtitle: 'Break through into light',
     zone: 3,
     decor: 'kelp',
     pace: 1,
@@ -1081,14 +1080,10 @@ export function levelAt(index: number): Level {
  * that names the place, both were wrong in the shipped build, and neither could
  * be caught by a test while the string was built inside a draw call.
  */
-export function stationDepthLabel(
-  levels: readonly Level[],
-  index: number,
-  locale: string,
-): string {
+export function stationDepthLabel(levels: readonly Level[], index: number): string {
   const level = levels[Math.max(0, Math.min(levels.length - 1, index))]!;
   const metres = (m: number): string =>
-    m < 0 ? `▲ ${Math.abs(m).toLocaleString(locale)}` : m.toLocaleString(locale);
+    m < 0 ? `▲ ${Math.abs(m).toLocaleString('en-US')}` : m.toLocaleString('en-US');
   // Arriving at the surface, from wherever this act started.
   if (level.depthMeters === 0 && index > 0) {
     return `${metres(levels[index - 1]!.depthMeters)} → 0 M`;

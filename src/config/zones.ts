@@ -1,5 +1,3 @@
-import type { LangCode } from './settings';
-
 /**
  * Every course piece the generator can produce.
  * `gate` / `rock` / `narrows` are the original three; the rest arrive with progress.
@@ -26,7 +24,7 @@ export interface Palette {
 export interface Zone {
   index: number;
   key: string;
-  name: Record<LangCode, string>;
+  name: string;
   /** First section id that belongs to this zone. */
   fromSection: number;
   /** Section kinds, cycled in order. The cycle *is* the zone's rhythm. */
@@ -47,7 +45,7 @@ export interface Zone {
  */
 interface ZoneSpec {
   key: string;
-  name: Record<LangCode, string>;
+  name: string;
   /** Water only: the first generated section id this band owns. */
   fromSection?: number;
   /** Water only: what the generator may build here. */
@@ -86,7 +84,7 @@ function stamp(specs: ZoneSpec[], from: number): Zone[] {
 const WATER_SPECS: ZoneSpec[] = [
   {
     key: 'hadal',
-    name: { hu: 'Hadális öv', en: 'The Hadal Zone' },
+    name: 'The Hadal Zone',
     fromSection: 0,
     pool: ['gate', 'rock', 'narrows'],
     palette: {
@@ -105,7 +103,7 @@ const WATER_SPECS: ZoneSpec[] = [
   },
   {
     key: 'midnight',
-    name: { hu: 'Éjféli öv', en: 'The Midnight Zone' },
+    name: 'The Midnight Zone',
     fromSection: 4,
     pool: ['drift', 'rock', 'gate', 'vortex', 'rock', 'narrows'],
     palette: {
@@ -124,7 +122,7 @@ const WATER_SPECS: ZoneSpec[] = [
   },
   {
     key: 'blue',
-    name: { hu: 'Kék öv', en: 'The Blue Zone' },
+    name: 'The Blue Zone',
     fromSection: 9,
     pool: ['predator', 'rock', 'narrows', 'vortex', 'drift', 'rock', 'gate', 'predator'],
     palette: {
@@ -143,7 +141,7 @@ const WATER_SPECS: ZoneSpec[] = [
   },
   {
     key: 'surface',
-    name: { hu: 'Fényöv', en: 'The Sunlit Zone' },
+    name: 'The Sunlit Zone',
     fromSection: 16,
     pool: ['vortex', 'rock', 'predator', 'narrows', 'drift', 'rock', 'predator', 'vortex'],
     palette: {
@@ -192,7 +190,7 @@ const WATER_SPECS: ZoneSpec[] = [
 const AIR_SPECS: ZoneSpec[] = [
   {
     key: 'spray',
-    name: { hu: 'Permet', en: 'The Spray' },
+    name: 'The Spray',
     palette: {
       // Sea-level light, and the brightest frame in the game: a pale morning sky
       // above, and the sea they just came out of catching all of it underneath.
@@ -211,7 +209,7 @@ const AIR_SPECS: ZoneSpec[] = [
   },
   {
     key: 'cliff',
-    name: { hu: 'Partfal', en: 'The Cliff' },
+    name: 'The Cliff',
     palette: {
       // A few hundred metres, and the first frame in the game with land in it.
       // The inversion has begun - the sky above is already deeper than the haze
@@ -232,7 +230,7 @@ const AIR_SPECS: ZoneSpec[] = [
   },
   {
     key: 'cumulus',
-    name: { hu: 'Gomolyöv', en: 'The Cumulus Field' },
+    name: 'The Cumulus Field',
     palette: {
       top: '#3d75ad',
       mid: '#79aacf',
@@ -249,7 +247,7 @@ const AIR_SPECS: ZoneSpec[] = [
   },
   {
     key: 'passage',
-    name: { hu: 'Vonulás', en: 'The Passage' },
+    name: 'The Passage',
     palette: {
       // Two and a half kilometres: the altitude birds actually migrate at, and
       // the last one in the game where the air is something a body can live in.
@@ -269,7 +267,7 @@ const AIR_SPECS: ZoneSpec[] = [
   },
   {
     key: 'squall',
-    name: { hu: 'Zivatar', en: 'The Squall' },
+    name: 'The Squall',
     palette: {
       // The one bruised palette in the game. Cloud stays the bright thing in it -
       // a storm is dark because of what is *between* you and the light, and the
@@ -292,7 +290,7 @@ const AIR_SPECS: ZoneSpec[] = [
   },
   {
     key: 'anvil',
-    name: { hu: 'Üllő', en: 'The Anvil' },
+    name: 'The Anvil',
     palette: {
       // Out of the top of the weather. The frame's dark end is nearly space
       // already; its bright end is the anvil sheet you climbed through, receding.
@@ -335,7 +333,7 @@ const AIR_SPECS: ZoneSpec[] = [
 const THIN_SPECS: ZoneSpec[] = [
   {
     key: 'jet',
-    name: { hu: 'Futóáramlat', en: 'The Jet Stream' },
+    name: 'The Jet Stream',
     palette: {
       // 11 km. The tropopause, and the fastest air on the planet. There is still
       // a haze below - it is the whole troposphere, seen from its ceiling.
@@ -354,7 +352,7 @@ const THIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'ozone',
-    name: { hu: 'Ózonkék', en: 'Ozone Blue' },
+    name: 'Ozone Blue',
     palette: {
       // 20 km. Ozone absorbs in the red, so the little light that scatters here
       // comes back bluer than anywhere below - the deepest blue in the game, and
@@ -374,7 +372,7 @@ const THIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'nacre',
-    name: { hu: 'Gyöngyházöv', en: 'The Nacreous' },
+    name: 'The Nacreous',
     palette: {
       // 25 km. The sky is black overhead in daylight, and the only warm colour
       // left in the world is under the horizon - which is what lights the cloud.
@@ -393,7 +391,7 @@ const THIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'blacksky',
-    name: { hu: 'Fekete ég', en: 'The Black Sky' },
+    name: 'The Black Sky',
     palette: {
       // 50 km. Nothing scatters. The frame is stars, the swarm, and whatever ice
       // the swarm is passing - and the only reason it is not literally black is
@@ -413,7 +411,7 @@ const THIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'noctilucent',
-    name: { hu: 'Világító öv', en: 'The Noctilucent' },
+    name: 'The Noctilucent',
     palette: {
       // 82 km, and the last cloud there is: ice on meteor dust, glowing electric
       // blue against a black sky because the sun is still on it hours after it
@@ -433,7 +431,7 @@ const THIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'line',
-    name: { hu: 'A vonal', en: 'The Line' },
+    name: 'The Line',
     palette: {
       // 100 km. The Karman line is not a place - it is where the air stops being
       // able to hold anything up, which is exactly the sentence act III has been
@@ -470,7 +468,7 @@ const THIN_SPECS: ZoneSpec[] = [
 const SPACE_SPECS: ZoneSpec[] = [
   {
     key: 'freefall',
-    name: { hu: 'Szabadesés', en: 'Free Fall' },
+    name: 'Free Fall',
     palette: {
       top: '#000104',
       mid: '#01020a',
@@ -487,7 +485,7 @@ const SPACE_SPECS: ZoneSpec[] = [
   },
   {
     key: 'aurora',
-    name: { hu: 'Sarkifény', en: 'The Aurora' },
+    name: 'The Aurora',
     palette: {
       // Seen from above, which almost nobody has: the curtains are *below* the
       // swarm and the green comes up off the bottom of the frame.
@@ -506,7 +504,7 @@ const SPACE_SPECS: ZoneSpec[] = [
   },
   {
     key: 'umbra',
-    name: { hu: 'Földárnyék', en: 'The Umbra' },
+    name: 'The Umbra',
     palette: {
       // The Earth's shadow, and the darkest frame in the game by a long way. The
       // swarm is the only light source; everything else is inferred from it.
@@ -525,7 +523,7 @@ const SPACE_SPECS: ZoneSpec[] = [
   },
   {
     key: 'debris',
-    name: { hu: 'Törmeléköv', en: 'The Debris Belt' },
+    name: 'The Debris Belt',
     palette: {
       // Grey. The one band up here with anything man-made in it, and the one
       // whose obstacles are hard-edged rather than luminous.
@@ -544,7 +542,7 @@ const SPACE_SPECS: ZoneSpec[] = [
   },
   {
     key: 'well',
-    name: { hu: 'A kút', en: 'The Well' },
+    name: 'The Well',
     palette: {
       // The deepest part of the gravity field the act is played in, drawn as the
       // one warm thing in vacuum: the frame's bottom glows because that is where
@@ -564,7 +562,7 @@ const SPACE_SPECS: ZoneSpec[] = [
   },
   {
     key: 'overview',
-    name: { hu: 'Rálátás', en: 'The Overview' },
+    name: 'The Overview',
     palette: {
       // The turn. The whole planet arrives at the bottom of the frame and the
       // atmosphere resolves into one bright line along it - which is the entire
@@ -597,7 +595,7 @@ const SPACE_SPECS: ZoneSpec[] = [
 const REENTRY_SPECS: ZoneSpec[] = [
   {
     key: 'deorbit',
-    name: { hu: 'Letérés', en: 'The Deorbit' },
+    name: 'The Deorbit',
     palette: {
       top: '#000106',
       mid: '#020612',
@@ -614,7 +612,7 @@ const REENTRY_SPECS: ZoneSpec[] = [
   },
   {
     key: 'nightside',
-    name: { hu: 'Éjszakai oldal', en: 'The Night Side' },
+    name: 'The Night Side',
     palette: {
       // Coming down over the unlit half. The only light in the frame is the swarm
       // and, far below, weather lighting itself up from the inside.
@@ -633,7 +631,7 @@ const REENTRY_SPECS: ZoneSpec[] = [
   },
   {
     key: 'auroraBelow',
-    name: { hu: 'Aurora', en: 'The Aurora' },
+    name: 'The Aurora',
     palette: {
       // Through the curtains rather than over them. This is the last calm band
       // before the air arrives, and it is the most beautiful thing in act V.
@@ -652,7 +650,7 @@ const REENTRY_SPECS: ZoneSpec[] = [
   },
   {
     key: 'plasma',
-    name: { hu: 'Plazmaöv', en: 'The Plasma' },
+    name: 'The Plasma',
     palette: {
       // The loudest frame in the game. Everything is on fire and the sky behind
       // it has gone white, because at this point the swarm *is* the light source
@@ -672,7 +670,7 @@ const REENTRY_SPECS: ZoneSpec[] = [
   },
   {
     key: 'meteordust',
-    name: { hu: 'Meteorpor', en: 'The Meteor Dust' },
+    name: 'The Meteor Dust',
     palette: {
       // Cooling. The orange is going out of it and what is left is the dust that
       // every noctilucent cloud on the planet is built on - which is where act VI
@@ -692,7 +690,7 @@ const REENTRY_SPECS: ZoneSpec[] = [
   },
   {
     key: 'nucleus',
-    name: { hu: 'Felhőmag', en: 'The Nucleus' },
+    name: 'The Nucleus',
     palette: {
       // Cold, wet and grey: the dust has finished being a meteor and started
       // being the thing a raindrop condenses on. The whole of act VI is in this
@@ -723,7 +721,7 @@ const REENTRY_SPECS: ZoneSpec[] = [
 const RAIN_SPECS: ZoneSpec[] = [
   {
     key: 'cirrus',
-    name: { hu: 'Cirrus', en: 'The Cirrus' },
+    name: 'The Cirrus',
     palette: {
       top: '#2c4a6e',
       mid: '#6a89a8',
@@ -740,7 +738,7 @@ const RAIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'underanvil',
-    name: { hu: 'Üllő alulról', en: 'Under the Anvil' },
+    name: 'Under the Anvil',
     palette: {
       // The same cloud act II climbed over, from underneath - which is the first
       // moment the campaign lets the player recognise somewhere they have been.
@@ -759,7 +757,7 @@ const RAIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'downpour',
-    name: { hu: 'Záporfüggöny', en: 'The Downpour' },
+    name: 'The Downpour',
     palette: {
       top: '#455360',
       mid: '#546472',
@@ -776,7 +774,7 @@ const RAIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'canopy',
-    name: { hu: 'Lombkorona', en: 'The Canopy' },
+    name: 'The Canopy',
     palette: {
       // The first green in the game, and the first obstacle since act I that is
       // a solid thing rather than weather.
@@ -795,7 +793,7 @@ const RAIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'brook',
-    name: { hu: 'Hegyipatak', en: 'The Mountain Brook' },
+    name: 'The Mountain Brook',
     palette: {
       // Running water for the first time. Bright, hard, and full of stone.
       top: '#2a4a4e',
@@ -813,7 +811,7 @@ const RAIN_SPECS: ZoneSpec[] = [
   },
   {
     key: 'estuary',
-    name: { hu: 'Torkolat', en: 'The Estuary' },
+    name: 'The Estuary',
     palette: {
       // Where the fresh water meets the sea, and where the gold turns back into
       // something alive. The green is going out of it and the blue is coming in.
@@ -850,7 +848,7 @@ const RAIN_SPECS: ZoneSpec[] = [
 const HOME_SPECS: ZoneSpec[] = [
   {
     key: 'brackish',
-    name: { hu: 'Sós határ', en: 'The Salt Line' },
+    name: 'The Salt Line',
     palette: {
       top: '#2c7d8e',
       mid: '#1a5f74',
@@ -867,7 +865,7 @@ const HOME_SPECS: ZoneSpec[] = [
   },
   {
     key: 'sunlit',
-    name: { hu: 'Napfényzóna', en: 'The Sunlit Zone' },
+    name: 'The Sunlit Zone',
     palette: {
       top: '#1e9db2',
       mid: '#0a6c80',
@@ -884,7 +882,7 @@ const HOME_SPECS: ZoneSpec[] = [
   },
   {
     key: 'twilight',
-    name: { hu: 'Alkonyzóna', en: 'The Twilight Zone' },
+    name: 'The Twilight Zone',
     palette: {
       top: '#0a5c6e',
       mid: '#053241',
@@ -901,7 +899,7 @@ const HOME_SPECS: ZoneSpec[] = [
   },
   {
     key: 'midnightHome',
-    name: { hu: 'Mélytenger', en: 'The Deep Sea' },
+    name: 'The Deep Sea',
     palette: {
       top: '#0a2049',
       mid: '#050d28',
@@ -918,7 +916,7 @@ const HOME_SPECS: ZoneSpec[] = [
   },
   {
     key: 'snow',
-    name: { hu: 'Tengeri hó', en: 'Marine Snow' },
+    name: 'Marine Snow',
     palette: {
       // The one band in the game with more specks than anything else in it. Every
       // one of them is falling the way the swarm is falling, which is the whole
@@ -939,7 +937,7 @@ const HOME_SPECS: ZoneSpec[] = [
   },
   {
     key: 'trenchHome',
-    name: { hu: 'Árokfenék', en: 'The Trench Floor' },
+    name: 'The Trench Floor',
     palette: {
       // Act I's first palette, to within a few values, and lit warm instead of
       // cold. This is the last frame of the campaign and the first frame of it.
