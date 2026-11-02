@@ -15,7 +15,7 @@ cd "$(dirname "$0")/.."
 
 # A project page is served under /<repo>/, so the build has to be told where it will
 # live; vite's `base` reaches the asset URLs, the precache manifest and nothing else.
-BASE_PATH="${BASE_PATH:-/slowblue/}"
+BASE_PATH="${BASE_PATH:-/Slowblue/}"
 BRANCH="${DEPLOY_BRANCH:-gh-pages}"
 # `origin` unless told otherwise; a clone whose origin is not the public repository
 # (a private mirror, say) says which remote to publish through: DEPLOY_REMOTE=pub.

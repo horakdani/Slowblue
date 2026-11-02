@@ -63,7 +63,7 @@ export default defineConfig({
   /**
    * Where the game is served from.
    *
-   * `/` for a dev server and for a site at a domain root; `BASE_PATH=/slowblue/` for
+   * `/` for a dev server and for a site at a domain root; `BASE_PATH=/Slowblue/` for
    * a GitHub Pages project site, which is what `npm run deploy` sets. Everything
    * that has to agree with it reads it rather than repeating it: the service worker
    * takes its own location, the manifest is relative to itself, and the precache

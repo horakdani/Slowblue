@@ -7,12 +7,12 @@
   "author": "Daniel Horak",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/horakdani/slowblue.git"
+    "url": "git+https://github.com/horakdani/Slowblue.git"
   },
   "bugs": {
-    "url": "https://github.com/horakdani/slowblue/issues"
+    "url": "https://github.com/horakdani/Slowblue/issues"
   },
-  "homepage": "https://horakdani.github.io/slowblue/",
+  "homepage": "https://horakdani.github.io/Slowblue/",
   "keywords": [
     "game",
     "html5-game",

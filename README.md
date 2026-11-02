@@ -11,7 +11,7 @@ It is not a climb. It is a **circuit**: sea, sky, upper air, orbit, re-entry, ra
 again, and the last frame is the trench floor the first one was shot on. The player is told
 none of that. They find out when the water starts looking familiar.
 
-[![Play it](https://img.shields.io/badge/play-horakdani.github.io%2Fslowblue-2a9d8f)](https://horakdani.github.io/slowblue/)
+[![Play it](https://img.shields.io/badge/play-horakdani.github.io%2FSlowblue-2a9d8f)](https://horakdani.github.io/Slowblue/)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 ![Runtime dependencies: 0](https://img.shields.io/badge/runtime%20dependencies-0-brightgreen)
 
@@ -24,7 +24,7 @@ none of that. They find out when the water starts looking familiar.
 
 ## Play it
 
-**[horakdani.github.io/slowblue](https://horakdani.github.io/slowblue/)** — open it on a
+**[horakdani.github.io/Slowblue](https://horakdani.github.io/Slowblue/)** — open it on a
 phone, in portrait, ideally with headphones. One button, then you are in the water.
 
 There is no app store, no download and no account. It installs, too: "Add to Home Screen"
