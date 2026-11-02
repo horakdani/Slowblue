@@ -92,16 +92,6 @@ in [docs/GAME.md](docs/GAME.md).
   scripted hands. Every tuning number in the repo came out of a measurement, and the
   documents say which.
 
-### Honest status
-
-The game is finished and the gate is green. But acts II to VII were rebuilt in a single
-afternoon and verified by tests and bots, and tests answer *can this be flown* and *does it
-obey the rules* — not whether act III still feels like patience or act II is still the
-act this repo is proudest of. Nobody has played the
-whole thing end to end yet. [docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md) §12 is the watch
-list, in the order a playthrough meets it, and reports from a real device are the most
-useful thing you can send.
-
 ## Run it yourself
 
 ```bash
