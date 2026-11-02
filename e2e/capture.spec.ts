@@ -7,9 +7,9 @@ import { collectErrors, shootScreen, WRITING_SCREENS } from './helpers';
  * never reaches because it only plays the first couple of seconds.
  *
  * The capture half only happens when it is asked for - `npm run screens`, or
- * `SLOWBLUE_SCREENS=1` on any playwright run. These twelve are the only screenshots
+ * `SLOWBLUE_SCREENS=1` on any playwright run. These eleven are the only screenshots
  * in the repo that are *tracked*, and rewriting them on every `npm run verify`
- * meant a verify that changed nothing still left twelve modified binaries behind
+ * meant a verify that changed nothing still left eleven modified binaries behind
  * and put them in the next diff. The smoke test is what belongs in verify; the
  * regeneration is an act, and acts get asked for.
  */
@@ -287,7 +287,7 @@ test('captures the key states', async ({ page }) => {
 
   console.log(
     WRITING_SCREENS
-      ? 'docs/screens/: twelve screens rewritten'
+      ? 'docs/screens/: eleven screens rewritten'
       : 'docs/screens/: left alone - `npm run screens` regenerates them',
   );
   expect(errors).toEqual([]);

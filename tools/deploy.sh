@@ -17,7 +17,9 @@ cd "$(dirname "$0")/.."
 # live; vite's `base` reaches the asset URLs, the precache manifest and nothing else.
 BASE_PATH="${BASE_PATH:-/slowblue/}"
 BRANCH="${DEPLOY_BRANCH:-gh-pages}"
-REMOTE="$(git remote get-url origin)"
+# `origin` unless told otherwise; a clone whose origin is not the public repository
+# (a private mirror, say) says which remote to publish through: DEPLOY_REMOTE=pub.
+REMOTE="$(git remote get-url "${DEPLOY_REMOTE:-origin}")"
 SOURCE="$(git rev-parse --short HEAD)"
 
 if [ -n "$(git status --porcelain)" ]; then
@@ -26,7 +28,7 @@ if [ -n "$(git status --porcelain)" ]; then
   exit 1
 fi
 
-echo "deploy: building $SOURCE for $BASE_PATH"
+echo "deploy: building $SOURCE for $BASE_PATH, publishing to $REMOTE"
 BASE_PATH="$BASE_PATH" npm run build
 
 # Sourcemaps are 8 MB that nothing in the app asks for: the bundle carries no

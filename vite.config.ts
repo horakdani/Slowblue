@@ -4,7 +4,7 @@ import { resolve } from 'node:path';
 import { defineConfig, type Plugin } from 'vite';
 
 /** The line in `public/sw.js` this plugin owns, matched by its trailing marker. */
-const BUILD_LINE = /^const BUILD = .*__TIDE_BUILD__.*$/m;
+const BUILD_LINE = /^const BUILD = .*__SLOWBLUE_BUILD__.*$/m;
 
 /**
  * Writes the build's asset list into the service worker.
@@ -26,7 +26,7 @@ function precacheManifest(): Plugin {
   let outDir = 'dist';
   let base = '/';
   return {
-    name: 'tide-precache-manifest',
+    name: 'slowblue-precache-manifest',
     apply: 'build',
     configResolved(config) {
       outDir = resolve(config.root, config.build.outDir);
@@ -48,7 +48,7 @@ function precacheManifest(): Plugin {
       const file = resolve(outDir, 'sw.js');
       const source = readFileSync(file, 'utf8');
       if (!BUILD_LINE.test(source)) {
-        throw new Error(`tide-precache-manifest: no BUILD line in ${file}`);
+        throw new Error(`slowblue-precache-manifest: no BUILD line in ${file}`);
       }
       // The version is the manifest's own fingerprint, so `activate` drops the old
       // cache exactly when the assets changed and never when they did not.
@@ -64,7 +64,7 @@ export default defineConfig({
    * Where the game is served from.
    *
    * `/` for a dev server and for a site at a domain root; `BASE_PATH=/slowblue/` for
-   * a GitHub Pages project site, which is what the deploy workflow sets. Everything
+   * a GitHub Pages project site, which is what `npm run deploy` sets. Everything
    * that has to agree with it reads it rather than repeating it: the service worker
    * takes its own location, the manifest is relative to itself, and the precache
    * list is written by the plugin below out of `config.base`.

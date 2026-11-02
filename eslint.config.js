@@ -3,11 +3,7 @@ import tseslint from 'typescript-eslint';
 import globals from 'globals';
 
 export default tseslint.config(
-  // `ios` is here for one reason worth knowing: `npx cap sync ios` copies the built
-  // web bundle into ios/App/App/public, and eslint does not read .gitignore - so the
-  // first sync turned the minified bundle into 1100 lint errors and took the gate
-  // down with it. Nothing under ios/ is ours to lint; the Swift is Xcode's business.
-  { ignores: ['dist', 'ios', 'node_modules', 'playwright-report', 'test-results', 'coverage'] },
+  { ignores: ['dist', 'node_modules', 'playwright-report', 'test-results', 'coverage'] },
   js.configs.recommended,
   ...tseslint.configs.recommended,
   {

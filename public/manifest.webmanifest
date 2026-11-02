@@ -1,7 +1,9 @@
 {
   "name": "Slowblue",
   "short_name": "Slowblue",
-  "description": "You do not control the fish. You control the ocean.",
+  "description": "You do not control the fish. You control the ocean. A mobile-first web game: drag the water, and the water drags the shoal.",
+  "id": "./",
+  "lang": "en",
   "start_url": "./",
   "scope": "./",
   "display": "fullscreen",

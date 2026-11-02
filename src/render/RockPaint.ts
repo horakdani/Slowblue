@@ -1,7 +1,7 @@
 import { TAU } from '../core/math';
 import { isSoft, type Motif } from './Motif';
 import { css, mix, rgba, type Rgb, type ZonePaint } from './Paint';
-import { CREST_STEP, massShift, traceStoneMass, type StoneMass } from './Stone';
+import { massShift, traceStoneMass, type StoneMass } from './Stone';
 
 /**
  * Slowblue: the rock, as material rather than as silhouette.
@@ -581,9 +581,4 @@ function hash2(x: number, y: number): number {
   let h = Math.imul(Math.round(x * 2) | 0, 0x27d4eb2d) ^ Math.imul(Math.round(y * 2) | 0, 0x165667b1);
   h = Math.imul(h ^ (h >>> 13), 0x9e3779b1);
   return ((h >>> 8) & 0xffff) / 0xffff;
-}
-
-/** Exported for the tests: growth is planted every `CREST_STEP * stride` px. */
-export function fringeSpacing(kind: string): number {
-  return (STRIDE[kind] ?? 0) * CREST_STEP;
 }

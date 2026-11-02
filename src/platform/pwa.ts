@@ -19,13 +19,3 @@ export function registerServiceWorker(): void {
     });
   });
 }
-
-/** True when the page is running as an installed app rather than a browser tab. */
-export function isStandalone(): boolean {
-  try {
-    if (globalThis.matchMedia?.('(display-mode: standalone)').matches === true) return true;
-    return (navigator as { standalone?: boolean }).standalone === true;
-  } catch {
-    return false;
-  }
-}

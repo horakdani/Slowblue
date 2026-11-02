@@ -188,7 +188,7 @@ export interface StringTable {
 
 const hu: StringTable = {
   title: 'SLOWBLUE',
-  mission: 'A quite place beneath the noise',
+  mission: 'A quiet place beneath the noise',
   missionComplete: 'KÜLDETÉS TELJESÍTVE',
   play: 'INDULÁS',
   playAgain: 'ÚJRA',
@@ -273,7 +273,7 @@ const hu: StringTable = {
 
 const en: StringTable = {
   title: 'SLOWBLUE',
-  mission: 'A quite place beneath the noise',
+  mission: 'A quiet place beneath the noise',
   missionComplete: 'MISSION COMPLETE',
   play: 'BEGIN',
   playAgain: 'AGAIN',

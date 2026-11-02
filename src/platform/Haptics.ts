@@ -12,7 +12,7 @@
  *
  * So: a cue is a name, the table says what that name feels like, and a driver
  * turns that into whatever the host can actually do. The web driver replays the
- * pattern; the native one reads `impact` instead and calls its own engine,
+ * pattern; an engine-backed one would read `impact` instead and call its own engine,
  * because Core Haptics and the Android `HapticFeedbackConstants` do not take
  * millisecond arrays - they take a weight. Carrying both in the table is what
  * makes the swap a driver, not a rewrite: a driver reads whichever column its
@@ -23,7 +23,7 @@
  * once. What it turned off is a few milliseconds of buzz on a hit; what it cost
  * was a row in a list that every player scrolled past to reach something else. A
  * phone that does not want to buzz says so at the OS level, and `navigator
- * .vibrate` - like every native engine behind this seam - is already a no-op
+ * .vibrate` - like any engine that could sit behind this seam - is already a no-op
  * there, which is the answer that switch was duplicating.
  */
 
@@ -38,7 +38,7 @@ export interface HapticCue {
    */
   readonly pattern: readonly number[];
   /**
-   * Native: the weight a platform haptic engine takes instead of a pattern.
+   * For an engine-backed driver: the weight a platform haptic engine takes instead of a pattern.
    *
    * The names are the intersection of what iOS (`UIImpactFeedbackGenerator`,
    * `UINotificationFeedbackGenerator`) and Android (`HapticFeedbackConstants`)
@@ -120,7 +120,7 @@ export const webHaptics: HapticsDriver = {
 
 let driver: HapticsDriver = webHaptics;
 
-/** Hands the game's haptics to a native engine. The one call a shell has to make. */
+/** Hands the game's haptics to another driver (the tests do). The one call a host has to make. */
 export function setHapticsDriver(next: HapticsDriver): void {
   driver = next;
 }

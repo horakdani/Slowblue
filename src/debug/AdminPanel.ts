@@ -16,7 +16,7 @@ import type { AudioTrackKey, LangCode } from '../config/settings';
  *
  * The tuning panel next door answers "what does this number feel like". This one
  * answers a question the campaign made unanswerable: **what does this one piece
- * sound and look like, on its own?** Twelve stations of authored content sit
+ * sound and look like, on its own?** Forty-two stations of authored content sit
  * behind a run that has to be flown from the trench floor to get to them, and
  * seven bed voices are on Poisson clocks that deal a whale once a minute. Neither
  * can be *examined* by playing the game, which is the only way they were ever
@@ -24,13 +24,13 @@ import type { AudioTrackKey, LangCode } from '../config/settings';
  *
  * Three tabs, and they are the three things there are to try:
  *
- *   - **Pályák** - the twelve stations. One click drops the run on the station's
+ *   - **Stations** - all forty-two stations. One click drops the run on the station's
  *     first section, in the right act, the right medium and the right palette.
- *   - **Részpályák** - every authored section, individually. Same click, one
+ *   - **Sections** - every authored section, individually. Same click, one
  *     section further in: the course simply starts building from that script
  *     index (see `ObstacleSystem.reset`), so a narrows is a run that opens on a
  *     narrows rather than a run that eventually reaches one.
- *   - **Hangok** - every sound the engine can make, fired by hand, over a bed
+ *   - **Sounds** - every sound the engine can make, fired by hand, over a bed
  *     whose depth, medium and ring-hold are on sliders instead of on the game.
  *
  * It is a dev tool and it says so: it is behind `?admin=1` (or a dev build), it
@@ -70,35 +70,35 @@ type Tab = 'levels' | 'sections' | 'sounds';
 const ACTS: Act[] = CAMPAIGN_ACTS;
 
 const ACT_NAMES: Record<string, string> = {
-  water: 'I · VÍZ',
-  air: 'II · LEVEGŐ',
-  thin: 'III · RITKA LEVEGŐ',
-  orbit: 'IV · KERINGÉS',
-  reentry: 'V · VISSZATÉRÉS',
-  rain: 'VI · ESŐ',
-  home: 'VII · HAZATÉRÉS',
+  water: 'I · WATER',
+  air: 'II · AIR',
+  thin: 'III · THIN AIR',
+  orbit: 'IV · ORBIT',
+  reentry: 'V · FALLBACK',
+  rain: 'VI · RAIN',
+  home: 'VII · HOMECOMING',
 };
 
 /** Roman numerals for the station index. Six per act; nothing here needs more. */
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'];
 
 const KIND_NAMES: Record<string, string> = {
-  open: 'nyílt',
-  gate: 'kapu',
-  rock: 'szikla',
-  narrows: 'szűkület',
-  drift: 'sikán',
-  vortex: 'örvény',
-  predator: 'ragadozó',
-  bank: 'felhőpad',
-  tower: 'toronyfelhő',
-  pass: 'hágó',
-  wisps: 'foszlányok',
+  open: 'open',
+  gate: 'gate',
+  rock: 'rock',
+  narrows: 'narrows',
+  drift: 'chicane',
+  vortex: 'vortex',
+  predator: 'predator',
+  bank: 'cloud bank',
+  tower: 'tower cloud',
+  pass: 'pass',
+  wisps: 'wisps',
   rotor: 'rotor',
-  raptor: 'ragadozó madár',
-  street: 'felhőutca',
-  drape: 'függöny',
-  bloom: 'medúzaraj',
+  raptor: 'raptor',
+  street: 'cloud street',
+  drape: 'drape',
+  bloom: 'jellyfish bloom',
 };
 
 /** One sound the panel can fire, with the mixer track that can silence it. */
@@ -118,25 +118,25 @@ export interface SoundEntry {
  * picker sits at the top of this tab.
  */
 const EVENT_SOUNDS: SoundEntry[] = [
-  { label: 'húzás · gyors ▸ ágy', track: 'movement', play: (a, p) => a.stroke(0.9, p) },
-  { label: 'húzás · lassú ▸ ágy', track: 'movement', play: (a, p) => a.stroke(0.08, p) },
-  { label: 'raj beolvad ▸ ágy', track: 'objectives', play: (a, p) => a.rescue(12, p) },
-  { label: 'gyűrű megtartva ▸ ágy', track: 'objectives', play: (a, p) => a.ring(p) },
-  { label: 'gyűrű elveszett', track: 'danger', play: (a) => a.ringLost() },
-  { label: 'szétvált raj újraegyesül', track: 'objectives', play: (a) => a.reform() },
-  { label: 'szakasz teljesítve', track: 'objectives', play: (a) => a.gate(3) },
-  { label: 'sorozat megszakadt', track: 'danger', play: (a) => a.streakBreak() },
-  { label: 'lemaradó elveszett', track: 'danger', play: (a, p) => a.loss(0, p) },
-  { label: 'sziklának ütközés', track: 'danger', play: (a, p) => a.loss(1, p) },
-  { label: 'ragadozó zsákmánya', track: 'danger', play: (a, p) => a.loss(2, p) },
-  { label: 'harapás', track: 'danger', play: (a, p) => a.bite(p) },
-  { label: 'új állomás', track: 'objectives', play: (a) => a.level(2) },
-  { label: 'kampány teljesítve', track: 'objectives', play: (a) => a.complete() },
-  { label: 'zóna (régi jelzés)', track: 'objectives', play: (a) => a.zone() },
-  { label: 'bukás', track: 'danger', play: (a) => a.fail() },
-  { label: 'új rekord', track: 'objectives', play: (a) => a.record() },
-  { label: 'felület · világos', track: 'interface', play: (a) => a.ui(true) },
-  { label: 'felület · tompa', track: 'interface', play: (a) => a.ui(false) },
+  { label: 'stroke · fast ▸ bed', track: 'movement', play: (a, p) => a.stroke(0.9, p) },
+  { label: 'stroke · slow ▸ bed', track: 'movement', play: (a, p) => a.stroke(0.08, p) },
+  { label: 'swarm joins ▸ bed', track: 'objectives', play: (a, p) => a.rescue(12, p) },
+  { label: 'ring held ▸ bed', track: 'objectives', play: (a, p) => a.ring(p) },
+  { label: 'ring lost', track: 'danger', play: (a) => a.ringLost() },
+  { label: 'split swarm rejoins', track: 'objectives', play: (a) => a.reform() },
+  { label: 'section cleared', track: 'objectives', play: (a) => a.gate(3) },
+  { label: 'streak broken', track: 'danger', play: (a) => a.streakBreak() },
+  { label: 'straggler lost', track: 'danger', play: (a, p) => a.loss(0, p) },
+  { label: 'hit a rock', track: 'danger', play: (a, p) => a.loss(1, p) },
+  { label: 'taken by a hunter', track: 'danger', play: (a, p) => a.loss(2, p) },
+  { label: 'bite', track: 'danger', play: (a, p) => a.bite(p) },
+  { label: 'new station', track: 'objectives', play: (a) => a.level(2) },
+  { label: 'campaign complete', track: 'objectives', play: (a) => a.complete() },
+  { label: 'zone (old cue)', track: 'objectives', play: (a) => a.zone() },
+  { label: 'run failed', track: 'danger', play: (a) => a.fail() },
+  { label: 'new record', track: 'objectives', play: (a) => a.record() },
+  { label: 'interface · bright', track: 'interface', play: (a) => a.ui(true) },
+  { label: 'interface · muted', track: 'interface', play: (a) => a.ui(false) },
 ];
 
 /**
@@ -156,13 +156,13 @@ const EVENT_SOUNDS: SoundEntry[] = [
  * time, with a pause - which is the other reason for grouping them apart.
  */
 export const ENDING_SOUNDS: SoundEntry[] = [
-  { label: 'I · áttörés a felszínen', track: 'objectives', play: (a) => a.surface() },
-  { label: 'II · a levegő teteje', track: 'objectives', play: (a) => a.release() },
-  { label: 'III · elfogy a levegő', track: 'objectives', play: (a) => a.airless() },
-  { label: 'IV · a kamera fordul', track: 'objectives', play: (a) => a.overview() },
-  { label: 'V · kihűl a tűz', track: 'objectives', play: (a) => a.nucleus() },
-  { label: 'VI · édesvíz és só', track: 'objectives', play: (a) => a.estuary() },
-  { label: 'VII · a kör bezárul', track: 'objectives', play: (a) => a.circle() },
+  { label: 'I · breaking the surface', track: 'objectives', play: (a) => a.surface() },
+  { label: 'II · the top of the air', track: 'objectives', play: (a) => a.release() },
+  { label: 'III · the air runs out', track: 'objectives', play: (a) => a.airless() },
+  { label: 'IV · the camera turns', track: 'objectives', play: (a) => a.overview() },
+  { label: 'V · the fire goes out', track: 'objectives', play: (a) => a.nucleus() },
+  { label: 'VI · fresh water and salt', track: 'objectives', play: (a) => a.estuary() },
+  { label: 'VII · the circle closes', track: 'objectives', play: (a) => a.circle() },
 ];
 
 /**
@@ -176,54 +176,54 @@ export const ENDING_SOUNDS: SoundEntry[] = [
  */
 const BED_SOUNDS: Record<BedKey, { label: string; track: AudioTrackKey; voice: PreviewVoice }[]> = {
   deep: [
-    { label: 'buborék', track: 'ocean', voice: 'bubble' },
-    { label: 'gurgulázás', track: 'ocean', voice: 'gurgle' },
-    { label: 'kilégzés · csobbanás', track: 'ocean', voice: 'hush' },
-    { label: 'bálnaének', track: 'whale', voice: 'whale' },
-    { label: 'harang', track: 'ambience', voice: 'bowl' },
+    { label: 'bubble', track: 'ocean', voice: 'bubble' },
+    { label: 'gurgle', track: 'ocean', voice: 'gurgle' },
+    { label: 'exhale · splash', track: 'ocean', voice: 'hush' },
+    { label: 'whale song', track: 'whale', voice: 'whale' },
+    { label: 'bell', track: 'ambience', voice: 'bowl' },
   ],
   flight: [
-    { label: 'szárnycsapás', track: 'ocean', voice: 'wing' },
-    { label: 'raj szárnyai', track: 'ocean', voice: 'flock' },
-    { label: 'kilégzés · siklás', track: 'ocean', voice: 'hush' },
-    { label: 'széllökés', track: 'motion', voice: 'gust' },
-    { label: 'égzengés', track: 'whale', voice: 'thunder' },
-    { label: 'harang', track: 'ambience', voice: 'bowl' },
+    { label: 'wingbeat', track: 'ocean', voice: 'wing' },
+    { label: 'flock wings', track: 'ocean', voice: 'flock' },
+    { label: 'exhale · glide', track: 'ocean', voice: 'hush' },
+    { label: 'gust', track: 'motion', voice: 'gust' },
+    { label: 'thunder', track: 'whale', voice: 'thunder' },
+    { label: 'bell', track: 'ambience', voice: 'bowl' },
   ],
   thin: [
-    { label: 'jégkristály', track: 'ocean', voice: 'crystal' },
-    { label: 'rétegsúrlódás', track: 'motion', voice: 'shear' },
-    { label: 'infrahang', track: 'whale', voice: 'infrasound' },
-    { label: 'üvegharang', track: 'ambience', voice: 'bowl' },
+    { label: 'ice crystal', track: 'ocean', voice: 'crystal' },
+    { label: 'layer shear', track: 'motion', voice: 'shear' },
+    { label: 'infrasound', track: 'whale', voice: 'infrasound' },
+    { label: 'glass bell', track: 'ambience', voice: 'bowl' },
   ],
   orbit: [
-    { label: 'szívverés', track: 'motion', voice: 'heart' },
-    { label: 'whistler-raj', track: 'whale', voice: 'whistler' },
-    { label: 'tiszta harang', track: 'ambience', voice: 'bowl' },
+    { label: 'heartbeat', track: 'motion', voice: 'heart' },
+    { label: 'whistler swarm', track: 'whale', voice: 'whistler' },
+    { label: 'clear bell', track: 'ambience', voice: 'bowl' },
   ],
   fire: [
-    { label: 'izzó szemcse', track: 'shimmer', voice: 'spark' },
-    { label: 'lökéshullám', track: 'motion', voice: 'shock' },
-    { label: 'mély harang', track: 'ambience', voice: 'bowl' },
+    { label: 'glowing grain', track: 'shimmer', voice: 'spark' },
+    { label: 'shockwave', track: 'motion', voice: 'shock' },
+    { label: 'deep bell', track: 'ambience', voice: 'bowl' },
   ],
   rain: [
-    { label: 'esőcsepp', track: 'ocean', voice: 'drop' },
-    { label: 'kilégzés · cseppek', track: 'ocean', voice: 'hush' },
-    { label: 'levélkopogás', track: 'shimmer', voice: 'patter' },
-    { label: 'égzengés', track: 'whale', voice: 'thunder' },
-    { label: 'harang', track: 'ambience', voice: 'bowl' },
+    { label: 'raindrop', track: 'ocean', voice: 'drop' },
+    { label: 'exhale · drops', track: 'ocean', voice: 'hush' },
+    { label: 'leaf patter', track: 'shimmer', voice: 'patter' },
+    { label: 'thunder', track: 'whale', voice: 'thunder' },
+    { label: 'bell', track: 'ambience', voice: 'bowl' },
   ],
   brook: [
-    { label: 'csobbanás', track: 'ocean', voice: 'riffle' },
-    { label: 'kilégzés · örvény', track: 'ocean', voice: 'hush' },
-    { label: 'kő a mederben', track: 'whale', voice: 'stone' },
-    { label: 'fa harang', track: 'ambience', voice: 'bowl' },
+    { label: 'splash', track: 'ocean', voice: 'riffle' },
+    { label: 'exhale · eddy', track: 'ocean', voice: 'hush' },
+    { label: 'stone in the streambed', track: 'whale', voice: 'stone' },
+    { label: 'wooden bell', track: 'ambience', voice: 'bowl' },
   ],
   homecoming: [
-    { label: 'buborék', track: 'ocean', voice: 'bubble' },
-    { label: 'tengeri hó', track: 'motion', voice: 'flake' },
-    { label: 'közeli bálna', track: 'whale', voice: 'whale' },
-    { label: 'mély harang', track: 'ambience', voice: 'bowl' },
+    { label: 'bubble', track: 'ocean', voice: 'bubble' },
+    { label: 'sea snow', track: 'motion', voice: 'flake' },
+    { label: 'whale nearby', track: 'whale', voice: 'whale' },
+    { label: 'deep bell', track: 'ambience', voice: 'bowl' },
   ],
 };
 
@@ -283,7 +283,7 @@ export class AdminPanel {
     if (!this.open) return;
     const at = this.host.here();
     const act = ACT_NAMES[at.act] ?? at.act;
-    this.status.textContent = `most: ${act} · ${ROMAN[at.level] ?? at.level + 1}. állomás · ${at.section}. szakasz · ${at.medium === 'air' ? 'levegő' : 'víz'}`;
+    this.status.textContent = `now: ${act} · station ${ROMAN[at.level] ?? at.level + 1} · section ${at.section} · ${at.medium === 'air' ? 'air' : 'water'}`;
   }
 
   // --- chrome -------------------------------------------------------------
@@ -291,9 +291,9 @@ export class AdminPanel {
   private header(): HTMLElement {
     const bar = el('div', 'slowblue-admin-tabs');
     const tabs: [Tab, string][] = [
-      ['levels', 'PÁLYÁK'],
-      ['sections', 'RÉSZPÁLYÁK'],
-      ['sounds', 'HANGOK'],
+      ['levels', 'STATIONS'],
+      ['sections', 'SECTIONS'],
+      ['sounds', 'SOUNDS'],
     ];
     for (const [tab, label] of tabs) {
       const b = document.createElement('button');
@@ -312,7 +312,7 @@ export class AdminPanel {
     close.type = 'button';
     close.className = 'slowblue-admin-close';
     close.textContent = '×';
-    close.setAttribute('aria-label', 'bezár');
+    close.setAttribute('aria-label', 'close');
     close.addEventListener('click', () => this.setOpen(false));
     bar.append(close);
     return bar;
@@ -424,11 +424,11 @@ export class AdminPanel {
       ...Object.values(BED_SOUNDS).flat(),
     ].some((s) => !this.host.audible(s.track));
     if (muted) {
-      const warn = el('div', 'slowblue-admin-warn', 'néhány keverősáv néma vagy nullán áll');
+      const warn = el('div', 'slowblue-admin-warn', 'some mixer tracks are muted or at zero');
       const fix = document.createElement('button');
       fix.type = 'button';
       fix.className = 'slowblue-admin-btn';
-      fix.textContent = 'mind vissza';
+      fix.textContent = 'unmute all';
       fix.addEventListener('click', () => {
         this.host.unmuteAll();
         this.render();
@@ -437,14 +437,14 @@ export class AdminPanel {
       out.push(warn);
     }
 
-    out.push(el('div', 'slowblue-admin-group', 'AZ ÁGY'));
+    out.push(el('div', 'slowblue-admin-group', 'THE BED'));
     const beds = el('div', 'slowblue-admin-acts');
     for (const spec of BED_LIST) {
       const b = document.createElement('button');
       b.type = 'button';
       b.className = 'slowblue-admin-act';
       b.classList.toggle('on', this.bed.key === spec.key);
-      b.textContent = spec.name.hu;
+      b.textContent = spec.name.en;
       b.addEventListener('click', () => {
         this.bed.key = spec.key;
         this.pushBed();
@@ -458,12 +458,12 @@ export class AdminPanel {
       // One slider now, not two. Every bed reads the arc as its own quantity -
       // depth in act I, height in act III, how much fire is left in act V - so a
       // separate depth and altitude were two controls for one number.
-      this.slider('ívhossz (az állomás a felvonáson belül)', this.bed.arc, (v) => {
+      this.slider('arc (station within the act)', this.bed.arc, (v) => {
         this.bed.arc = v;
         this.pushBed();
       }),
-      this.slider('gyűrű-tartás', 0, (v) => this.host.audio.setRingHold(v, v > 0 ? 1 : 0, this.bed.pan)),
-      this.slider('oldal (bal ↔ jobb)', 0.5, (v) => {
+      this.slider('ring hold', 0, (v) => this.host.audio.setRingHold(v, v > 0 ? 1 : 0, this.bed.pan)),
+      this.slider('pan (left ↔ right)', 0.5, (v) => {
         this.bed.pan = v * 2 - 1;
       }),
     );
@@ -471,17 +471,17 @@ export class AdminPanel {
     // The voices of whichever bed is selected, and only those: a button that
     // plays a whale while the orbit bed is up is a button that lies about what
     // the game does. `BED_SOUNDS` is keyed by bed for that reason.
-    out.push(el('div', 'slowblue-admin-group', `A HANGJAI · ${this.bedName()}`));
+    out.push(el('div', 'slowblue-admin-group', `BED VOICES · ${this.bedName()}`));
     for (const s of BED_SOUNDS[this.bed.key]) {
       out.push(this.soundButton(s.label, s.track, () => this.host.audio.preview(s.voice)));
     }
 
-    out.push(el('div', 'slowblue-admin-group', 'AZ ESEMÉNYEK'));
+    out.push(el('div', 'slowblue-admin-group', 'EVENTS'));
     for (const s of EVENT_SOUNDS) {
       out.push(this.soundButton(s.label, s.track, () => s.play(this.host.audio, this.bed.pan)));
     }
 
-    out.push(el('div', 'slowblue-admin-group', 'A FELVONÁSVÉGEK'));
+    out.push(el('div', 'slowblue-admin-group', 'ACT ENDINGS'));
     for (const s of ENDING_SOUNDS) {
       out.push(this.soundButton(s.label, s.track, () => s.play(this.host.audio, this.bed.pan)));
     }
@@ -496,7 +496,7 @@ export class AdminPanel {
   }
 
   private bedName(): string {
-    return BEDS[this.bed.key].name.hu.toUpperCase();
+    return BEDS[this.bed.key].name.en.toUpperCase();
   }
 
   private soundButton(label: string, track: AudioTrackKey, play: () => void): HTMLElement {
@@ -507,7 +507,7 @@ export class AdminPanel {
     b.classList.toggle('muted', !audible);
     b.append(
       el('span', 'slowblue-admin-name', label),
-      el('span', 'slowblue-admin-meta', audible ? track : `${track} · néma`),
+      el('span', 'slowblue-admin-meta', audible ? track : `${track} · muted`),
     );
     b.addEventListener('click', () => {
       // Every browser wants a gesture before the first sound, and Safari wants one
@@ -542,12 +542,12 @@ export class AdminPanel {
   }
 }
 
-/** "6000 m mély" / "11000 m magas". `depthMeters` is negative above the sea. */
+/** "6000 m deep" / "11000 m high". `depthMeters` is negative above the sea. */
 function altitudeLabel(level: Level): string {
   const m = level.depthMeters;
-  if (m > 0) return `${m} m mély`;
-  if (m < 0) return `${-m} m magas`;
-  return 'felszín';
+  if (m > 0) return `${m} m deep`;
+  if (m < 0) return `${-m} m high`;
+  return 'surface';
 }
 
 /** What a station is made of, in one line: sections, rings, columns, hunters. */
@@ -562,9 +562,9 @@ function summarise(level: Level): string {
     }
     if (s.kind === 'predator' || s.kind === 'raptor') hunters += s.hunters.length;
   }
-  const parts = [`${level.sections.length} szakasz`, `${rings} gyűrű`];
-  if (required > 0) parts.push(`${required} kötelező`);
-  if (hunters > 0) parts.push(`${hunters} vadász`);
+  const parts = [count(level.sections.length, 'section'), count(rings, 'ring')];
+  if (required > 0) parts.push(`${required} mandatory`);
+  if (hunters > 0) parts.push(count(hunters, 'hunter'));
   return parts.join(' · ');
 }
 
@@ -574,19 +574,24 @@ function badges(spec: SectionSpec): string[] {
   const rings = spec.rings ?? [];
   if (rings.length > 0) {
     const required = rings.filter((r) => r.required === true).length;
-    out.push(required > 0 ? `${rings.length} gyűrű (${required} kötelező)` : `${rings.length} gyűrű`);
+    out.push(required > 0 ? `${count(rings.length, 'ring')} (${required} mandatory)` : count(rings.length, 'ring'));
   }
   if (spec.kind === 'predator' || spec.kind === 'raptor') {
-    out.push(`${spec.hunters.length} vadász`);
+    out.push(count(spec.hunters.length, 'hunter'));
   }
-  if (spec.kind === 'vortex' || spec.kind === 'rotor') out.push(`örvény ${spec.strength}`);
+  if (spec.kind === 'vortex' || spec.kind === 'rotor') out.push(`vortex ${spec.strength}`);
   // The three shapes that are not apertures, so the panel says what they are
   // rather than leaving them as a name with a ring count after it: a street is a
   // length, a drape is a count of strands, a bloom is a width.
-  if (spec.kind === 'street') out.push(`folyosó ${spec.length ?? 660} px`);
-  if (spec.kind === 'drape') out.push(`${spec.strands.length} szál`);
-  if (spec.kind === 'bloom') out.push(`raj ${Math.round(spec.radius * 100)}%`);
+  if (spec.kind === 'street') out.push(`length ${spec.length ?? 660} px`);
+  if (spec.kind === 'drape') out.push(count(spec.strands.length, 'strand'));
+  if (spec.kind === 'bloom') out.push(`width ${Math.round(spec.radius * 100)}%`);
   return out;
+}
+
+/** "1 ring" / "3 rings". Every label here is a count, and "1 rings" reads like a typo. */
+function count(n: number, noun: string): string {
+  return `${n} ${noun}${n === 1 ? '' : 's'}`;
 }
 
 function el<K extends keyof HTMLElementTagNameMap>(

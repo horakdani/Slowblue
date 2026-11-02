@@ -1050,19 +1050,11 @@ export const LEVEL_SCRIPT: ScriptEntry[] = ACT_WATER.script;
 
 export const TOTAL_SECTIONS = ACT_WATER.totalSections;
 
-export function scriptAt(sectionId: number): ScriptEntry | undefined {
-  return LEVEL_SCRIPT[sectionId];
-}
-
 /** Which level a section belongs to; clamped, so it is safe past the end. */
 export function levelOfSectionIn(act: Act, sectionId: number): number {
   const entry = act.script[sectionId];
   if (entry !== undefined) return entry.level;
   return act.levels.length - 1;
-}
-
-export function levelOfSection(sectionId: number): number {
-  return levelOfSectionIn(ACT_WATER, sectionId);
 }
 
 export function levelAtIn(act: Act, index: number): Level {
@@ -1107,8 +1099,4 @@ export function stationDepthLabel(
 /** First section id of a level. Used by the banner, the admin surface and the tests. */
 export function levelStartSectionIn(act: Act, index: number): number {
   return act.script.findIndex((e) => e.level === index);
-}
-
-export function levelStartSection(index: number): number {
-  return levelStartSectionIn(ACT_WATER, index);
 }

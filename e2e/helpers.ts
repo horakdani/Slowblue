@@ -10,10 +10,10 @@ export async function metrics(page: Page): Promise<Metrics> {
  * Whether this run is allowed to rewrite the tracked screenshots in `docs/screens/`.
  *
  * `e2e/capture.spec.ts` is two things at once - a smoke test for mid-run
- * rendering, and the only thing that regenerates the twelve numbered screens the
+ * rendering, and the only thing that regenerates the eleven numbered screens the
  * README shows - and only the first of those belongs in `npm run verify`. It
- * rewrote all twelve on every run, so a verify that changed nothing still left
- * twelve modified binaries in the tree and every real diff had them in it.
+ * rewrote all eleven on every run, so a verify that changed nothing still left
+ * eleven modified binaries in the tree and every real diff had them in it.
  *
  * The smoke test still runs every time; the writing is what waits to be asked.
  * `npm run screens` asks.

@@ -1,4 +1,4 @@
-import { ACT_COUNT, actAt, actIndexOf } from '../config/campaign';
+import { ACT_COUNT, actAt } from '../config/campaign';
 import type { Act } from '../config/levels';
 import { clamp } from '../core/math';
 import { MAX_AGENTS } from '../sim/SwarmSimulation';
@@ -432,11 +432,4 @@ export function sanitizeCampaign(input: unknown): CampaignState {
   // this runs before the act is known and a save is allowed to name any of them.
   out.restarts = clamp(int(r.restarts, 0), 0, MAX_RESTARTS_PER_ACT);
   return out;
-}
-
-/** Resolves an act key from a save written before the act order last changed. */
-export function actIndexForKey(key: unknown): number {
-  if (typeof key !== 'string') return 0;
-  const i = actIndexOf(key);
-  return i < 0 ? 0 : i;
 }

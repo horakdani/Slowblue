@@ -10,7 +10,7 @@ export interface GameLoopStats {
   frameMs: number;
   /**
    * p95 of `frameMs` over the last {@link SAMPLE_WINDOW} frames, refreshed twice a
-   * second. This is the number the iOS gate is written against: the CPU cost of a
+   * second. This is the number a frame-time budget is written against: the CPU cost of a
    * frame against the 16.7 ms budget, so it reads as headroom and a threshold on it
    * means something. `frameMs` alone flickers too fast to read off a phone held at
    * arm's length, and the `slow %` next to it counts a different thing (frames past

@@ -8,7 +8,7 @@
  */
 
 /**
- * The build's own manifest, rewritten in place by `tide-precache-manifest` in
+ * The build's own manifest, rewritten in place by `slowblue-precache-manifest` in
  * vite.config.ts. This line is what it replaces; the plugin fails the build if it
  * cannot find it, because a worker that silently ships the dev value is exactly the
  * failure this whole file exists to prevent.
@@ -17,14 +17,14 @@
  * production build (see src/platform/pwa.ts), so an empty asset list here is never
  * anything's offline story.
  */
-const BUILD = { version: 'dev', assets: [] }; /* __TIDE_BUILD__ */
+const BUILD = { version: 'dev', assets: [] }; /* __SLOWBLUE_BUILD__ */
 
 /**
  * The cache name follows the manifest, not a number someone remembers to bump.
  * `activate` deletes every other cache, so a build whose assets changed starts clean
  * and a rebuild that changed nothing keeps its cache warm.
  */
-const VERSION = `tide-${BUILD.version}`;
+const VERSION = `slowblue-${BUILD.version}`;
 /**
  * Where this worker was served from, which is not necessarily the origin root.
  *

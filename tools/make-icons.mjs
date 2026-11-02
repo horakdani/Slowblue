@@ -1,7 +1,7 @@
 /*
  * Generates the PNG icons with no image dependencies at all.
  *
- * A game whose only runtime dependency is Vite should not pull in a rasteriser to
+ * A game with no runtime dependencies at all should not pull in a rasteriser to
  * make six squares. PNG is a container around zlib, and `node:zlib` is in the
  * standard library, so the whole encoder is the CRC table plus three chunks. The
  * artwork is the title screen's mark: one ring with the water running through it.

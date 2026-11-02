@@ -187,7 +187,7 @@ let renderedDpr = 0;
  * Holds the scaler at rung 0 for the length of a measurement. Debug panel only, off by
  * default, never persisted.
  *
- * The iOS gate asks whether this device can hold *the whole picture* under 16.7 ms, and
+ * The frame-time budget asks whether this device can hold *the whole picture* under 16.7 ms, and
  * the scaler is precisely what makes that question unanswerable: two and a half seconds
  * under 45 fps and the game is quietly drawing fewer particles at a lower resolution, so
  * the frame time recovers and the reading says the device is fine. It is fine at the
