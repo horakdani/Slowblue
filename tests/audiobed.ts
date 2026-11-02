@@ -109,6 +109,7 @@ class StubConvolver extends StubNode {
 
 class StubCompressor extends StubNode {
   readonly threshold = new StubParam(-24);
+  readonly knee = new StubParam(30);
   readonly ratio = new StubParam(12);
   readonly attack = new StubParam(0.003);
   readonly release = new StubParam(0.25);

@@ -255,6 +255,11 @@ const WHALE_GAIN = 0.085;
 
 /** Act III. One ice crystal, ringing. About a bubble, high up where the ear is best. */
 const CRYSTAL_GAIN = 0.016;
+/**
+ * The gain at the top of the graph. Every other level in this file is relative to it,
+ * so the whole game's loudness is this number and the limiter behind it.
+ */
+const MASTER_GAIN = 7;
 /** Act III. One layer sliding past another, over ten to twenty seconds. */
 const SHEAR_GAIN = 0.02;
 /** Act III. The planet's waveguide. Low enough that most phones will not reproduce it. */
@@ -974,15 +979,32 @@ export class AudioEngine {
     ctx.addEventListener('statechange', () => this.onStateChange());
 
     const master = ctx.createGain();
-    master.gain.value = 0.9;
+    // Measured, not felt: with the old 0.9 here the bed settled at about -45 dBFS RMS
+    // with peaks near -30 dBFS (a tap on the analyser after the compressor, 390 px
+    // wide Chromium, act I), which is 15 to 20 dB under any page a browser plays and
+    // is why the game could not be heard at a comfortable system volume. Every voice
+    // is mixed against every other, so the fix is one number at the top rather than
+    // forty at the bottom.
+    master.gain.value = MASTER_GAIN;
     // A compressor is the cheapest insurance against a rock strike that kills nine
     // individuals in one frame turning into nine overlapping thuds at full scale.
     const comp = ctx.createDynamicsCompressor();
-    comp.threshold.value = -20;
+    comp.threshold.value = -14;
     comp.ratio.value = 6;
     comp.attack.value = 0.02;
     comp.release.value = 0.4;
-    master.connect(comp).connect(ctx.destination);
+    // ...and a limiter behind it, because a compressor with a 20 ms attack lets the
+    // first few milliseconds of a strike through, and at this master level those
+    // milliseconds reach the converter. Fast, hard, and set where nothing in the
+    // game should ever be asked to go: six under full scale, so the converter keeps
+    // headroom for the ringing of the limiter itself.
+    const limiter = ctx.createDynamicsCompressor();
+    limiter.threshold.value = -6;
+    limiter.knee.value = 0;
+    limiter.ratio.value = 20;
+    limiter.attack.value = 0.003;
+    limiter.release.value = 0.15;
+    master.connect(comp).connect(limiter).connect(ctx.destination);
 
     this.noise = this.makeNoise(ctx);
 
@@ -1508,7 +1530,7 @@ export class AudioEngine {
      *
      * The numbers were right for the act II that existed when they were written -
      * six stations reaching to 82 km, which put the storm two thirds of the way up.
-     * Partfal and Vonulás were inserted and the top two stations were given to act
+     * The Cliff and The Passage were inserted and the top two stations were given to act
      * III, and nothing re-derived the one place in the audio that reads a position
      * rather than a bed. It is the same shape as every other fossil in this
      * codebase: a surface built for one cut of the campaign and never asked again.
