@@ -11,8 +11,6 @@ How to run, test, measure and ship it. For what the game *is*, read the
 * [The admin surface](#the-admin-surface)
 * [The debug panel](#the-debug-panel)
 * [Local measurement](#local-measurement)
-* [The tests, and what each can see](#the-tests-and-what-each-can-see)
-* [Deploying](#deploying)
 
 ## Run it
 

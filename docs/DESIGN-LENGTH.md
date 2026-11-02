@@ -72,13 +72,13 @@ numbers below, which are what the campaign measured on **2026-08-14, before any 
 
 | act | est. time | sections | obstacle | obst/min | narrowest gap | hunters |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| I · Mélység | 10.0 min | 42 | 35 | **3.5** | 0.26 | 3 |
-| II · Repülés | 7.7 min | 36 | 29 | **3.8** | 0.28 | 3 |
-| III · Ritkulás | 10.2 min | 20 | 13 | 1.3 | 0.22 | 0 |
-| IV · Keringés | 11.4 min | 18 | 12 | 1.1 | 0.24 | 0 |
-| V · Visszatérés | 10.9 min | 24 | 18 | 1.6 | 0.24 | 0 |
-| VI · Eső | 9.7 min | 24 | 17 | 1.7 | **0.36** | 0 |
-| VII · Hazatérés | 12.1 min | 18 | 5 | 0.4 | — | 0 |
+| I · The Deep | 10.0 min | 42 | 35 | **3.5** | 0.26 | 3 |
+| II · Flight | 7.7 min | 36 | 29 | **3.8** | 0.28 | 3 |
+| III · The Thinning | 10.2 min | 20 | 13 | 1.3 | 0.22 | 0 |
+| IV · Orbit | 11.4 min | 18 | 12 | 1.1 | 0.24 | 0 |
+| V · The Fallback | 10.9 min | 24 | 18 | 1.6 | 0.24 | 0 |
+| VI · The Rain | 9.7 min | 24 | 17 | 1.7 | **0.36** | 0 |
+| VII · The Homecoming | 12.1 min | 18 | 5 | 0.4 | — | 0 |
 | **total** | **72 min** | **182** | **129** | 1.8 | | **6** |
 
 Three readings, and only the third is a fault:
@@ -304,10 +304,10 @@ a long act, and the numbers bear it out. Measured, unchanged, shipped:
 
 | act | sections | finished | restarts | per section |
 | --- | ---: | ---: | ---: | ---: |
-| VI · Eső | 24 | 5/5 | 2.0 | 0.083 |
-| V · Visszatérés, before | 24 | 7/7 | 1.0 | 0.042 |
-| I · Mélység | 42 | 1/5 | 50.6 | 1.20 |
-| II · Repülés | 36 | 0/5 | 145.4 | 4.04 |
+| VI · The Rain | 24 | 5/5 | 2.0 | 0.083 |
+| V · The Fallback, before | 24 | 7/7 | 1.0 | 0.042 |
+| I · The Deep | 42 | 1/5 | 50.6 | 1.20 |
+| II · Flight | 36 | 0/5 | 145.4 | 4.04 |
 
 Act II is the act this repo is proudest of and the bot cannot fly it at all. So "8 of 11"
 tells us the act is flyable and tells us nothing about whether it now sits where it should
@@ -655,13 +655,13 @@ wrong.**
 
 | act | before | after | obstacles | ob/min | moving | hunters | restarts |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
-| I · Mélység | 42 · 10.0 min | *frozen* | 35 | 3.5 | 0 | 3 | 2 |
-| II · Repülés | 36 · 7.7 | **91 · 21.7** | 78 | 3.6 | 17 | 7 | 3 |
-| III · Ritkulás | 20 · 10.2 | **65 · 22.2** | 47 | 2.1 | 11 | 0 | 3 |
-| IV · Keringés | 18 · 11.4 | **56 · 20.6** | 43 | 2.1 | 9 | 0 | 3 |
-| V · Visszatérés | 24 · 10.9 | **73 · 26.5** | 60 | 2.3 | 17 | 5 | 3 |
-| VI · Eső | 24 · 9.7 | **61 · 21.2** | 48 | 2.3 | 14 | 0 | 3 |
-| VII · Hazatérés | 18 · 12.1 | **44 · 21.9** | 28 | 1.3 | 8 | 0 | 3 |
+| I · The Deep | 42 · 10.0 min | *frozen* | 35 | 3.5 | 0 | 3 | 2 |
+| II · Flight | 36 · 7.7 | **91 · 21.7** | 78 | 3.6 | 17 | 7 | 3 |
+| III · The Thinning | 20 · 10.2 | **65 · 22.2** | 47 | 2.1 | 11 | 0 | 3 |
+| IV · Orbit | 18 · 11.4 | **56 · 20.6** | 43 | 2.1 | 9 | 0 | 3 |
+| V · The Fallback | 24 · 10.9 | **73 · 26.5** | 60 | 2.3 | 17 | 5 | 3 |
+| VI · The Rain | 24 · 9.7 | **61 · 21.2** | 48 | 2.3 | 14 | 0 | 3 |
+| VII · The Homecoming | 18 · 12.1 | **44 · 21.9** | 28 | 1.3 | 8 | 0 | 3 |
 | **circuit** | **182 · 72 min** | **432 · 144.1 min** | **339** | 2.4 | **76** | **15** | |
 
 **Act I is frozen and stays frozen.** It is the metronome the other six are heard against,
@@ -685,7 +685,7 @@ things about that are worth writing down rather than leaving as folklore:
 * **One rule was broken and it was a number, not a design.** Act IV asserted *exactly one*
   orbital gate per station, and the rebuild put twelve in an act of fifty-six sections. What
   the assertion was protecting — the bow escalates station by station and the Overview has
-  none — is intact and measured: 0.10, 0.18, 0.22, 0.34, 0.42, and nothing in Rálátás. The
+  none — is intact and measured: 0.10, 0.18, 0.22, 0.34, 0.42, and nothing in the Overview. The
   count was an artefact of an eighteen-section act and has been replaced by the claim it was
   standing in for.
 

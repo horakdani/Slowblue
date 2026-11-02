@@ -91,7 +91,7 @@ one of those questions is that the code is not there to answer with.
 | The page never scrolls or bounces under the game | **ok** | `touch-action` on the canvas rather than the body — deliberately, because on the ancestor chain it killed scrolling in the shell | `e2e/smoke.spec.ts` |
 | Layers that do not collide | **ok** | the canvas readout column starts below the corner buttons standing over it, checked as rectangles rather than pixels | `e2e/chrome.spec.ts`, `HUD_COLUMN_TOP` |
 | A hierarchy rather than a palette | **ok** | 7 ink tiers and 11 type sizes across the whole shell, from 36 and 15 (`unmeasured since`; the gates are at most 8 and 12) | `e2e/chrome.spec.ts` |
-| Localised | **no** | English only at runtime: there is no language picker, and `resolveLang` returns English whatever is stored. The Hungarian table stays in the file as the reference text. So the row is a no, not an ok | `src/i18n/strings.ts` |
+| Localised | **no** | English only at runtime: there is no language picker, and `resolveLang` returns English whatever is stored. So the row is a no, not an ok | `src/i18n/strings.ts` |
 
 ## 5. Mindful gaming — Apple's own section, and the one this game is for
 

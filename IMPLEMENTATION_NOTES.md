@@ -171,7 +171,7 @@ description says what a file does, it was written from the file's own header com
 | `src/audio/Bubbles.ts`, `Raindrops.ts`, `Riffle.ts` | Minnaert resonance at three scales: the deep sea, rain on water, and a mountain stream |
 | `src/audio/Wings.ts`, `Crystals.ts`, `Void.ts`, `Plasma.ts`, `Snow.ts` | The other five media's voices - a flock, ice and shear, breath and whistlers, the sheath and its shocks, marine snow |
 | `src/audio/Whale.ts` | Whale song as a phrase (glides, then a long silence), the water's rare distant voice |
-| `src/i18n/strings.ts` | Hungarian and English string tables; `resolveLang` returns English for every setting, so Hungarian is the reference text and not a shipped language |
+| `src/i18n/strings.ts` | The English string tables; `resolveLang` returns English for every setting, because the game ships in English only |
 | `src/platform/Haptics.ts` | Every buzz the game has, named, in one cue table behind one driver seam (`navigator.vibrate` on the web; iOS Safari never implemented it, so there it is a no-op) |
 | `src/platform/pwa.ts` | Service-worker registration, production builds only |
 | `src/brand/digital-tulpa/` | The studio ident played before the title (`index.ts`, `ident.css`, `mark.svg`, its own `README.md`); dependency-free and copyable into another project |
@@ -1356,7 +1356,7 @@ carried individual is worth against a cleared section. It wants one scoring swee
 
 50. **The wings vibrated, and the bug was older than the birds.**
 
-    Reported in two words - *"nagyon vibrálnak a szárnyak, nem smooth"* - and it was
+    Reported in one line - *"the wings vibrate badly, it is not smooth"* (translated from the original report) - and it was
     not a smoothing problem. Both batched animal renderers computed their animation
     phase as
 
@@ -1437,8 +1437,9 @@ carried individual is worth against a cleared section. It wants one scoring swee
 52. **The third pass at the same report, and the first one that fixed the cause: a bird
     cannot turn in a frame.**
 
-    Reported a third time, and precisely - *"nyugalmi helyzetben, illetve azok a madarak,
-    amik a körbe vannak zárva: jobbra-balra forgolódnak, vibrálnak-ugrálnak"*. Decisions
+    Reported a third time, and precisely - *"at rest, and the birds
+    that are shut in the ring: they turn left and right, they vibrate and jump about"*
+    (translated from the original report). Decisions
     50 and 51 had each taken a real bug out of this loop and neither had touched what the
     player kept seeing, which is the sign that both were treating symptoms.
 
@@ -1577,7 +1578,7 @@ panel that is being read.
 > version. What changed is the geometry (`src/meta/Circuit.ts`'s own header is the current
 > account), the test that holds it (`tests/atlas.test.ts`; `tests/ring.test.ts` no longer
 > exists), and the title screen, where the tally now rides on a journey card that is itself the
-> door to the map, not on the `A KÖR · 24/42` button named below.
+> door to the map, not on the `THE CIRCUIT · 24/42` button named below.
 
 The title screen has always read *seven acts, one circuit, from the floor of the trench
 back to it*, and for the whole of the campaign's life nothing in the build ever drew it.
@@ -1659,7 +1660,7 @@ Three things it deliberately is not:
   screen already promises the circuit in words; they stay unlit, and their stations stay
   unnamed, because the promise is not the visit.
 * **Not on the title screen.** The tally rides on the button that opens the map —
-  `A KÖR · 24/42` — rather than on a line under it. The button appears as soon as there is
+  `THE CIRCUIT · 24/42` — rather than on a line under it. The button appears as soon as there is
   any journey to look at, which is a change: it used to wait for act II, so the one screen
   that says where you are stayed hidden for the whole of the longest act.
 
@@ -1709,10 +1710,8 @@ hand focus back to that control (`data-focus`), and everything else is unchanged
   culled (`Medium.stragglerMargin`; the other media have their own, from 110 px to 520).
   This is what makes hard flicks expensive (they leave a comet tail) — intended, and the
   cause of the tail visible in `docs/screens/03-rock.png`.
-* **UI strings are Hungarian and English**, but the game ships in English: `resolveLang`
-  resolves every setting to `en` and there is no picker. Hungarian stays in the file as the
-  reference text — it matched the intended first test audience, and every English string was
-  written against it. Inside a run there is still almost no text: a count, a score, a depth,
+* **The game ships in English only**: `resolveLang` resolves every setting to `en` and
+  there is no picker. Inside a run there is still almost no text: a count, a score, a depth,
   and the name of the station you just entered.
 * **Playwright runs Chromium, not WebKit.** WebKit was not present in the local browser cache
   and one test drives raw CDP touch events. Mobile Safari is still a support target and needs

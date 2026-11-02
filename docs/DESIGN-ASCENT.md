@@ -151,8 +151,8 @@ a stroke. It may not change what a stroke *is*.
 
 **Carrier:** a shoal. **Medium:** water. **Theme:** gathering and protection.
 
-Shipped, and **frozen**. Six stations — Árokfenék, Fekete víz, Éjféli sodrás, Kék
-emelkedő, Fényhatár, Felszín — with their existing obstacles, rings, predators,
+Shipped, and **frozen**. Six stations — Trench Floor, Black Water, Midnight Current, Blue
+Rise, Light Line, The Surface — with their existing obstacles, rings, predators,
 swarm physics, scoring and difficulty ramp.
 
 > **This act's balance is defended digit-for-digit.** Any refactor that touches it
@@ -180,12 +180,12 @@ hazards.
 
 | # | station | altitude | what arrives |
 | --- | --- | --- | --- |
-| 1 | Permet / The Spray | 60 m | the same stroke, up here |
-| 2 | Partfal / The Cliff | 300 m | orographic cloud; the first rotor |
-| 3 | Gomolymező / The Cumulus Field | 1 200 m | the pass |
-| 4 | Vonulás / The Passage | 2 500 m | cloud streets; the first raptor |
-| 5 | Zivatar / The Squall | 4 000 m | weather, and air that turns |
-| 6 | Üllő / The Anvil | 11 000 m | two stooping raptors; the end of the air |
+| 1 | The Spray | 60 m | the same stroke, up here |
+| 2 | The Cliff | 300 m | orographic cloud; the first rotor |
+| 3 | The Cumulus Field | 1 200 m | the pass |
+| 4 | The Passage | 2 500 m | cloud streets; the first raptor |
+| 5 | The Squall | 4 000 m | weather, and air that turns |
+| 6 | The Anvil | 11 000 m | two stooping raptors; the end of the air |
 
 **The act ends at eleven kilometres, and that is load-bearing.** It used to run to
 82 km, through the stratosphere to the noctilucent cloud. Those two stations are
@@ -216,12 +216,12 @@ A thing with no engine that gets into the right one is taken where that layer go
 
 | # | station | altitude |
 | --- | --- | --- |
-| 1 | Futóáramlat / The Jet Stream | 11 km |
-| 2 | Ózonkék / Ozone Blue | 20 km |
-| 3 | Gyöngyház / The Nacreous | 25 km |
-| 4 | Fekete ég / The Black Sky | 50 km |
-| 5 | Világító felhők / The Noctilucent | 82 km |
-| 6 | A vonal / The Line | 100 km (Kármán) |
+| 1 | The Jet Stream | 11 km |
+| 2 | Ozone Blue | 20 km |
+| 3 | The Nacreous | 25 km |
+| 4 | The Black Sky | 50 km |
+| 5 | The Noctilucent | 82 km |
+| 6 | The Line | 100 km (Karman) |
 
 **The gravity wave runs on the breath.** `sim/Breath.ts` is an 11-second cycle
 (5.45 breaths/min), asymmetric, resting at both turns, wall-clock, stateless. Act
@@ -295,7 +295,7 @@ wrong way), band thinness, and the wave's authority.
 Sound and picture empty out: external voices thin, and the breath becomes the main
 line rather than an accompaniment.
 
-**Handover.** At the Kármán line the last air runs out. The player's first stroke
+**Handover.** At the Karman line the last air runs out. The player's first stroke
 makes no wind. The motes carry on anyway, on the momentum they already had. That
 teaches the new rule with no words at all. `render/Karman.ts` is that film, and
 it is the only one in the game built out of an absence: the ice act III was
@@ -308,8 +308,8 @@ bending at exactly the speed it already had.
 **Carrier:** golden motes. **Medium:** none; gravity becomes the medium.
 **Theme:** letting go, and perspective.
 
-**Stations:** Szabadesés (Free Fall) → Sarkifény (The Aurora) → Földárnyék (The
-Umbra) → Törmeléköv (The Debris Belt) → A kút (The Well) → **Rálátás (The Overview)**.
+**Stations:** Free Fall → The Aurora → The
+Umbra → The Debris Belt → The Well → **The Overview**.
 
 A touch or drag lays a **gravity gradient** — a short-lived well — instead of
 momentum. Motes move ballistically. No drag, no coupling; momentum is preserved. A
@@ -344,7 +344,7 @@ for aim**.
 **No classical game over.** A scattered swarm, a missed node or a bad trajectory
 returns the player to the start of the station, and costs time and score.
 
-**Rálátás is the emotional peak of the whole story.** The camera turns for the first
+**The Overview is the emotional peak of the whole story.** The camera turns for the first
 time. The whole Earth appears. The entire atmosphere — everything the game has ever
 happened in — resolves into one bright line a few pixels thick. Motion stops. Only
 the breath and a very fine internal tone remain. **No results screen arrives.**
@@ -357,8 +357,8 @@ the campaign's direction turns with it: from here the game runs downward.
 **Carrier:** meteor dust forming out of the motes. **Medium:** vacuum → plasma →
 thin air. **Theme:** transformation.
 
-**Stations:** Letérés (The Deorbit) → Éjszakai oldal (The Night Side) → Aurora →
-Plazmaöv (The Plasma) → Meteorpor (The Meteor Dust) → Felhőmag (The Nucleus).
+**Stations:** The Deorbit → The Night Side → Aurora →
+The Plasma → The Meteor Dust → The Nucleus.
 
 The first station is still dominated by the orbital potential input. Going down,
 drag appears and grows. **The input blends continuously between gravity-based and
@@ -375,7 +375,7 @@ why act III's fifth station foreshadows this one.
 **Carrier:** ice crystals, then droplets, then one joined body of water.
 **Medium:** cloud, wind, gravity, running water. **Theme:** reunion.
 
-**Stations:** Cirrus → Üllő alulról (Under the Anvil) → Záporfüggöny (The Downpour)
+**Stations:** Cirrus → Under the Anvil → The Downpour
 → Lombkorona (The Canopy) → Hegyipatak (The Mountain Brook) → Torkolat (The Estuary).
 
 Scattered ice crystals merge into droplets. **The rescue-ring system takes a new
@@ -395,9 +395,8 @@ reappears as small living forms: plankton and larvae.
 **Carrier:** plankton, larvae, marine snow. **Medium:** water again.
 **Theme:** homecoming, and the circle.
 
-**Stations:** Sós határ (The Salt Line) → Napfényzóna (The Sunlit Zone) → Alkonyzóna
-(The Twilight Zone) → Mélytenger (The Deep Sea) → Tengeri hó (Marine Snow) →
-Árokfenék (The Trench Floor).
+**Stations:** The Salt Line → The Sunlit Zone → The Twilight Zone → The Deep Sea → Marine Snow →
+The Trench Floor.
 
 **This is not act I reversed.** The carrier drifts rather than swims. Currents work
 downward and sideways. Hazards thin out and stop. Music and external sound return,
@@ -538,14 +537,14 @@ the act reads in its material alone: stone, then jelly, then nothing.
 > only act VII's last three stations remain unloseable.
 
 **The game gets quieter on the way up and fills with sound again on the way back.
-The difficulty peak is not the finale. After Rálátás the game is about resolution.**
+The difficulty peak is not the finale. After the Overview the game is about resolution.**
 
 The campaign's peak is act II's **Anvil**, measured rather than assumed: ten demands
 a minute, eleven seconds per compulsory ring, a 0.28 aperture, a rotor and two
 raptors, and the last failure policy in the game that can end a run. The peak of the
-*descent* is act V's Plazmaöv, which is what §9 means and is second in the campaign
+*descent* is act V's Plasma station, which is what §9 means and is second in the campaign
 by the same measures. Both files used to claim the superlative outright and act VI's
-Záporfüggöny claimed it too, at the identical pace; the pace band separates them now
+The Downpour claimed it too, at the identical pace; the pace band separates them now
 and each claim is scoped to what it is true of.
 
 ### Scoring
@@ -676,7 +675,7 @@ least:
 
 - act I's balance does not move materially
 - no bird appears above 11 km
-- Gyöngyház and Világító felhők are part of act III
+- The Nacreous and The Noctilucent are part of act III
 - every authored section of all seven acts builds
 - every compulsory objective is reachable from a flyable route
 - progress/prune logic is correct on both ascending and descending courses
@@ -748,11 +747,11 @@ reached act both survive into the station record the map is drawn from.
 
 **Palettes.** `config/zones.ts` rebuilt: 40 bands across seven acts, indices stamped
 rather than hand-maintained. `tests/zones.test.ts` asserts the light goes out
-continuously from the wave tops to the Kármán line, and that the last band of act
+continuously from the wave tops to the Karman line, and that the last band of act
 VII is the first band of act I.
 
-**Act II re-cut.** Six stations ending at the anvil; Partfal and Vonulás added;
-Gyöngyház and Világító felhők moved to act III.
+**Act II re-cut.** Six stations ending at the anvil; the Cliff and the Passage added;
+The Nacreous and the Noctilucent moved to act III.
 
 **Act III.** `config/thinning.ts`, six stations, its own ice alphabet
 (`veil`/`column`/`throat`/`flurry`/`eddy`/`shear`) with geometry in
@@ -796,7 +795,7 @@ gravity well the level author placed, summed by the same field and drawn from th
 same profile as one the player's hand lays. It never decays and can never be
 evicted by scribbling.
 
-**All seven backdrop sets.** `Sky.ts` gained Partfal and Vonulás; `Upper.ts`,
+**All seven backdrop sets.** `Sky.ts` gained the Cliff and the Passage; `Upper.ts`,
 `Orbit.ts`, `Reentry.ts`, `Rain.ts` and `Homecoming.ts` are new, and `SkyParts.ts`
 holds the four primitives acts II–V share so the seam at 11 km cannot show.
 **Forty-two stations, forty-two distinct backdrops**, asserted.
@@ -899,8 +898,7 @@ Each exposes `handedOver` on its own timeline. Three bugs closed together:
 > only for the last act of a circuit, or for an act played on its own.
 
 **Endings speak their own act's language.** `i18n/strings.ts` gained `ActEndings`,
-seven acts × two endings × two languages (the game ships in English now; the Hungarian
-table stays in the file as the reference text). There were two, chosen by a boolean, and
+seven acts × two endings (the game ships in English only). There were two, chosen by a boolean, and
 five acts arrived behind them: the shipped build told a player who had just turned
 the camera at 460 000 m that they had broken through the waterline. Act II's copy
 is corrected in the same pass — it still claimed 82 km and the last noctilucent
@@ -912,7 +910,7 @@ title screen's first button says *continue* when there is a circuit to continue,
 and names where it is. The seventh act's results report the journey — banked
 score, carried life, circuits closed — rather than the leg.
 
-**The map.** The act list is gone; one screen replaced it, **A kör / The
+**The map.** The act list is gone; one screen replaced it, **The
 Circuit**, and the screen is §3 drawn. `meta/Circuit.ts` places all forty-two
 authored stations evenly around one closed ring and cuts it into seven bands, and
 `Shell` draws it as SVG — each band in outline, the part of it that has been
@@ -1199,8 +1197,8 @@ reading is how many of eleven seeds finish:
 >
 > 3/11 was the bow alone. 6/11 is with the rest of act IV's level-file defects
 > fixed: the Umbra's `strait` put its right shoulder 55 px off the field and was a
-> single wall for the first half of its own funnel, A kút stepped the act's ramp by
-> 0.02 where the station before it stepped 0.08, and both of A kút's compulsory
+> single wall for the first half of its own funnel, the Well stepped the act's ramp by
+> 0.02 where the station before it stepped 0.08, and both of the Well's compulsory
 > rings sat 16 px behind a well's eye, where an undamped attractor spends the hold
 > pulling the swarm off the thing it is holding.
 >
@@ -1298,7 +1296,7 @@ could have been pulled there was a permanent change to the act — a wider strai
 a relaxed compulsory ring, a stronger well — and every one of them would have
 been pulled on the evidence of a scripted hand whose whole known weakness is this
 act. Two of the three were touched in the end, and not as levers: the strait had
-its right shoulder 55 px off the field it is drawn against, and A kút's
+its right shoulder 55 px off the field it is drawn against, and the Well's
 compulsory rings sat 16 px behind a well's eye. A defect is not a lever.
 §8 has already been round that loop once: `makeAimBot`'s reading was suspected of
 being the instrument, `makeOrbitBot` was written to check, and the check is the
@@ -1320,7 +1318,7 @@ reading, because for them it works.
 > nobody had. That much has moved — the finish sweep completes orbit on six seeds
 > in eleven. `e2e/campaign.spec.ts` flies all seven, but it jumps between them —
 > it proves the seams, the handovers and the circuit's state machine, and it does
-> not prove that Szabadesés reaches Rálátás. Nothing in the e2e suite does, and no
+> not prove that Free Fall reaches the Overview. Nothing in the e2e suite does, and no
 > person has.
 
 ### What the settings review found
@@ -1417,7 +1415,7 @@ Three things had to be true, and only the first is the obvious one:
 > **The ink is chosen against the ground.** This is the half no alpha could have
 > done, and it is the same answer `Renderer.contrast` has given since act II —
 > *which side of the background is this thing already on* — asked by the one
-> element that had never asked it. Four of the forty-two stations are lit: Permet
+> element that had never asked it. Four of the forty-two stations are lit: the Spray
 > at sixty metres, the surface, the Salt Line, the Sunlit Zone. Pale ink measured
 > 1.6:1 on those with the setting on, and white on white has no alpha that helps.
 > The pick is by **contrast ratio, not by brightness**, and the two disagree over
@@ -1446,7 +1444,7 @@ underneath and the picture underneath is a different act every time. It walks al
 forty-two stations with the setting on and writes `docs/screens/acts-hc/`.
 
 The weakest line of every station now reads **2.67:1** or better, against 1.15
-shipped. The two weakest are Partfal and Sós határ, both mid-tone water.
+shipped. The two weakest are the Cliff and the Salt Line, both mid-tone water.
 
 > The instrument was wrong first, and in a way worth writing down because it
 > produced a plausible false finding. It took the extreme *further* from the
@@ -2070,7 +2068,7 @@ does not have — teal and one warm, and there green and nothing else.
 > Several of the surfaces named below (the setting, high contrast) no longer exist; see
 > the note under "What the settings review found".
 
-**Act IV has still never been flown from Szabadesés to Rálátás by a person.** A
+**Act IV has still never been flown from Free Fall to the Overview by a person.** A
 bot now finishes it on six seeds in eleven, which it could not do at all while the
 orbital gate was bowed the wrong way, so the act is no longer suspected of being
 unflyable — but six in eleven is a scripted hand scraping through, and the thing
@@ -2258,5 +2256,5 @@ is an off-by-one waiting to happen and none of them is visible from a unit test.
 ---
 
 *Code, identifiers, commits and comments are English. Station names appear here in
-both languages because they are player-facing text and live in the level files as
-`name.hu` / `name.en`.*
+English because they are player-facing text and live in the level files as
+`name`.*

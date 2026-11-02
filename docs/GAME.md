@@ -53,13 +53,13 @@ its density, which is also the difficulty curve, the palette and the sound.
 
 | # | Act | Carrier | Medium | Your verb |
 | --- | --- | --- | --- | --- |
-| I | **Mélység** / The Deep | a shoal | water | herd them |
-| II | **Repülés** / Flight | a flock | air | use the wind |
-| III | **Ritkulás** / The Thinning | spores and ice | thin, layered air | wait, and choose a layer |
-| IV | **Keringés** / Orbit | golden motes | none — gravity | aim ahead of them |
-| V | **Visszatérés** / The Fallback | meteor dust | vacuum → plasma → air | brake, and accept the medium |
-| VI | **Eső** / The Rain | crystals, then drops | cloud, rain, river | gather them |
-| VII | **Hazatérés** / The Homecoming | plankton and marine snow | water again | let them settle |
+| I | **The Deep** | a shoal | water | herd them |
+| II | **Flight** | a flock | air | use the wind |
+| III | **The Thinning** | spores and ice | thin, layered air | wait, and choose a layer |
+| IV | **Orbit** | golden motes | none — gravity | aim ahead of them |
+| V | **The Fallback** | meteor dust | vacuum → plasma → air | brake, and accept the medium |
+| VI | **The Rain** | crystals, then drops | cloud, rain, river | gather them |
+| VII | **The Homecoming** | plankton and marine snow | water again | let them settle |
 
 Acts I and II end on films: the shoal breaks the surface into daylight, and the flock
 levels off at the top of the weather and releases what it was carrying. Act IV ends on the
@@ -69,12 +69,12 @@ one shot in the game that moves the camera.
 
 | # | Depth | Station | Environmental turn |
 | --- | ---: | --- | --- |
-| 1 | 6000 m | **Árokfenék** / Trench Floor | Canyon walls, mineral heat and almost no living light. |
-| 2 | 4000 m | **Fekete víz** / Black Water | The walls fall away into an empty abyss. |
-| 3 | 2500 m | **Éjféli sodrás** / Midnight Current | Long upward currents begin to carry the field. |
-| 4 | 1000 m | **Kék emelkedő** / Blue Rise | Cold blue replaces black; the first living colour returns. |
-| 5 | 200 m | **Fényhatár** / Light Line | Plant life and cyan water announce that daylight is close. |
-| 6 | 0 m | **Felszín** / The Surface | Rays, bubbles and a visible waterline; completion is the breach into light. |
+| 1 | 6000 m | **Trench Floor** | Canyon walls, mineral heat and almost no living light. |
+| 2 | 4000 m | **Black Water** | The walls fall away into an empty abyss. |
+| 3 | 2500 m | **Midnight Current** | Long upward currents begin to carry the field. |
+| 4 | 1000 m | **Blue Rise** | Cold blue replaces black; the first living colour returns. |
+| 5 | 200 m | **Light Line** | Plant life and cyan water announce that daylight is close. |
+| 6 | 0 m | **The Surface** | Rays, bubbles and a visible waterline; completion is the breach into light. |
 
 ### Act II — the air (60 m → 11 km)
 
@@ -92,12 +92,12 @@ shapes. What hunts you tells you it has committed by *folding*.
 
 | # | Altitude | Station | What changes |
 | --- | ---: | --- | --- |
-| 1 | 60 m | **Permet** / The Spray | Sea haze and torn shreds of cloud; the sea sinks out of the frame. |
-| 2 | 300 m | **Partfal** / The Cliff | Orographic cloud, and the first rotor. |
-| 3 | 1 200 m | **Gomolymező** / The Cumulus Field | The fair-weather deck, seen across the tops rather than from under it. |
-| 4 | 2 500 m | **Vonulás** / The Passage | A real cloud street, held for six hundred pixels, and the first raptor. |
-| 5 | 4 000 m | **Zivatar** / The Squall | Rain, and the first air that turns. |
-| 6 | 11 000 m | **Üllő** / The Anvil | Out of the top of the weather. A raptor that stoops from behind, one that waits, and the end of the air. |
+| 1 | 60 m | **The Spray** | Sea haze and torn shreds of cloud; the sea sinks out of the frame. |
+| 2 | 300 m | **The Cliff** | Orographic cloud, and the first rotor. |
+| 3 | 1 200 m | **The Cumulus Field** | The fair-weather deck, seen across the tops rather than from under it. |
+| 4 | 2 500 m | **The Passage** | A real cloud street, held for six hundred pixels, and the first raptor. |
+| 5 | 4 000 m | **The Squall** | Rain, and the first air that turns. |
+| 6 | 11 000 m | **The Anvil** | Out of the top of the weather. A raptor that stoops from behind, one that waits, and the end of the air. |
 
 **The act stops at eleven kilometres, and that is load-bearing.** Nothing with wings has
 ever flown at 82 km, because there is no air there to fly in — a bird at the mesopause is
@@ -110,15 +110,15 @@ Above the anvil the carrier stops being an animal. What goes up is what a bird w
 *carrying*, and from there the cargo is spores, then the gold itself, then meteor dust,
 then water, then plankton — five ways of being a particle rather than five species.
 
-* **III Ritkulás** (11 → 100 km). The upper atmosphere separates into deep bands moving at
+* **III The Thinning** (11 → 100 km). The upper atmosphere separates into deep bands moving at
   very different speeds and in opposite directions. A stroke barely grips; being in the
   right band is worth more than any stroke. A gravity wave runs on the 11-second breath.
-* **IV Keringés** (100 km → orbit). No medium at all: a stroke lays a **gravity well**
+* **IV Orbit** (100 km → orbit). No medium at all: a stroke lays a **gravity well**
   instead of momentum, motes move ballistically, and a bad stroke is correctable but not
-  quickly. It ends at **Rálátás**, where the camera turns for the first and only time and
+  quickly. It ends at **The Overview**, where the camera turns for the first and only time and
   the entire atmosphere — everything the game has happened in — resolves into one bright
   line a few pixels thick.
-* **V Visszatérés** (orbit → upper air). The input blends continuously from gravity back to
+* **V The Fallback** (orbit → upper air). The input blends continuously from gravity back to
   momentum as the air arrives. The danger is not death: it is scatter and a bad angle. It is
   also the one act where the world does not stand still — gaps that breathe, masses that
   walk, and **the ember**: a burning piece of the vehicle that ablates more slowly than the
@@ -127,9 +127,9 @@ then water, then plankton — five ways of being a particle rather than five spe
   speed**: outrun it and the swarm starts to burn away from the front. The act's verb is
   *brake, and accept the medium*, and going fast is available to anyone who watches the
   frame's leading edge for the moment it goes warm.
-* **VI Eső** (cloud → the sea). The rescue rings take a new meaning — they gather scattered
-  droplets back. *Üllő alulról* is the same cloud act II climbed over, from below.
-* **VII Hazatérés** (surface → 6000 m). Not act I reversed, and no longer authored out of
+* **VI The Rain** (cloud → the sea). The rescue rings take a new meaning — they gather scattered
+  droplets back. *Under the Anvil* is the same cloud act II climbed over, from below.
+* **VII The Homecoming** (surface → 6000 m). Not act I reversed, and no longer authored out of
   act I's rock: the carrier drifts rather than swims, what it drifts past is soft and
   alive, hazards thin out and stop, and **the second half cannot be lost at all.**
 
@@ -169,7 +169,7 @@ has played any of it yet.
 ## The map
 
 The title screen says "seven acts, one circuit, from the floor of the trench back to it"
-and for a long time nothing ever *showed* it. **A kör / The Circuit** is one screen behind
+and for a long time nothing ever *showed* it. **The Circuit** is one screen behind
 one button, and it is a dial: forty-two marks around one closed ring, seven bands of it
 for the seven acts. Where it starts is where it ends, because it is the same place — on a
 ring that is not a claim, it is the geometry.
@@ -193,7 +193,7 @@ ring that is not a claim, it is the geometry.
   orbit at the top without the ring ever being told what a metre is.
 
 The button appears as soon as there is any journey to look at, and carries the one number
-the title screen has ever needed — `A KÖR · 24/42`.
+the title screen has ever needed — `THE CIRCUIT · 24/42`.
 
 Nothing in any of it is procedural, and nothing in it can be impossible: every section is
 checked by a corridor sweep that carries the swarm's real lateral reach down the whole

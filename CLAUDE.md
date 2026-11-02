@@ -12,7 +12,7 @@ breaking things that were already decided or re-learning things that were alread
 
 TypeScript + Vite, no framework. Canvas 2D (`src/render/`, no WebGL), procedural Web Audio
 (`src/audio/`), Pointer Events, fixed 1/60 s simulation step (`src/core/GameLoop.ts`),
-53k lines in `src/`, 790 unit tests, PWA with an offline service worker.
+53k lines in `src/`, 788 unit tests, PWA with an offline service worker.
 
 **The campaign has been rebuilt: 432 sections and 144 authored minutes, from 182 and 72.**
 Six acts of about twenty-two minutes and act I frozen at ten, because it is the metronome
@@ -83,7 +83,8 @@ screen: what can be read, and what can be hit`, `the pinned primary clears the c
 lets go at the end of the column`, and `startup › reports what the first launch costs
 before the title screen`. Re-measured again 2026-08-14 after act V's second pass: same
 three, same names, 74 pass, 12.7 min. Re-measured a last time 2026-11-02, after the dev toolchain moved to vitest 5 and the
-admin surface was translated: same three, same names, 74 pass, 13.3 min.
+admin surface was translated: same three, same names, 74 pass, 13.3 min, and again the same day once the output
+level had its own spec: 75 pass, 13.4 min.
 
 **The screenshots are not deterministic.** `npm run screens` rewrites all eleven PNGs on
 every run, so a dirty `git status` proves nothing. Commit them only when you meant to.

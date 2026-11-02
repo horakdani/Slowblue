@@ -58,13 +58,13 @@ sound.
 
 | # | Act | Carrier | Medium | Your verb |
 | --- | --- | --- | --- | --- |
-| I | **Mélység** / The Deep | a shoal | water | herd them |
-| II | **Repülés** / Flight | a flock | air | use the wind |
-| III | **Ritkulás** / The Thinning | spores and ice | thin, layered air | wait, and choose a layer |
-| IV | **Keringés** / Orbit | golden motes | none — gravity | aim ahead of them |
-| V | **Visszatérés** / The Fallback | meteor dust | vacuum → plasma → air | brake, and accept the medium |
-| VI | **Eső** / The Rain | crystals, then drops | cloud, rain, river | gather them |
-| VII | **Hazatérés** / The Homecoming | plankton and marine snow | water again | let them settle |
+| I | **The Deep** | a shoal | water | herd them |
+| II | **Flight** | a flock | air | use the wind |
+| III | **The Thinning** | spores and ice | thin, layered air | wait, and choose a layer |
+| IV | **Orbit** | golden motes | none — gravity | aim ahead of them |
+| V | **The Fallback** | meteor dust | vacuum → plasma → air | brake, and accept the medium |
+| VI | **The Rain** | crystals, then drops | cloud, rain, river | gather them |
+| VII | **The Homecoming** | plankton and marine snow | water again | let them settle |
 
 The campaign is 432 authored sections and about 144 authored minutes (roughly 108 as
 played). Nothing in it is procedural, and nothing in it can be impossible: every section is
@@ -88,7 +88,7 @@ in [docs/GAME.md](docs/GAME.md).
 * **A fixed 1/60 s simulation step**, a hot path that allocates nothing, and a picture
   budget that adapts to the device instead of asking the player to.
 * **An installable PWA** with an offline service worker, served from GitHub Pages.
-* **790 unit tests, a browser suite, and balance sweeps** that play the whole campaign with
+* **788 unit tests, a browser suite, and balance sweeps** that play the whole campaign with
   scripted hands. Every tuning number in the repo came out of a measurement, and the
   documents say which.
 
