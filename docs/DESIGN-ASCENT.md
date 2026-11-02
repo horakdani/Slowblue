@@ -1,13 +1,77 @@
 # Slowblue — the whole circuit
 
+> **Status: design intent (§1–§17) plus the log of building it (§18–§19). Not a manual
+> for the game as it stands.** It is kept as a measured record, so most of its numbers
+> are the ones taken when each passage was written, not today's.
+>
+> * **Superseded: size.** The 182 sections and ~72 minutes counted here, and the rule
+>   that every act keeps its ten minutes, are the campaign as first built.
+>   [DESIGN-LENGTH.md](DESIGN-LENGTH.md) measured and rebuilt it: **432 sections and 144
+>   authored minutes** (about 108 as played), act I frozen at ten minutes and the other six
+>   at 20.6 to 26.5.
+> * **Superseded: controls.** The settings screen and COMFORT's two switches (reduced
+>   motion, high contrast) that §14, §17 and parts of §18 build on were removed; the game
+>   ships in English only. Those passages are history, and say so where they occur.
+> * **Targets.** The web is the only target. No iOS shell or store listing exists, and this
+>   document does not plan one.
+> * **Current ground truth:** [README.md](../README.md) for the game as it is,
+>   [IMPLEMENTATION_NOTES.md](../IMPLEMENTATION_NOTES.md) for how it is built.
+
 This is the specification for the complete campaign, and the record of how much of
 it exists. It supersedes the earlier four-act ascent memo entirely: that document
 described a design with thermals, a lift field and a `Lift.ts`, and the shipped
 game does not have any of those — see §4.
 
 Read §1–§3 for what the game *is*, §4–§11 for the seven acts, §12–§17 for the
-rules that cut across all of them, §18 for what is built today, and §19 for the
+rules that cut across all of them, §18 for what was built, revision by revision, and §19 for the
 one rule §12 got wrong — where the campaign saves, and what a failure costs.
+
+## Contents
+
+- [1. The sentence](#1-the-sentence)
+- [2. The same gesture, seven consequences](#2-the-same-gesture-seven-consequences)
+- [3. The circuit, and the secret](#3-the-circuit-and-the-secret)
+- [4. What was cut, and why it matters](#4-what-was-cut-and-why-it-matters)
+- [5. Act I — Depth (6000 m → surface)](#5-act-i--depth-6000-m--surface)
+- [6. Act II — Flight (surface → 11 km)](#6-act-ii--flight-surface--11-km)
+- [7. Act III — Thinning (11 km → 100 km)](#7-act-iii--thinning-11-km--100-km)
+- [8. Act IV — Orbit (100 km → stable orbit)](#8-act-iv--orbit-100-km--stable-orbit)
+- [9. Act V — Fallback (orbit → upper atmosphere)](#9-act-v--fallback-orbit--upper-atmosphere)
+- [10. Act VI — Rain (high cloud → the sea)](#10-act-vi--rain-high-cloud--the-sea)
+- [11. Act VII — Homecoming (sea surface → 6000 m)](#11-act-vii--homecoming-sea-surface--6000-m)
+- [12. Rules that cut across every act](#12-rules-that-cut-across-every-act)
+  - [Input](#input)
+  - [Swarm and continuity](#swarm-and-continuity)
+  - [Rhythm and reward, per act](#rhythm-and-reward-per-act)
+  - [Act VII stops being act I with the lights down](#act-vii-stops-being-act-i-with-the-lights-down)
+  - [Rings](#rings)
+  - [The failure arc](#the-failure-arc)
+  - [Scoring](#scoring)
+- [13. The sound arc](#13-the-sound-arc)
+- [14. The colour arc](#14-the-colour-arc)
+- [15. Architecture](#15-architecture)
+  - [The one abstraction the direction change turned on](#the-one-abstraction-the-direction-change-turned-on)
+- [16. Admin and debug](#16-admin-and-debug)
+- [17. Tests and acceptance criteria](#17-tests-and-acceptance-criteria)
+  - [What the corridor sweep could not see](#what-the-corridor-sweep-could-not-see)
+  - [Definition of done](#definition-of-done)
+- [18. Implementation status](#18-implementation-status)
+  - [Built and tested](#built-and-tested)
+  - [What the visual review found](#what-the-visual-review-found)
+  - [What the sweeps measured](#what-the-sweeps-measured)
+  - [What the second visual review found](#what-the-second-visual-review-found)
+  - [Whether an act can be finished, which nothing had ever asked](#whether-an-act-can-be-finished-which-nothing-had-ever-asked)
+  - [What the settings review found](#what-the-settings-review-found)
+  - [What the act II picture review found](#what-the-act-ii-picture-review-found)
+  - [What the act III picture review found](#what-the-act-iii-picture-review-found)
+  - [What the act IV picture review found](#what-the-act-iv-picture-review-found)
+  - [What the act V picture review found](#what-the-act-v-picture-review-found)
+  - [What the act VI picture review found](#what-the-act-vi-picture-review-found)
+  - [What the act VII picture review found](#what-the-act-vii-picture-review-found)
+  - [What the colour review found](#what-the-colour-review-found)
+  - [Not started](#not-started)
+- [19. Station checkpoints, and the act as one attempt](#19-station-checkpoints-and-the-act-as-one-attempt)
+  - [The act is one attempt](#the-act-is-one-attempt)
 
 ---
 
@@ -419,6 +483,11 @@ its mean pace, and redistributing the ten minutes is the whole licence here.
 845 px, which is both the honest arithmetic and the only version of that check
 that can still fail now that an act is free to choose its own gaps.
 
+> **Superseded:** this holds for act I only. The other six acts were rebuilt to 20.6
+> to 26.5 authored minutes ([DESIGN-LENGTH.md](DESIGN-LENGTH.md) §11), and
+> `tests/descent.test.ts` now holds act I to 7-12 minutes and the others to 19-27.
+> What survives is the licence: an act's rhythm is its own, and act I is the metronome.
+
 **Act I is deliberately not in this.** It is frozen (§5), it is the tutorial, and
 it is the origin of the shape rather than a copy of it — a rhythm needs something
 regular to be heard against. `tests/geometry.test.ts` asserts exactly that: act I's
@@ -462,6 +531,11 @@ the act reads in its material alone: stone, then jelly, then nothing.
 | V | scatter or a bad entry causes a station reset |
 | VI | a light checkpoint system |
 | VII (second half) | nothing at all |
+
+> **Superseded by §19:** the table is the failure arc as first designed, in which acts
+> I and II ended the run. Every act restarts the station now (`sim/Failure.ts`), a
+> budget of restarts per act attempt ends the attempt rather than the campaign, and
+> only act VII's last three stations remain unloseable.
 
 **The game gets quieter on the way up and fills with sound again on the way back.
 The difficulty peak is not the finale. After Rálátás the game is about resolution.**
@@ -511,6 +585,11 @@ violet-black depth → blue and turquoise surface → bright sky → darkening u
 - **Reduced motion, high contrast and the quality setting must work in every new
   renderer.**
 
+  *Since then:* the first two settings were removed with the settings screen they sat
+  on, and quality is no longer asked for: `adaptQuality` in `src/main.ts` measures the
+  frame rate and picks the rung (README, "Where the controls are"). The requirement as
+  written no longer applies; §18 records the work it caused.
+
 ## 15. Architecture
 
 Reused unchanged: `FlowField`, `SpatialHash`, `SwarmSimulation`, `RunState`,
@@ -531,6 +610,9 @@ Required extensions:
 | 7 | new carrier renderers — motes/spores, ice crystals/droplets, plankton/marine snow — sharing one `SwarmSimulation`, with shape a render-side decision | **built** (`render/Carriers.ts`) |
 | 8 | seven transitions: water→birds, birds→motes, atmosphere→space, orbit→descent, dust→cloud, rain→sea, trench→title | **all seven built** (`Surfacing`, `Release`, `Karman`, `Overview`, `Nucleus`, `Estuary`, `Circle`) |
 | 9 | versioned profile migration: no data loss, act unlocks, checkpoints, admin jumps never recorded | **built** (v2) |
+
+The state column is as written in the first revision. Rows 4 and 5 still say "pending";
+they have not been re-audited against the renderer and the debug panel since.
 
 ### The one abstraction the direction change turned on
 
@@ -609,7 +691,8 @@ least:
 - the whole campaign is playable end to end
 - the finale returns to the trench floor
 - at least 30 FPS on a mobile viewport under load
-- reduced motion and high contrast work in every new scene
+- reduced motion and high contrast work in every new scene (*since then: withdrawn
+  together with the settings; see §14*)
 - an admin-started run modifies no record
 
 **Balance is set by measurement, not by feel.** Sweep tools are required for the
@@ -628,6 +711,10 @@ actual game; and `npm run verify` passes.
 ---
 
 ## 18. Implementation status
+
+This section is a chronological log. Each paragraph describes the build at the revision
+that wrote it, so section counts, test counts and bot results in it are historical; where
+a later change made a passage false, it carries a *Since then* or *Superseded* note.
 
 ### Built and tested
 
@@ -699,7 +786,8 @@ and `config/homecoming.ts`: twenty-four authored stations, every one of them wit
 its corridor sweep and reachable-ring check green (`tests/orbit.test.ts`,
 `tests/reentry.test.ts`, `tests/descent.test.ts`). Two new alphabets — orbit's
 `arc`/`hulk`/`strait`/`shrapnel`/`node`/`flare` and rain's
-`downpour`/`canopy`/`boulder` — plus re-entry's three (`shock`/`plume`/`sheet`),
+`downpour`/`canopy`/`boulder` — plus re-entry's three (`shock`/`plume`/`sheet`; a fourth, `ember`, came with the length
+rebuild),
 all with geometry in `ObstacleSystem`. Act V and act VI deliberately share
 vocabularies with their neighbours, because they *are* the handovers.
 
@@ -745,7 +833,8 @@ everything else dims, and the gold reaches the top of its arc, stalls, and leans
 over toward the disc. That stall is the handover: act V opens into the fall the
 player watched begin. Reduced motion drops the roll and keeps the picture, because
 the rotation is the only vestibular element and the composition is what the
-rotation was for. `tests/overview.test.ts`.
+rotation was for. *(Since then: the reduced-motion setting is gone, so the roll
+is always played.)* `tests/overview.test.ts`.
 
 **All seven endings exist, and the seam is never a cut.** `render/Films.ts` maps
 an act to its ending and defines the one shape they share — `veil`, `settled`,
@@ -810,7 +899,8 @@ Each exposes `handedOver` on its own timeline. Three bugs closed together:
 > only for the last act of a circuit, or for an act played on its own.
 
 **Endings speak their own act's language.** `i18n/strings.ts` gained `ActEndings`,
-seven acts × two endings × two languages. There were two, chosen by a boolean, and
+seven acts × two endings × two languages (the game ships in English now; the Hungarian
+table stays in the file as the reference text). There were two, chosen by a boolean, and
 five acts arrived behind them: the shipped build told a player who had just turned
 the camera at 460 000 m that they had broken through the waterline. Act II's copy
 is corrected in the same pass — it still claimed 82 km and the last noctilucent
@@ -839,7 +929,7 @@ cleared, written from `run.level` — the furthest station reached, not a count 
 clears, so an act III retry cannot claim ground twice. The migration is an
 inference rather than a reset, and a defensible one: `unlockedAct` can only ever
 be raised by `advance`, so a v2 profile naming act V finished four acts and the
-map says so. `tests/ring.test.ts` asserts the shape — that every station is worth
+map says so. `tests/ring.test.ts` (since deleted, in `5957a92`) asserted the shape — that every station is worth
 the same forty-second of the journey, that the step after the last one lands back
 on the first, that the seven bands tile the circle with seven equal gaps, and
 that the act the campaign turns over on hangs at the top of the dial.
@@ -857,12 +947,12 @@ are seven small targets, and a small target that starts a run on first touch is 
 small target that ends someone's circuit by accident.
 
 **`npm run verify` passes end to end**: lint (0 errors), `tsc --noEmit`,
-`vitest run` (556 tests, 45 files), `vite build`, and 28 Playwright specs
+`vitest run` (556 tests in 45 files at the time; CLAUDE.md counts 790 now, in 72 files), `vite build`, and 28 Playwright specs
 including one that flies all seven acts through the real shell and closes the
 circuit (`e2e/campaign.spec.ts`), one that shoots all forty-two stations, one
 that shoots every movement of all seven endings, and one that measures the
 station banner's contrast on all forty-two with high contrast on
-(`e2e/acts.spec.ts`).
+(`e2e/acts.spec.ts`; that last one went with the setting).
 
 **...and it leaves the tree clean, which it did not.** `e2e/capture.spec.ts` is
 two things at once — a smoke test for mid-run rendering, and the only thing that
@@ -959,7 +1049,9 @@ furthest section between 8.0 and 8.6 with no ordering in it, measured while
 sign did.
 
 **The circuit is 68 minutes long, and that is arithmetic rather than a bot
-reading.** Every act is authored to within 4 % of the same section spacing
+reading.** *(Superseded: this is the second-pass shortening of the original 107-minute
+campaign. The circuit was later rebuilt to 432 sections and 144 authored minutes; see
+[DESIGN-LENGTH.md](DESIGN-LENGTH.md) §11. The table below is the 182-section campaign.)* Every act is authored to within 4 % of the same section spacing
 (~845 px between lines), so an act's duration is its length over its forced drift
 and nothing else:
 
@@ -991,7 +1083,8 @@ not get shorter in the only unit a player experiences; they stopped being padded
 `tests/descent.test.ts` asserts the consequence — every act between 7 and 12
 minutes, the circuit between 60 and 80, and no act more than 1.6× another —
 because a length is the kind of fact that rots one added section at a time and
-nothing else would notice.
+nothing else would notice. *(Since then: those bands are act I's alone; the other
+six acts are held to 19-27 minutes, and the circuit-wide bounds changed with them.)*
 
 Acts VI and VII measure healthy: skill multipliers **2.7×** and **2.2×** over
 passive, life kept **1.6×** and **1.2×**, and act VII's competent bot restarts a
@@ -1231,6 +1324,14 @@ reading, because for them it works.
 > person has.
 
 ### What the settings review found
+
+> **Since then:** high contrast was withdrawn together with the settings screen, and
+> no renderer, film or banner reads it any more. What follows is the record of how the
+> requirement was met and what was learned finding out that it had not been; the
+> `FilmView.highContrast` plumbing is gone and no spec writes the `docs/screens/*-hc/` frames any more. The
+> lessons (a surface built for two or three of a thing, never re-derived for seven)
+> outlive the setting. The audition-panel half of this section (the ending cues)
+> is unaffected.
 
 Two requirements from §12–§17 had never been met, and neither had a test with any
 reason to notice. Both are the same shape: a thing the campaign added seven of,
@@ -1966,6 +2067,9 @@ does not have — teal and one warm, and there green and nothing else.
 
 ### Not started
 
+> Several of the surfaces named below (the setting, high contrast) no longer exist; see
+> the note under "What the settings review found".
+
 **Act IV has still never been flown from Szabadesés to Rálátás by a person.** A
 bot now finishes it on six seeds in eleven, which it could not do at all while the
 orbital gate was bowed the wrong way, so the act is no longer suspected of being
@@ -2088,7 +2192,9 @@ of correct play, which is not difficulty: the act does not get harder, it gets
 longer, and what the player re-flies is content they have already proved. That is
 also the most mobile-hostile shape available.
 
-So the act carries a **budget of two restarts** (`RESTARTS_PER_ACT`). A station may
+So the act carries a **budget of two restarts** (`RESTARTS_PER_ACT`; *since then* it is
+a rate, `restartsForMinutes` in `sim/Failure.ts`: two for act I and three for each of the
+other six at today's lengths). A station may
 be got wrong and learned; an act may not be ground through; the third failure ends
 the run and the attempt goes back to `CampaignState.actStart` — the act's first
 station, the cargo it was entered with, the score it was entered with, a fresh

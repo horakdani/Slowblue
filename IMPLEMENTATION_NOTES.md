@@ -1,5 +1,55 @@
 # Slowblue — Implementation Notes
 
+## How to read this file
+
+This is an engineering log, written in order as the game was built, and it keeps the failed
+hypotheses next to the ones that worked because the reasons a thing was rejected cannot be
+reconstructed later. Two kinds of section live here, and they age differently.
+
+* **Current reference**, kept true as the tree changes: [Files created](#files-created) (the
+  inventory), [How the mechanic is built](#how-the-mechanic-is-built-and-why),
+  [Where to tune](#where-to-tune) and [Deliberate compromises](#deliberate-compromises-not-oversights).
+  If one disagrees with the code, the code wins and this file has a bug.
+* **History**, kept as written: [the tuning decisions](#tuning-decisions-that-came-from-measurement-not-taste)
+  and the numbered passes after them (decisions 1-52). A number there is the number *then*;
+  a paragraph since overtaken carries a **Superseded** note, and decision numbers are
+  addresses (`tuning.ts`, `Medium.ts` and `Renderer.ts` cite them), so none is renumbered.
+
+The current state lives elsewhere: [README.md](README.md) is the short version of the game and
+[docs/GAME.md](docs/GAME.md) the long one, [docs/DEVELOPING.md](docs/DEVELOPING.md) is how to
+run, test, measure and ship it, [docs/DESIGN-ASCENT.md](docs/DESIGN-ASCENT.md) is the seven-act circuit,
+[docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md) the measured length of the campaign (432
+sections, 144 authored minutes, act I frozen at ten), and [CLAUDE.md](CLAUDE.md) the working
+rules. Two facts from them frame everything below: the web is the only target (the
+Capacitor/iOS shell built in August is gone), and there is no settings screen - the audio
+mixer is a drawer opened from a corner button, and the continuous-circuit mode and the profile
+wipe live on the map.
+
+## Contents
+
+* [Where this started](#where-this-started)
+* [Repository audit (start state)](#repository-audit-start-state)
+* [Files created](#files-created) - the inventory, as of 2026-11-02
+  ([config and tooling](#config--tooling), [simulation](#simulation-headless-no-dom),
+  [presentation and platform](#presentation--platform),
+  [tests, e2e and tools](#tests-e2e-and-tools))
+* [How the mechanic is built (and why)](#how-the-mechanic-is-built-and-why)
+* [Where to tune](#where-to-tune)
+* [Tuning decisions that came from measurement, not taste](#tuning-decisions-that-came-from-measurement-not-taste) (1-10)
+* [The second pass: from prototype to finished game](#the-second-pass-from-prototype-to-finished-game) (11-20)
+* [The third pass: from endless course to campaign](#the-third-pass-from-endless-course-to-campaign) (21-37)
+* [The fourth pass: the thing under the game](#the-fourth-pass-the-thing-under-the-game) (38-52)
+  * [Act II health at the current defaults](#act-ii-health-at-the-current-defaults)
+  * [Design health at the current defaults](#design-health-at-the-current-defaults)
+* [The admin surface: examining a thing instead of playing to it](#the-admin-surface-examining-a-thing-instead-of-playing-to-it)
+* [The map: the one thing the game said and never showed](#the-map-the-one-thing-the-game-said-and-never-showed)
+* [Deliberate compromises (not oversights)](#deliberate-compromises-not-oversights)
+* [Measured performance](#measured-performance)
+* [The seven acts had one rhythm and one reward](#the-seven-acts-had-one-rhythm-and-one-reward)
+* [What is still open](#what-is-still-open)
+
+## Where this started
+
 This started as a falsification prototype for one hypothesis: **steering water, not fish,
 is a good game.** The hypothesis survived, so the second half of this document is the
 record of turning it into a finished one — content that changes through one ascent, a shell
@@ -19,19 +69,37 @@ Stack chosen per the brief's default: Vite + TypeScript (strict) + Canvas 2D, mi
 dependencies, runs straight from a mobile browser. This is a prototype decision, not a
 production technology choice.
 
+> **Superseded: this section describes the first day, not the tree.** The prototype choice
+> turned out to be the product: TypeScript + Vite + Canvas 2D is still the whole stack, with
+> **zero runtime dependencies** (a rule now, in [CLAUDE.md](CLAUDE.md)), and the repository
+> is under git, public, and published as an installable PWA on GitHub Pages. The tree has
+> grown from the files below to 89 TypeScript modules under `src/`, 72 unit-test files in
+> `tests/` (plus 8 shared helpers), 13 Playwright specs in `e2e/` and 14 files in `tools/`.
+> The inventory in the next section has been brought up to date; the paragraph above is left
+> as the record of where it began.
+
 ## Files created
+
+This is the inventory of the tree as of 2026-11-02, grouped by what a file is *for*. It
+started as the list of what the first session created; files added since are in the same
+tables, and files that no longer exist have been removed from them (the two worth a mention
+are `src/sim/Lift.ts` and `src/render/Thermal.ts`, which decision 45 deleted). Where a
+description says what a file does, it was written from the file's own header comment.
 
 ### Config / tooling
 | File | Purpose |
 | --- | --- |
-| `package.json` | Scripts (`dev`, `build`, `lint`, `typecheck`, `test`, `e2e`, `verify`), dev deps only |
-| `tsconfig.json` | `strict`, `noUnusedLocals/Parameters`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax` |
-| `vite.config.ts` | Dev server on `0.0.0.0:5173` (so a phone on the LAN can open it), sourcemaps |
-| `vitest.config.ts` | Node environment, `tests/**/*.test.ts` only |
-| `playwright.config.ts` | 390×844 Chromium with touch, runs against the production build |
+| `package.json` | Scripts (`dev`, `build`, `deploy`, `preview`, `lint`, `typecheck`, `test`, `e2e`, `screens`, `verify`, `sweep`, `icons`), dev deps only - **zero runtime dependencies**, which is a rule |
+| `tsconfig.json` | `strict`, `noUnusedLocals/Parameters`, `exactOptionalPropertyTypes`, `verbatimModuleSyntax`; covers `src`, `tests`, `e2e`, `tools` and the configs |
+| `vite.config.ts` | Dev server on `0.0.0.0:5173` (so a phone on the LAN can open it); `BASE_PATH` for a project page; hidden sourcemaps; a build plugin that writes the hashed asset list into the service worker's precache and fails the build if it cannot |
+| `vitest.config.ts` | Node environment, `tests/**/*.test.ts` only, with a long per-test timeout because the playability probes fly whole campaigns synchronously |
+| `vitest.sweep.config.ts` | Separate runner for `tools/**/*.sweep.ts` (`npm run sweep`), 15-minute timeout, so minutes-long experiments stay out of `npm test` |
+| `playwright.config.ts` | 390x844 Chromium with touch at device scale factor 3, one worker, against the production build on `SLOWBLUE_E2E_PORT` (default 4173) with `--strictPort` |
 | `eslint.config.js` | Flat config, `typescript-eslint` recommended + `consistent-type-imports` |
-| `index.html` | `viewport-fit=cover`, `user-scalable=no`, `touch-action: none`, safe-area probe, debug-panel CSS |
-| `.claude/launch.json` | Dev-server definition for the in-editor browser preview |
+| `index.html` | `viewport-fit=cover`, `user-scalable=no`, safe-area probe, the shell's CSS. `touch-action: none` is on the canvas and **deliberately absent from `<body>`** - it intersects down the ancestor chain and killed scrolling in the shell |
+| `brand.html` | Dev-only bench for the studio ident (`/brand.html` under `npm run dev`); never part of a production bundle |
+| `.claude/launch.json` | Dev-server and preview definitions for the in-editor browser |
+| `.github/` issue and pull-request templates, `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, `SECURITY.md`, `LICENSE` | The public-repository furniture (MIT); there is deliberately no workflow under `.github/` |
 
 ### Simulation (headless, no DOM)
 | File | Purpose |
@@ -39,58 +107,106 @@ production technology choice.
 | `src/core/math.ts` | `clamp`, `lerp`, `smoothstep`, `limitScale` (allocation-free vector clamp) |
 | `src/core/rng.ts` | `Rng` (mulberry32) + `hashSeed`; seedable, forkable, reproducible |
 | `src/core/GameLoop.ts` | Fixed-timestep accumulator, render `alpha`, FPS/slow-frame stats, `accumulateSteps` for tests |
-| `src/config/tuning.ts` | `Tuning` type, `DEFAULT_TUNING`, slider limits, `sanitizeTuning` |
+| `src/core/storage.ts` | The one wrapper every persisted value goes through; a denied `localStorage` degrades, never throws |
+| `src/config/tuning.ts` | `Tuning` type (45 numbers), `DEFAULT_TUNING`, slider limits, `sanitizeTuning` |
 | `src/sim/FlowField.ts` | Grid velocity field: Gaussian impulse deposit, speed clamp, decay (optionally non-linear in speed), Jacobi diffusion, bilinear sampling, whole-cell world scrolling |
 | `src/sim/AmbientFlow.ts` | The ocean's own current: curl of a two-octave stream function, divergence-free, analytic, seeded, tapered at the walls |
-| `src/sim/Agent.ts` | Agent record (pos, vel, prev-pos for interpolation, faction, variation, anchor) |
-| `src/sim/SpatialHash.ts` | Uniform-grid neighbour index, buckets reused between rebuilds |
-| `src/sim/SwarmSimulation.ts` | Boids (sep/ali/coh) + water drag + predictive avoidance + walls + deterministic wander |
-| `src/sim/ObstacleSystem.ts` | Deterministic course generation (gate / rock / narrows), circle collision, predictive avoidance, progress |
-| `src/sim/RescueSystem.ts` | Pods, sustained-contact detection, merge into the main shoal, missed-pod accounting |
-| `src/sim/RunState.ts` | Run counters, score, the streak multiplier, failure reasons, `MIN_SHOAL` |
 | `src/sim/CurrentField.ts` | Standing currents the course owns: exactly divergence-free vortices, sampled not simulated |
-| `src/sim/PredatorSystem.ts` | Hunters: pursuit, patrol, strike cooldown, and the low water coupling that makes them heavy |
-| `src/config/zones.ts` | The four ascent bands — which archetypes each may build, and how much light their water carries |
-| `src/sim/World.ts` | Orchestration: camera, gesture→water injection, collisions, pods, hazards, zones, failure, events |
+| `src/sim/LayeredFlow.ts` | Act III's medium: the upper air as deep horizontal layers moving at different speeds and in opposite directions, which is what actually carries a spore |
+| `src/sim/PotentialField.ts` | Act IV's "stroke": with no medium left to push, a stroke lays a gravity well and the carried life falls around it |
+| `src/sim/Medium.ts` | The medium as one number set - coupling, flow half-life, laid-flow speed cap, migration, held-cruise - so an act changes the medium rather than the code; water resolves to the exact fields act I always read |
+| `src/sim/Breath.ts` | The 11-second breath (5.45 a minute) every bed and picture moves at, with rests at both ends and a longer out-breath |
+| `src/sim/Agent.ts` | Agent record (pos, vel, prev-pos for interpolation, faction, species, variation, anchor) |
+| `src/sim/SpatialHash.ts` | Uniform-grid neighbour index, buckets reused between rebuilds |
+| `src/sim/SwarmSimulation.ts` | Boids (sep/ali/coh) + medium drag + predictive avoidance + walls + deterministic wander |
+| `src/sim/ObstacleSystem.ts` | Course generation and the authored-script builders for every act's archetypes, circle collision, predictive avoidance, progress; the seeded generator (gate / rock / narrows / drift / vortex / predator) survives only for the sweeps |
+| `src/sim/RescueSystem.ts` | Pods and required rings, sustained-contact detection, merge into the main shoal, missed-pod accounting |
+| `src/sim/PredatorSystem.ts` | Hunters (shark, raptor, ember): pursuit, patrol, strike cooldown, and the low water coupling that makes them heavy |
+| `src/sim/RunState.ts` | Run counters, score, the streak multiplier, failure reasons, `MIN_SHOAL` and its 40 % floor |
+| `src/sim/Failure.ts` | What going wrong means, per act: put the station back and charge for it (a budget of restarts, then the act begins again), end the run, or never fail (act VII's last water); plus the strand line and grace |
+| `src/sim/World.ts` | Orchestration: camera, gesture to medium injection, collisions, pods, hazards, zones, failure, events |
+| `src/config/levels.ts` | The campaign's grammar: `Act`, `Level`, `SectionSpec`, `RingSpec`, `MotionSpec`, and act I's authored water course (six stations) |
+| `src/config/ascent.ts` | Act II, the air: six stations of cloud, rebuilt around the one verb (decision 45) |
+| `src/config/thinning.ts` | Act III, the thinning: spores, seeds and ice nuclei in the layered upper air |
+| `src/config/orbit.ts` | Act IV, orbit: the act where a stroke lays potential instead of momentum |
+| `src/config/reentry.ts` | Act V, the fallback: the first act that falls, and where the input changes under the hand |
+| `src/config/rain.ts` | Act VI, the rain: rings gather scattered droplets back together |
+| `src/config/homecoming.ts` | Act VII, the homecoming: the same water as act I met going the other way, authored end to end |
+| `src/config/campaign.ts` | The seven acts in order, as a circuit; `CAMPAIGN`, `ACT_COUNT`, `TOTAL_STATIONS` |
+| `src/config/zones.ts` | The palette and pool of every station's water, air or vacuum, across all seven acts - which archetypes each may build, and how much light the medium carries |
+| `src/config/settings.ts` | Persisted preferences, sanitised on load: the audio mixer (ten tracks), mute, language, continuous-circuit mode. Quality, haptics, HUD, calm, reduced-motion and high-contrast switches were removed and are dropped from old saves |
+| `src/meta/Profile.ts` | Personal bests, lifetime totals and the per-act record of stations cleared (storage version 3) - the only progression the game has |
+| `src/meta/Campaign.ts` | The three facts that survive the gap between acts - where you are, what you carry, what it was worth - and the station checkpoint; headless on purpose |
+| `src/meta/Circuit.ts` | The circuit drawn as a transit line: forty-two stops on one closed route, in box units, pure and DOM-free |
+| `src/meta/Habitat.ts` | What lives in each band of the map's world (water, air, vacuum): the smallest marks that name the medium |
 
 ### Presentation / platform
 | File | Purpose |
 | --- | --- |
-| `src/render/Renderer.ts` | Canvas2D: light shafts, caustics, parallax silt, zone-tinted background, tracers, wake, top-lit rocks, distance haze, pods, hunters, vortices, shoal, additive effects, shake, vignette, HUD, hint, debug overlays |
+| `src/render/Renderer.ts` | Canvas2D, no WebGL and no post-processing: the per-act backdrop dispatch, light shafts, caustics, parallax silt, zone-tinted background, tracers, wake, rocks and clouds, distance haze, pods, hunters, vortices, the carried life, additive effects, shake, vignette, HUD, hint, debug overlays |
 | `src/render/Paint.ts` | Zone palettes pre-parsed to numbers, the per-frame crossfade, and the colour helpers (`mix`, `brighten`, `temper`) |
-| `src/render/FishShapes.ts` | The four kinds of fish, seen from above, and the travelling wave that makes them swim |
-| `src/render/Motif.ts` | What a level *is*, in one table: its backdrop, its wash, and the material its rock is made of |
-| `src/render/Backdrop.ts` | The water each level is played in — canyon walls, void, current, rise, light line, surface — at two or more parallax planes each |
+| `src/render/Strata.ts` | The planes a picture is made of: a table of depth planes per station, because a full-frame bloom was built, hated and reverted (CLAUDE.md: no post-processing) |
+| `src/render/FishShapes.ts` | The five kinds of fish (dart, disc, needle, fan, ray), seen from above, and the travelling wave that makes them swim |
+| `src/render/Flock.ts` | The birds of act II: wing planform sampled root to tip, a bounded-rate heading and a constant per-bird wingbeat rate (decisions 45-52) |
+| `src/render/Carriers.ts` | The five carriers with no body plan (acts III to VII): spores, motes, droplets and the rest of what the gold is held in, and the campaign's one secret |
+| `src/render/Motif.ts` | What a station *is*, in one table per act: its backdrop, its wash, and the material its rock is made of |
+| `src/render/Backdrop.ts` | The water each level is played in - canyon walls, void, current, rise, light line, surface - at two or more parallax planes each |
+| `src/render/Sky.ts`, `Upper.ts` | The air each station is flown in: act II's six backdrops, and `Upper.ts`, which is `Sky.ts` one atmosphere further out, for act III's six |
+| `src/render/SkyParts.ts` | The four cloud/sky primitives acts II and III share, so the seam at 11 km cannot show |
+| `src/render/Orbit.ts`, `Reentry.ts`, `Rain.ts`, `Homecoming.ts` | The backdrops of acts IV to VII (orbit has no sky at all; re-entry makes the planet the floor; rain arrives at the ground; the homecoming puts the light behind you) |
 | `src/render/Decor.ts` | The life that is not in the way: weed, jellies, bubbles, shards, and something very large passing behind everything |
-| `src/render/Stone.ts` | Collision circles → one convex silhouette per connected mass, plus the crest (the up-facing arc) every rock is lit along |
-| `src/render/RockPaint.ts` | How that silhouette becomes stone: occlusion, per-mass lighting, sediment bands, rim light, and the level's own fringe |
+| `src/render/Stone.ts` | Collision circles to one silhouette per connected mass (convex hull for rock, star-shaped union for cloud), plus the crest every rock is lit along |
+| `src/render/RockPaint.ts` | How that silhouette becomes stone or cloud: occlusion, per-mass lighting, sediment bands, rim light, and the level's own fringe |
 | `src/render/Whirl.ts` | A standing current drawn from the field it samples: sheared filaments, entrained motes at the true local angular speed |
-| `src/render/Hunter.ts` | The predator: a top-down pelagic silhouette that flexes as it swims, and a threat field made of shadow rather than red |
-| `src/render/Surfacing.ts` | The ending, in four movements — lift, ascent, breach, sky — on the renderer's own clock |
-| `src/input/InputController.ts` | Pointer events → water momentum, coalesced-event replay, multi-touch, stroke-speed callback for audio |
-| `src/ui/Shell.ts` | Title, pause, results and the circuit map as real DOM buttons — focusable, screen-readable, hidden outright during a run |
-| `src/audio/AudioEngine.ts` | Every sound in the game, synthesised: eight per-act beds, stroke whoosh, gate, rescue, re-form, impact, strike, zone, fail, record |
+| `src/render/Hunter.ts`, `Raptor.ts`, `Ember.ts` | The three threats: the shark (stiffens as it commits), the falcon (folds into a teardrop) and act V's burning piece of the vehicle, which is not alive |
+| `src/render/Banner.ts` | The station banner: the only text painted on the canvas, as a pure function of a view so it can be tested |
+| `src/render/Films.ts` | Which film each act ends on, so the next act's first frame arrives inside the previous act's ending rather than after it |
+| `src/render/Surfacing.ts`, `Release.ts`, `Karman.ts`, `Overview.ts`, `Nucleus.ts`, `Estuary.ts`, `Circle.ts` | The closing films, in play order: act I's breach into sky, act II's view of the atmosphere from outside it, the Karman line (the stroke that does nothing), the camera turning at the top of the circuit, the gold condensing back out of the fire, the estuary where the water becomes life again, and the last sentence that dissolves the trench floor into act I's first frame |
+| `src/input/InputController.ts` | Pointer events to medium momentum, coalesced-event replay, multi-touch, stroke-speed callback for audio |
+| `src/ui/Shell.ts` | Title, pause, results, the circuit map and the in-run audio drawer as real DOM buttons - focusable, screen-readable, hidden outright during a run |
+| `src/audio/AudioEngine.ts` | Every sound in the game, synthesised: eight beds across the seven acts, stroke whoosh, gate, rescue, re-form, impact, strike, zone, fail, record, and the ending cues |
 | `src/audio/Beds.ts` | Which bed an act plays, what its six layers are called, and how its chord, high layer and bell are voiced |
+| `src/audio/Scale.ts` | The one set of pitches the game may play, and the rule that every physically derived voice is snapped to it |
 | `src/audio/Rescues.ts` | The game's one reward, per act: the interval, the swell, and the act's own material converging on the ring |
 | `src/audio/Bubbles.ts`, `Raindrops.ts`, `Riffle.ts` | Minnaert resonance at three scales: the deep sea, rain on water, and a mountain stream |
-| `src/audio/Wings.ts`, `Crystals.ts`, `Void.ts`, `Plasma.ts`, `Snow.ts` | The other five media's voices — a flock, ice and shear, breath and whistlers, the sheath and its shocks, marine snow |
-| `src/config/settings.ts` | Persisted preferences, sanitised on load |
-| `src/i18n/strings.ts` | Hungarian and English string tables, `auto` resolved from the browser |
-| `src/meta/Profile.ts` | Personal bests and lifetime totals — the only progression the game has |
-| `src/core/storage.ts` | The one wrapper every persisted value goes through; a denied `localStorage` degrades, never throws |
+| `src/audio/Wings.ts`, `Crystals.ts`, `Void.ts`, `Plasma.ts`, `Snow.ts` | The other five media's voices - a flock, ice and shear, breath and whistlers, the sheath and its shocks, marine snow |
+| `src/audio/Whale.ts` | Whale song as a phrase (glides, then a long silence), the water's rare distant voice |
+| `src/i18n/strings.ts` | Hungarian and English string tables; `resolveLang` returns English for every setting, so Hungarian is the reference text and not a shipped language |
+| `src/platform/Haptics.ts` | Every buzz the game has, named, in one cue table behind one driver seam (`navigator.vibrate` on the web; iOS Safari never implemented it, so there it is a no-op) |
 | `src/platform/pwa.ts` | Service-worker registration, production builds only |
-| `src/debug/DebugPanel.ts` | Live sliders for every physical parameter, overlays, seed replay, config import/export, telemetry export, `localStorage` persistence |
-| `src/debug/AdminPanel.ts` | The admin surface: any of the twelve stations, any single authored section, and every sound in the engine — each on its own, one click |
+| `src/brand/digital-tulpa/` | The studio ident played before the title (`index.ts`, `ident.css`, `mark.svg`, its own `README.md`); dependency-free and copyable into another project |
+| `src/debug/DebugPanel.ts` | Live sliders for every tuning number, overlays, seed replay, config import/export, telemetry export, frame-scaler pins, `localStorage` persistence |
+| `src/debug/AdminPanel.ts` | The admin surface: any act and station, any single authored section, and every sound in the engine - each on its own, one click |
 | `src/telemetry/LocalTelemetry.ts` | Local-only run records + JSON export. **No network code exists in this project.** |
-| `src/main.ts` | Boot, the attract/playing/paused/over machine, resize/DPR/safe-area, visibility, adaptive quality, hit-stop, haptics, `window.__slowblue` test hook |
-| `public/manifest.webmanifest`, `public/sw.js`, `public/icon*.png` | Installable, offline-capable app shell |
+| `src/main.ts` | Boot, the attract/playing/paused/over machine and the campaign, resize/DPR/safe-area, visibility, the frame-rate quality ladder, hit-stop, haptic cues, the `window.__slowblue` test hook |
+| `public/manifest.webmanifest`, `public/sw.js`, `public/icon*.png`, `public/icon.svg` | Installable, offline-capable app shell |
 | `tools/make-icons.mjs` | PNG icon generator: a CRC table, `node:zlib`, and no image dependencies |
+| `tools/deploy.sh` | `npm run deploy`: builds with `BASE_PATH` and replaces the `gh-pages` branch with one orphan commit; the deploy is a command, not a workflow |
 
-### Tests
+### Tests, e2e and tools
+Unit tests run under `npm test` (vitest, node, no DOM). Specs under `e2e/` drive a production
+build in Chromium. `tools/*.sweep.ts` are the measuring instruments behind `npm run sweep`
+and are never part of `npm test`.
+
+**Shared test helpers (not tests)**
+
 | File | Purpose |
 | --- | --- |
 | `tests/helpers.ts` | Inert tuning (all forces off) so one force can be isolated per test |
+| `tests/canvas.ts` | A canvas that records instead of painting: outlines, arcs, composite modes, and a check that nothing drawn was a non-finite number |
+| `tests/bot.ts` | Scripted stand-in players (`passive`, aim bot with style knobs, splitter, `rush` and `brake` hands) + run harness |
+| `tests/course.ts` | The corridor sweep, shared by every act's safety net: a reachable set of x positions carried down the course |
+| `tests/opening.ts` | The first-ninety-seconds measurement that `tools/onboarding.sweep.ts` reports and `tests/onboarding.test.ts` defends |
+| `tests/allocation.ts` | The allocation probe, in-process (the same instrument `e2e/measure.spec.ts` runs over the real bundle) |
+| `tests/audiobed.ts` | A Web Audio stub just complete enough to build the engine's graph, so `AudioEngine` can be tested at all |
+| `tests/oklab.ts` | The colour instrument: OkLab/OkLCh, because every other frame measurement reduces a pixel to luminance first |
+
+**Simulation and rules**
+
+| File | Purpose |
+| --- | --- |
 | `tests/core.test.ts` | Fixed timestep, RNG determinism, math |
+| `tests/promotion.test.ts` | The loop on a display that is not 60 Hz: 30, 90 and 120 Hz panels and a tab returning with a second of debt |
 | `tests/flowfield.test.ts` | Impulse deposit, falloff, half-life decay, diffusion, bilinear sampling, scrolling |
 | `tests/spatialhash.test.ts` | Neighbour queries, cell boundaries, negative coords, no leakage between rebuilds |
 | `tests/swarm.test.ts` | Separation/alignment/cohesion, faction isolation, water drag, braking, speed limits, determinism |
@@ -100,25 +216,107 @@ production technology choice.
 | `tests/ambient.test.ts` | Ocean current: determinism, peak speed, divergence-free interior, no flow into walls; plus the non-linear water decay |
 | `tests/currents.test.ts` | Standing currents: tangential only, divergence-free, zero at the eye and the rim, scaling, pruning |
 | `tests/predators.test.ts` | Hunters: pursuit, strike cooldown, spawn grace, wall clamp, determinism; and the shoal's flight response |
-| `tests/zones.test.ts` | Zone ordering, which archetype each zone may build, per-zone content, palette parsing and blending |
+| `tests/medium.test.ts` | The `Medium` abstraction's hard promise: water resolves to the exact tuning fields act I always read |
+| `tests/breath.test.ts` | The breath is 11 s, rests at both ends, and the out-breath is longer than the in-breath |
+| `tests/zones.test.ts` | Zone ordering, which archetype each zone may build, per-zone content, palette parsing and blending, and the monotone darkening of the ascent |
 | `tests/runstate.test.ts` | The streak: what advances it, what breaks it, what it is worth, and that a clean run beats a sloppy one |
+| `tests/tuning.test.ts` | The audio "harmonically pitched" clause as a number: every note-length voice in all eight beds lands on the scale (`src/audio/Scale.ts`) while textures stay free |
 | `tests/persistence.test.ts` | Storage that degrades instead of throwing, settings/profile sanitising, i18n table parity |
+| `tests/playability.test.ts` | Skill-tier probe, gesture-style differentiation, "rescue is a choice", split tactic, both failure endings |
+| `tests/ablation.test.ts` | What it costs to outrun the medium in the three acts that fall, answering the report "I can descend far faster than the world and never die": the charge for rushing, the heat that lets go again, and every climbing act left exactly as it was |
+| `tests/culling.test.ts` | Nothing leaves the frame by being switched off: rocks and currents are dropped past the glass, not on it |
+| `tests/allocation.test.ts` | The zero-GC clause as a guard: bytes per frame in an open station and in the busiest one |
+| `tests/response.test.ts` | The cheap half of `e2e/response.spec.ts`: no event type may exist that neither the glass nor the mixer names |
+| `tests/pointer.test.ts` | The pointer edge cases a phone produces: a second finger, a cancelled touch, a touch never lifted, a run ending under a finger |
+| `tests/haptics.test.ts` | The haptic cue table is the only way the game buzzes: every cue described in both vocabularies, the same array handed to the driver every time (no allocation), no cue the game never fires |
+
+**Campaign: the acts and the rules across them**
+
+| File | Purpose |
+| --- | --- |
+| `tests/levels.test.ts` | Act I's safety net: the corridor sweep over its authored course (the sweep itself is in `tests/course.ts`) |
+| `tests/ascent.test.ts` | Act II's safety net: a flyable corridor down the whole act, every obstacle cloud, no ring walled off, more rings and narrower gaps the higher it goes |
+| `tests/thinning.test.ts` | Act III's safety net, and the two claims that make it a different act rather than a different colour |
+| `tests/orbit.test.ts` | Act IV's safety net: a stroke lays potential, the act cannot end a campaign, there is no medium |
+| `tests/reentry.test.ts` | Act V's safety net: the first act that falls, and the input that changes under the hand |
+| `tests/descent.test.ts` | Acts VI and VII together, and the campaign as a whole: hazards thin out, the last stations cannot be lost, authored spacings are summed rather than assumed |
+| `tests/direction.test.ts` | The course runs both ways: the falling acts tested against a mirror of act I |
+| `tests/motion.test.ts` | The second axis (`MotionSpec`): a gap may breathe, a mass may walk, and nothing in it makes a station unflyable |
+| `tests/geometry.test.ts` | The four invariants that belong to no single act, true of all seven courses at once |
+| `tests/stations.test.ts` | The rules a station obeys, campaign-wide, measured on act V and now held for six acts (act I exempt from two on purpose) |
+| `tests/campaign.test.ts` | The campaign probe: a competent stand-in player can be on the line while the water moves, the ocean pushes and the dashed rings demand to be held |
+| `tests/circuit.test.ts` | `CampaignController`: where you are, what you carry, what it has been worth, across seven acts |
+| `tests/checkpoint.test.ts` | A cleared station stays cleared: the save and the resume at station boundaries |
+| `tests/ember.test.ts` | Act V's threat, and the campaign claim it exists to fix (every hunter used to be in acts I and II) |
+| `tests/onboarding.test.ts` | The shape of the first ninety seconds, defended with budgets rounded outward from what the sweep printed |
+| `tests/admin.test.ts` | Starting a run mid-script: the right section first, in the right station and medium, in either act, and section zero still the default |
+
+**Drawing**
+
+| File | Purpose |
+| --- | --- |
 | `tests/fish.test.ts` | The fish outline against a recording stand-in for a canvas: nose in front, body width preserved while it bends, nose still while the tail sweeps, one distinct aspect ratio per species, and a rescued pod keeping its kind through a merge |
-| `tests/canvas.ts` | A canvas that records instead of painting: outlines, arcs, composite modes, and a check that nothing drawn was a non-finite number |
+| `tests/flock.test.ts` | The bird silhouette, wingbeat and heading: mostly wing, a beat is a span that foreshortens, no frame moves the drawn span or heading faster than a bounded rate |
+| `tests/carriers.test.ts` | The five carriers with no body plan are five different things and draw clean |
 | `tests/stone.test.ts` | Masses merge, the crest faces up the course, its normals are unit and on the silhouette, and every material of every level paints clean at three quality levels |
+| `tests/motifs.test.ts` | The motif table is act-aware: an air gate is no longer painted as the water level with the same index |
 | `tests/whirl.test.ts` | The drawn current against `CurrentField` itself: `omega * r` is the tangential speed the shoal will feel, calm at the eye and the rim, shear monotone inward |
 | `tests/hunter.test.ts` | The predator outline: snout in front, widest at the pectorals, a lunate tail, a body that flexes cruising and stiffens on a strike |
-| `tests/surfacing.test.ts` | The ending's clock: phase order, no air before the breach, holds on its last frame, and finite geometry from the first frame to the last |
-| `tests/bot.ts` | Scripted stand-in players (`passive`, aim bot with style knobs, splitter) + run harness |
-| `tests/playability.test.ts` | Skill-tier probe, gesture-style differentiation, "rescue is a choice", split tactic, both failure endings |
-| `tests/admin.test.ts` | Starting a run mid-script: the right section first, in the right station and medium, in either act, and section zero still the default |
+| `tests/surfacing.test.ts` | The first ending's clock: phase order, no air before the breach, holds on its last frame, and finite geometry from the first frame to the last |
+| `tests/release.test.ts`, `tests/overview.test.ts`, `tests/films.test.ts` | The closing films run whole at 60 Hz: nothing drawn until the act is finished, phases in order, finite geometry, the last frame held; and every act has its own ending |
+| `tests/sky.test.ts`, `tests/homecoming.test.ts` | The backdrops held to one contract: nothing non-finite, something drawn at every point of a station (air in `sky`, act VII in `homecoming`) |
+| `tests/strata.test.ts` | The plane doctrine as tests: a table of forty-two entries cannot be edited by someone who has not read the paragraph above it |
+| `tests/decor.test.ts` | Nothing marine above the weather: decor themes per medium |
+| `tests/banner.test.ts` | The station banner as a pure function of a view |
+| `tests/palette.test.ts` | The palette as a system, in OkLCh across forty-two stations (report in `tools/palette.sweep.ts`) |
+| `tests/atlas.test.ts` | The shape of the circuit, asserted: it closes, the way home mirrors the way out, and up is up (act IV across the top) |
+| `tests/habitat.test.ts` | The world behind the route on the map: the three promises that furniture makes |
+
+**Audio**
+
+| File | Purpose |
+| --- | --- |
+| `tests/audioengine.test.ts` | What the bed actually deals, per act, against a stubbed `AudioContext` |
+| `tests/beds.test.ts` | The bed table: no act falls through an unowned `else` into the water's sound |
+| `tests/loops.test.ts` | Click-free clause: the one looping buffer and the per-frame parameters the engine pushes |
+| `tests/bubbles.test.ts`, `tests/raindrops.test.ts`, `tests/riffle.test.ts` | Minnaert resonance at three scales, and that the three results are unmistakable for each other |
+| `tests/wings.test.ts`, `tests/crystals.test.ts`, `tests/void.test.ts`, `tests/plasma.test.ts`, `tests/snow.test.ts`, `tests/whale.test.ts` | The other voices: each keeps the one property that makes it that thing (a wing is derived from its span; the sheath is silent before the air; snow is still falling when its envelope ends; a whale glides, then is silent) |
+| `tests/rescues.test.ts` | The per-act rescue reward: every bed has one, no two acts share it, act I is exactly where it was, act IV keeps its silence, every degree stays on the scale |
+
+**End-to-end specs (`npm run e2e`, Chromium at 390x844)**
+
+| File | Purpose |
+| --- | --- |
+| `e2e/helpers.ts` | Boots the game *through the shell*, the way a player does; owns the rule about when the tracked screenshots may be rewritten |
+| `e2e/sourcemap.ts` | The smallest source-map reader that can name an allocation site in the minified bundle |
+| `e2e/smoke.spec.ts` | Mobile viewport: load, title to run handover, drag to water to shoal, no scroll, restart, pause/resume/quit, the in-game mixer, audio settings and personal best across a reload, CDP touch, local-only telemetry, installable manifest, the dev door touching no record |
+| `e2e/runtime.spec.ts` | Sustained frame rate under the real rAF loop, including deep in the run with hunters and standing currents up; the one-shot idle hint; the three-finger door to the panels; the quality-ladder pins; the clock stopping when the page loses focus |
+| `e2e/campaign.spec.ts` | The circuit driven through the real shell: the whole campaign end to end, act select, station checkpoint across a reload, the restart budget, the last water that cannot be lost |
+| `e2e/acts.spec.ts` | Every station of all seven acts and every movement of the seven endings, shot and asserted to be a non-flat picture |
+| `e2e/capture.spec.ts` | Renders and saves the numbered documentation frames in `docs/screens/` - only when asked for (`npm run screens`); the rest of the time it is the smoke test for mid-run rendering |
+| `e2e/chrome.spec.ts` | The shell measured on the glass: every screen readable, every control hittable, the pinned primary clearing the cutout |
+| `e2e/shell.spec.ts` | What is left after the settings screen: the mute button and the map's mode and wipe are reachable |
+| `e2e/safearea.spec.ts` | Whether anything the player must touch or read sits under an emulated notch or home indicator |
+| `e2e/response.spec.ts` | What answers an event, and how loudly: every event of the union on both the glass and the mixer |
+| `e2e/unlock.spec.ts` | The audio unlock handshake: silent until touched, restored on return, survives every touch for a session |
+| `e2e/intro.spec.ts` | The studio ident owns startup, a key or a touch skips it without starting a run underneath, and it plays in full under reduced motion |
+| `e2e/motion.spec.ts` | A moving rock is drawn where it collides; act V's fragments arrive from behind |
+| `e2e/measure.spec.ts` | The evidence suite: launch budget cold and warm, allocation in the busiest frame, offline install and second launch, retina edge sharpness |
+
+**Tools (`tools/`)**
+
+| File | Purpose |
+| --- | --- |
 | `tools/experiment.ts` | Sweep harness: runs every play style under a tuning override and prints a comparison table |
-| `tools/water.sweep.ts` | Standing design-health check (`npm run sweep`) |
-| `vitest.sweep.config.ts` | Separate runner for the sweeps, so minutes-long experiments stay out of `npm test` |
-| `e2e/helpers.ts` | Boots the game *through the shell*, the way a player does |
-| `e2e/smoke.spec.ts` | Mobile viewport: load, title→run handover, drag→water→shoal, no scroll, restart, pause/resume/quit, settings and personal best across a reload, CDP touch, local-only telemetry, installable manifest |
-| `e2e/runtime.spec.ts` | Sustained frame rate under the real rAF loop, including deep in the run with hunters and standing currents up; the one-shot idle hint appears and never returns |
-| `e2e/capture.spec.ts` | Renders and saves `docs/screens/*.png` for the nine states that matter, the ending among them |
+| `tools/water.sweep.ts` | Standing design-health check for act I (`npm run sweep`) |
+| `tools/air.sweep.ts`, `thin.sweep.ts`, `space.sweep.ts`, `descent.sweep.ts` | The same instruments for act II, act III, acts IV and V, and acts VI and VII with the length of the whole circuit |
+| `tools/finish.sweep.ts` | Can a competent hand actually finish an act inside its own clock |
+| `tools/length.sweep.ts` | How hard an act is on a scale that survives the act getting longer (half an hour to run) |
+| `tools/stations.sweep.ts` | What every station is made of, as arithmetic - the one instrument that does not run the simulation |
+| `tools/rush.sweep.ts` | How much faster than the world a hand can go, and what that costs (`SLOWBLUE_ACT=reentry` for one act) |
+| `tools/onboarding.sweep.ts` | What the first ninety seconds show, and when |
+| `tools/palette.sweep.ts` | The colour arc across forty-two stations, in OkLCh |
+| `tools/deploy.sh`, `tools/make-icons.mjs` | Listed under platform above |
 
 ## How the mechanic is built (and why)
 
@@ -156,12 +354,23 @@ decoration - see decision 5 below.
 **Growth, attrition and splitting all cost something.** A rescue demands a *fraction* of the
 shoal inside the ring; a bigger shoal is heavier (`inertiaPerAgent`); a rock strike panics its
 neighbours and widens the shoal; and a shoal that has lost 60% of its starting size is over.
-Each of these replaced a version where the corresponding action was free.
+Each of these replaced a version where the corresponding action was free. (The 40 % floor is
+still `MIN_SHOAL_FRACTION`; what *happens* when it is crossed is now the per-act policy in
+`Failure.ts`, not an unconditional game over.)
 
 **Depth is the only progression.** `zones.ts` says which archetypes the generator may build
 and what the water looks like; nothing else in the game knows a zone exists. The first zone
 is a fixed `gate → rock → narrows` cycle, because it is the tutorial and a tutorial must not
 shuffle. Everything the player earns across runs is one file of personal bests.
+
+> **Superseded in two ways.** Since decision 21 the shipped course is authored, not
+> generated: each act's file under `src/config/` is a hand-written list of sections, and the
+> seeded generator described here survives only for the sweeps. And "depth" became the whole
+> circuit - seven acts, forty-two stations, 432 sections and 144 authored minutes
+> ([docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md)) - with a per-act record of stations cleared
+> (`Profile` v3) on top of the personal bests. Failure is no longer one rule either: see
+> `src/sim/Failure.ts`, where a lost station is put back and charged for, twice, before the
+> act begins again.
 
 **The two hazards that are not rock.** A *standing vortex* is an obstacle made of the same
 substance the player steers with — the only way past is to spend water on it. It is the
@@ -176,8 +385,9 @@ range of the thing that eats you turns a readable hazard into a slot machine.
 **The shell is DOM, not canvas.** Everything in the game is drawn, because the game is one
 continuous picture of water. Everything around it is a real `<button>`, because a
 canvas-drawn button has no focus ring, no screen reader, no keyboard and no text scaling.
-The two never overlap: the shell is `display: none` during a run, so it can never eat a
-gesture, and the HUD is suppressed whenever a shell screen is up.
+The two never overlap: the shell's screens are `display: none` during a run, so they can
+never eat a gesture, and the HUD is suppressed whenever a shell screen is up. (The pause and
+mixer buttons are the exception by design: two small corner controls that no stroke needs.)
 
 **All audio is synthesised.** No asset ships. A prototype that has to open over a LAN cannot
 spend a megabyte before the first frame, and every cue is parameterised by what caused it —
@@ -187,19 +397,38 @@ the `AudioContext`, and a no-op wherever `AudioContext` does not exist (Node, th
 
 ## Where to tune
 
-* **`src/config/tuning.ts` — `DEFAULT_TUNING`**: every feel value. Nothing else hardcodes one.
-* **Debug panel** (`?debug=1`, or a dev build, or press `d`): live sliders for all 30
-  parameters, field/hash overlays, FPS, seed replay, config import/export, defaults reset,
-  slow-motion and pause, telemetry export. Values persist in `localStorage`.
+* **`src/config/tuning.ts` — `DEFAULT_TUNING`**: every feel value (45 numbers). Nothing else
+  hardcodes one. The media (`src/sim/Medium.ts`) override the handful that differ in air,
+  the upper atmosphere, vacuum and rain; water resolves to these defaults digit for digit.
+* **Debug panel** (`?debug=1`, in a dev build and in a shipped one alike; `d` toggles it):
+  live sliders for every tuning number, field/hash/stats overlays, FPS and frame percentiles,
+  the frame-rate ladder's pins, seed replay, config import/export, defaults reset, 0.25x and
+  pause, telemetry export. Values persist in `localStorage`.
+* **Admin surface** (`?admin=1`, always on in `npm run dev`, and on a phone by holding three
+  fingers still for a second and a half off-run): any act, station or single section, and
+  every sound. It is the tool for *looking* at a thing rather than tuning it.
 * **Highest-leverage parameters** (measured, see below): `flowCoupling`, `flowStrength`,
-  `perceptionRadius` + `cohesion`, `pressureRamp`, `inertiaPerAgent`, `predatorCoupling`.
+  `perceptionRadius` + `cohesion`, `pressureRamp`, `inertiaPerAgent`, `predatorCoupling`,
+  and, since decision 37, `migrationSpeed`.
 * **Speed→shape mapping**: `World.injectStroke` (the `0.35 + 1.75 * u` / `1.55 - 0.85 * u` pair).
-* **Course**: `ObstacleSystem.build*` + `SECTION_SPACING`.
-* **What gets built how deep**: `ZONES` in `src/config/zones.ts` (`fromSection` + `pool`).
-* **Rescue difficulty**: `CONTACT_AGENTS`, `CONTACT_HOLD` in `RescueSystem.ts`.
+* **Course**: the authored lists in `src/config/` (one file per act, `levels.ts` for act I
+  and the grammar) and the builders in `ObstacleSystem`; `SECTION_SPACING` (820) is only the
+  default spacing - a section carries its own. What a station is made of is measured by
+  `tools/stations.sweep.ts`, and the rules it must obey are `tests/stations.test.ts`.
+* **What the generator builds how deep** (sweeps only): `ZONES` in `src/config/zones.ts`
+  (`fromSection` + `pool`); the same file carries every authored station's palette.
+* **Rescue difficulty**: `CONTACT_AGENTS` (8), `CONTACT_HOLD` in `RescueSystem.ts`.
 * **Scoring and the streak**: `GATE_POINTS` / `RESCUE_POINTS` / `REFORM_POINTS`,
   `STREAK_TOLERANCE`, `COHESION_LIMIT`, `STREAK_STEP`, `STREAK_CAP` in `RunState.ts`.
-* **Failure thresholds**: `MIN_SHOAL` (`RunState.ts`), `STRAND_LINE` / `STRAND_GRACE` (`World.ts`).
+* **Failure thresholds**: `MIN_SHOAL` and `MIN_SHOAL_FRACTION` (`RunState.ts`); the strand
+  line and grace (`strandLine` 0.94, `strandGrace` 0.7) and the restart budget in the
+  `FailurePolicy` of `src/sim/Failure.ts`.
+* **Picture budget**: `QUALITY_RUNGS` in `src/main.ts`, the five-rung ladder the frame-rate
+  scaler walks (down at 45 fps after 2.5 s, back up at 58 after 8 s). There is no quality
+  setting; the ladder is the setting.
+* **Length and difficulty of an act**: do not hand-tune; read
+  [docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md) and run `tools/length.sweep.ts` and
+  `tools/rush.sweep.ts`.
 
 ## Tuning decisions that came from measurement, not taste
 
@@ -347,6 +576,13 @@ the `AudioContext`, and a no-op wherever `AudioContext` does not exist (Node, th
     waste. The `Low` quality setting drops the vignette, the distance haze and half the
     caustics outright, on top of the DPR cap and the halved particle counts, so the
     cheapest mode is genuinely cheap rather than slightly cheaper.
+
+    > **Superseded:** there is no quality setting any more. It was `auto` / `high` / `low`,
+    > and `high` was strictly worse than `auto`. The frame-rate scaler in `main.ts` walks a
+    > five-rung ladder (`QUALITY_RUNGS`) that thins the drawing twice before it touches the
+    > resolution, steps down at 45 fps and back up at 58, and the bottom rungs are what `Low`
+    > used to do in one jump. The measurements above still describe what the expensive
+    > layers cost.
 
 19. **The fish were triangles, which is the shape you draw when the camera is nowhere.**
     This camera is directly over the water, so a fish is now a spindle seen from above:
@@ -564,8 +800,11 @@ the `AudioContext`, and a no-op wherever `AudioContext` does not exist (Node, th
     closing title is deferred until there is air to put it over and re-inked dark, since a
     white heading on a bright sky is a heading nobody reads. Sound got the one thing the rest
     of the game never does — `AudioEngine.surface()` sweeps a filter *upward* and resolves,
-    cued at the breach rather than at the event. Reduced motion keeps the film and drops the
-    spray, the leapers and the drift; low quality drops the net and the spray.
+    cued at the breach rather than at the event. Reduced motion kept the film and dropped the
+    spray, the leapers and the drift; low quality dropped the net and the spray.
+    (Superseded: the reduced-motion switch is gone, so the spray and the leapers are always
+    part of the film, and the quality cuts follow the frame-rate ladder described under
+    decision 18 rather than a setting.)
 
 36. **Every level's water got a second plane.** The backdrops were one plane of decoration each
     — a painted cloth at a fixed distance — so the levels looked like pictures of places rather
@@ -714,6 +953,9 @@ in the game, and `src/sim/Breath.ts` documents itself.)
 > in 42–44 were removed: they gave act II a second verb, and this project has one. The
 > record is kept because the measurements in it are real and the mistake is instructive -
 > an act can measure healthy all the way to the end and still be the wrong game.
+> `src/sim/Lift.ts`, `src/render/Thermal.ts`, `tests/air.test.ts` and `tests/thermal.test.ts`
+> are gone with them; `tools/air.sweep.ts` stayed and now measures act II with act I's own
+> scripted players. Where 42-44 name those files or `liftScale`, read them as history.
 
 42. **The ascent begins: `Medium`, `Lift`, and one air station (phase 0 of
     docs/DESIGN-ASCENT.md).** The medium is now data (`src/sim/Medium.ts`): coupling,
@@ -835,6 +1077,11 @@ in the game, and `src/sim/Breath.ts` documents itself.)
     going - every threat in act I arrived from the direction the shoal was already facing.
 
 ### Act II health at the current defaults
+
+*As measured when decision 45 rebuilt the act (it sits here because 43-44 above are its
+prehistory). It describes act II at six stations of about ten minutes, before the campaign
+was rebuilt to its present length; for today's numbers run the sweeps named in
+[docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md).*
 
 `npm run sweep`, 11 seeds, six stations, **act I's own scripted players**:
 
@@ -1103,8 +1350,11 @@ carried individual is worth against a cleared section. It wants one scoring swee
     now asks which side of the background a thing is already on. The squall is the tightest
     frame in the act (a dark flock against a dark sky) and its sky was lifted and its flock
     pushed down until the two clear 3:1.
+    (Superseded in part: the high-contrast switch was removed with the rest of the display
+    switches - see `src/config/settings.ts` - and `Renderer.contrast` with it. What stayed is
+    the palette work: the flock flips from dark to pale halfway up the act.)
 
-50. **The wings vibrated, and the bug was four years older than the birds.**
+50. **The wings vibrated, and the bug was older than the birds.**
 
     Reported in two words - *"nagyon vibrálnak a szárnyak, nem smooth"* - and it was
     not a smoothing problem. Both batched animal renderers computed their animation
@@ -1235,6 +1485,10 @@ carried individual is worth against a cleared section. It wants one scoring swee
 
 ### Design health at the current defaults
 
+*As measured at the end of the fourth pass, on act I's six stations before the rebuild that
+lengthened six of the seven acts. Act I is the one act that was frozen at ten minutes, so
+this table is the closest to what still describes it; `npm run sweep` prints the current one.*
+
 `npm run sweep`, 5 seeds, scripted players:
 
 | style | secs | gates | lost | rescued | re-forms | spread | score | endings |
@@ -1259,6 +1513,13 @@ ceiling `tests/playability.test.ts` asserts, so that one probe is red. It was al
 bigger shoal than the scoring curve expects. Fixing it is a scoring change (what a rescued
 individual is worth against what a cleared section is worth) and wants its own sweep.
 
+> **Resolved by moving the claim, not by changing the score.** The 1.45x ceiling was being
+> asserted against *generated* water, where pods are scattered along the route and a detour is
+> nearly free. It now lives on the authored campaign, where it holds (`tests/playability.test.ts`,
+> "the 1.45 ceiling"), and the generated-water reading (about 1.89x) stayed as the canary for
+> act I's physics: the test is called "keeps act I bit-identical", and its header explains
+> why it must not move.
+
 ### The admin surface: examining a thing instead of playing to it
 
 The tuning panel answers *what does this number feel like*. Two acts of authored content
@@ -1268,6 +1529,10 @@ and seven of the bed's voices are on Poisson clocks that deal a whale once a min
 the last station of act II had been seen a handful of times, and the whale had never been
 listened to twice in a row. Neither is a balance problem; both are inspection problems, and
 inspection is a tool.
+
+> **Scale since then.** The panel was built when there were two acts. It now lists all seven
+> (`CAMPAIGN_ACTS`, forty-two stations), and on a phone, where there is no address bar, it
+> opens by holding three fingers still for a second and a half off-run.
 
 `src/debug/AdminPanel.ts` is behind `?admin=1` (always on in `npm run dev`, and verified
 absent from the production bundle unless asked for). Its whole claim on the simulation is
@@ -1303,6 +1568,17 @@ panel that is being read.
 
 ### The map: the one thing the game said and never showed
 
+> **Superseded in its picture, not in its record.** The dial described below was the second
+> of five drawings of the circuit (act list, dial, cross-section, platforms, and finally the
+> one that ships: a transit line, forty-two stops on one closed route, with a wider stop where
+> one act hands over to the next, and `meta/Habitat.ts` putting the sea, the air and the
+> vacuum behind it). The reasons it gives for rejecting the list and the altitude chart still
+> hold, and so does everything under **The record** - `Profile` v3 is the current storage
+> version. What changed is the geometry (`src/meta/Circuit.ts`'s own header is the current
+> account), the test that holds it (`tests/atlas.test.ts`; `tests/ring.test.ts` no longer
+> exists), and the title screen, where the tally now rides on a journey card that is itself the
+> door to the map, not on the `A KÖR · 24/42` button named below.
+
 The title screen has always read *seven acts, one circuit, from the floor of the trench
 back to it*, and for the whole of the campaign's life nothing in the build ever drew it.
 What existed was an act list: seven names in a column, which is the one arrangement that
@@ -1318,7 +1594,7 @@ closed ring, evenly: one station is one forty-second of the way round, so twelve
 look like exactly as much of the journey as they are. The acts are seven bands of it, each
 covering its own stations and the half-steps either side, less half a gap at each end so
 that seven arcs read as seven. It is pure and DOM-free on purpose: `Shell` draws SVG out
-of it, and `tests/ring.test.ts` reads the same turns, so "the circuit closes" is asserted
+of it, and `tests/ring.test.ts` (now `tests/atlas.test.ts`) reads the same turns, so "the circuit closes" is asserted
 rather than looked at.
 
 The first version of this drew altitude instead — a profile that rose through four acts,
@@ -1332,7 +1608,7 @@ joins the beginning.
 Altitude survives it for free. The campaign climbs monotonically for four acts and falls
 for three, so placing the stations in play order puts the trench at the bottom of the
 circle and orbit at the top without the ring ever being told what a metre is — which is
-why act IV hangs at the top of the dial, and why `tests/ring.test.ts` asserts that it
+why act IV hangs at the top of the dial, and why `tests/ring.test.ts` (now `tests/atlas.test.ts`) asserts that it
 does. The claim holds exactly as long as the campaign stays one out-and-back, so it is
 written down as a test rather than as a comment.
 
@@ -1411,7 +1687,8 @@ hand focus back to that control (`data-focus`), and everything else is unchanged
 * **A standing vortex does not interact with the player's currents.** They are summed, not
   coupled — the same compromise the ambient field makes, for the same reason.
 * **`window.__slowblue` is exposed in production builds.** The e2e suite and on-device poking need
-  it. It would not ship.
+  it, and the web is the only target, so there is no store release to strip it from: it
+  ships. It reads and steps state; it reaches nothing, because there is no network code.
 * **`advance(seconds)` on that hook** steps and draws outside the rAF loop. It exists because
   the loop correctly parks itself when the tab is hidden, which makes headless capture
   impossible otherwise. Not a gameplay path.
@@ -1422,26 +1699,38 @@ hand focus back to that control (`data-focus`), and everything else is unchanged
   fingerprints its assets, so a stale hashed file is never the wrong file; only the HTML can
   go stale, and it is revalidated on every load.
 * **The icons are generated, not designed.** `tools/make-icons.mjs` is a PNG encoder and a
-  scanline rasteriser in 200 lines, because a game whose only runtime dependency is Vite
-  should not pull in an image library to draw four squares.
+  scanline rasteriser in about 300 lines, because a game with zero runtime dependencies
+  should not pull in an image library to draw six squares.
 * **Rocks are unions of circles.** Cheap exact collision and cheap predictive avoidance,
   and they still silhouette as organic rock.
 * **Avoidance is radial only.** Tangential "clever" dodging looked better but made the shoal
   unpredictable, which is directly against the design goal.
-* **Attrition is not symmetric.** Individuals dragged >140 px behind the camera are culled.
+* **Attrition is not symmetric.** In water, individuals dragged >140 px behind the camera are
+  culled (`Medium.stragglerMargin`; the other media have their own, from 110 px to 520).
   This is what makes hard flicks expensive (they leave a comet tail) — intended, and the
   cause of the tail visible in `docs/screens/03-rock.png`.
 * **UI strings are Hungarian and English**, but the game ships in English: `resolveLang`
   resolves every setting to `en` and there is no picker. Hungarian stays in the file as the
   reference text — it matched the intended first test audience, and every English string was
-  written against it. Inside a run there is
-  still almost no text: a count, a score, a depth, and the name of the zone you just entered.
+  written against it. Inside a run there is still almost no text: a count, a score, a depth,
+  and the name of the station you just entered.
 * **Playwright runs Chromium, not WebKit.** WebKit was not present in the local browser cache
   and one test drives raw CDP touch events. Mobile Safari is still a support target and needs
   a real-device pass.
 * **Telemetry is not research data.** Local `localStorage` + manual JSON export. No network.
 
 ## Measured performance
+
+> **Read this section as a record of how the numbers were taken, not as today's numbers.** It
+> was measured on act I and act II at their first length, in the first weeks, on Apple
+> Silicon in headless Chromium; the campaign has since been rebuilt, the picture has gained
+> planes and films, and the quality setting it mentions has become a ladder (see the
+> **Superseded** note under decision 18). What still gates performance today:
+> `e2e/runtime.spec.ts` (a 30 fps floor in headless Chromium, at the surface and deep in a run
+> with hunters and standing currents up), `e2e/measure.spec.ts` (launch budget, allocation per
+> frame, offline install) and `tests/allocation.test.ts` (zero GC in the hot path). **Real
+> frame rates on a real phone are still not measured here**; the debug panel's pin row exists
+> to take that reading.
 
 Chromium, 390×844 CSS at DPR 2 (750×1624 backbuffer), Apple Silicon, in-page timing over
 180 steps after a 60-step warm-up:
@@ -1479,8 +1768,8 @@ things (the clipped dome inside a mass and the caustic nets) are gated behind
 `quality > 0.6` and skipped outright on Low. That is entirely
 fill rate and path building — wide additive strokes, full-screen gradient fills, and more
 points per agent — not simulation. It is still comfortably clear of the 30 FPS floor the e2e
-suite enforces, and the `Low` quality setting removes the expensive layers rather than
-merely shrinking them.
+suite enforces, and the bottom of the quality ladder (once the `Low` setting) removes the expensive
+layers rather than merely shrinking them.
 
 That loop number is *not* a phone number: headless compositing is cheap and there is no
 thermal ceiling. **Real FPS must still be read from the debug panel on a real device** —
@@ -1489,18 +1778,17 @@ that measurement has not been taken. Neighbour cost grows super-linearly (5× ag
 ample headroom at 500.
 
 Guards in place: DPR capped at 2 and stepped down automatically after 2.5 s below 45 FPS
-(auto quality only — an explicit Low setting caps DPR at 1.25 and halves the tracer count
-outright), loop stopped entirely on `visibilitychange`, backlog dropped after a stall,
-buckets and vectors reused in the hot loop, palettes parsed once at module load rather than
-per frame.
+(then, as of the ladder, back up at 58 after 8 s; there is no explicit Low setting any more),
+loop stopped entirely on `visibilitychange`, backlog dropped after a stall, buckets and
+vectors reused in the hot loop, palettes parsed once at module load rather than per frame.
 
 ## The seven acts had one rhythm and one reward
 
 The report was that the acts play as one act with the background changed, and the
 first diagnosis was wrong: it blamed the archetypes. Reading the seven level files
 says otherwise. The alphabets *are* per-act and were defended deliberately —
-`config/levels.ts:77` states the rule as "a mapping of **demands** rather than of
-silhouettes" and repeats it in four tables. What was genuinely identical was
+`config/levels.ts` states the rule - in the comment above the section alphabets - as "a
+mapping of *demands* rather than of silhouettes" and repeats it in four tables. What was genuinely identical was
 underneath them:
 
 * **One metronome.** `SECTION_SPACING` is 820 and, across all seven config files,
@@ -1533,11 +1821,24 @@ and was authored end to end out of act I's rock.
 Act I is not in any of it. It is frozen, and a rhythm needs something regular to be
 heard against.
 
+> **Superseded in scale.** Every count in this section is the campaign *before* the length
+> rebuild: roughly a hundred obstacle sections, one 820 px metronome, and "each act keeps its
+> ten minutes". [docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md) reopened that last constraint
+> on purpose and measured the result: 432 sections and 144 authored minutes, six acts of
+> about twenty-two minutes and act I still frozen at ten, with `tools/stations.sweep.ts`
+> printing the current table so nobody maintains one by hand. The diagnosis above (one rhythm,
+> one reward, one pasted helper) is the part that stayed true and the reason the rebuild
+> authored per-act rhythm in the first place.
+
 ## What is still open
 
-* **No real-device pass.** Mobile Safari, thermals and actual touch latency are all untested.
-  This is the single largest remaining unknown, and nothing in this document substitutes for it.
-* **No human playtest of the deep zones.** The hunter and the vortex are balanced against
-  scripted players only; the sweep says they are survivable and cost something, not that they
-  are *fun*.
-* **`window.__slowblue` still ships.** It would be stripped for a real release.
+* **No real-device pass.** Mobile Safari, thermal throttling and actual touch latency are
+  all untested. This is the single largest remaining unknown, and nothing in this document
+  substitutes for it.
+* **Nobody has played the rebuilt campaign.** Six of the seven acts were rebuilt to the length
+  recipe and verified by tests and sweeps, which answer *can this be flown* and *does it obey
+  the rules*, not whether act III still feels like patience or act II is still the act this
+  repo is proudest of. The hunter and the vortex are likewise balanced against scripted players
+  only. [docs/DESIGN-LENGTH.md](docs/DESIGN-LENGTH.md) §12 is the watch list, in the order a
+  playthrough meets it.
+* **`window.__slowblue` ships.** That is a decision now, not a gap: see the compromise above.

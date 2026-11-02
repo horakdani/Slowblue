@@ -2,8 +2,9 @@
 
 A finished mobile-first Canvas 2D game: seven acts, forty-two authored stations, one
 sentence holding all of them — *you do not control the fish, you control the ocean.*
-[README.md](README.md) is the design; this file is how to work on it without breaking
-things that were already decided or re-learning things that were already measured.
+[README.md](README.md) is the pitch, [docs/GAME.md](docs/GAME.md) the design and
+[docs/DEVELOPING.md](docs/DEVELOPING.md) the way in; this file is how to work on it without
+breaking things that were already decided or re-learning things that were already measured.
 
 **Talk to Daniel in Hungarian. Write code, comments and commit messages in English.**
 
@@ -11,7 +12,7 @@ things that were already decided or re-learning things that were already measure
 
 TypeScript + Vite, no framework. Canvas 2D (`src/render/`, no WebGL), procedural Web Audio
 (`src/audio/`), Pointer Events, fixed 1/60 s simulation step (`src/core/GameLoop.ts`),
-44k lines, 790 unit tests, PWA with an offline service worker.
+53k lines in `src/`, 790 unit tests, PWA with an offline service worker.
 
 **The campaign has been rebuilt: 432 sections and 144 authored minutes, from 182 and 72.**
 Six acts of about twenty-two minutes and act I frozen at ten, because it is the metronome
@@ -56,7 +57,7 @@ rather than an accident: adding one is a decision to argue for, not a convenienc
 npm run dev        # dev server on all interfaces — reachable from a phone on the LAN
 npm run verify     # lint + typecheck + unit + build + e2e — the project's gate
 npm test           # unit only, fast
-npm run screens    # the twelve documentation frames
+npm run screens    # the eleven documentation frames
 npm run sweep      # balance sweeps; the only thing that may justify a tuning number
 ```
 
@@ -81,9 +82,10 @@ file grew, which for a minute looked like a different failure. The names are `ev
 screen: what can be read, and what can be hit`, `the pinned primary clears the cutout and
 lets go at the end of the column`, and `startup › reports what the first launch costs
 before the title screen`. Re-measured again 2026-08-14 after act V's second pass: same
-three, same names, 74 pass, 12.7 min.
+three, same names, 74 pass, 12.7 min. Re-measured a last time 2026-11-02, after the dev toolchain moved to vitest 5 and the
+admin surface was translated: same three, same names, 74 pass, 13.3 min.
 
-**The screenshots are not deterministic.** `npm run screens` rewrites all twelve PNGs on
+**The screenshots are not deterministic.** `npm run screens` rewrites all eleven PNGs on
 every run, so a dirty `git status` proves nothing. Commit them only when you meant to.
 
 **Another Claude may be on this tree.** Sessions run in parallel here. Check a file's mtime
@@ -97,15 +99,6 @@ static `dist/` pushed to a branch, and it asks for nothing but a push.
 **`main` is the only branch** that holds work, and it is the default branch. `gh-pages`
 is build output and nothing else: `npm run deploy` replaces it with one orphan commit, so
 never commit to it and never merge it anywhere.
-
-## The workflow
-
-| | |
-| --- | --- |
-| `/slowblue` | the game itself. State: `docs/progress.html` |
-
-One unit of work per run, and the state file is written at the end. Read the state file
-before doing anything; it is the only record that survives a session.
 
 ## Decided — do not reopen these
 

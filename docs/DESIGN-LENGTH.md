@@ -1,5 +1,16 @@
 # Length, and what a section is allowed to ask
 
+> **Status: measured history, and the standing record of how the campaign got its size.**
+> The decisions here are in force; the *plan* in §§1–7 is not a to-do list, because it was
+> carried out (§11) and §§8–10 record what playing it changed. This file **supersedes**
+> the section counts and act lengths in [DESIGN-ASCENT.md](DESIGN-ASCENT.md). The campaign
+> is **432 sections and 144 authored minutes** (about 108 as played), with act I frozen at
+> ten minutes; the 182 sections and 72 minutes in §1 are the "before" column, kept as the
+> measurement the rebuild answered. The numbers in §1 and §11 are dated snapshots:
+> `tools/stations.sweep.ts` prints today's (instant; it is also part of `npm run sweep`). Further reading:
+> [README.md](../README.md) for the game, [IMPLEMENTATION_NOTES.md](../IMPLEMENTATION_NOTES.md)
+> for how it is built.
+
 Decided 2026-08-14. The circuit is an hour, and the hour is not the problem — the
 *distribution* of it is. This file is the measurement that says so, the four decisions
 taken off the back of it, the arithmetic those decisions force, and the one act that has
@@ -17,6 +28,36 @@ a fault; the second came back with something neither pass had looked for, that *
 was free**, and had been in every falling act since the campaign turned over. §9 is act V's
 second pass, §11 is the other six acts, and §12 is the part that is not done: **nobody has
 played any of it.**
+
+## Contents
+
+- [1. What the campaign measures today](#1-what-the-campaign-measures-today)
+- [2. What was decided](#2-what-was-decided)
+- [3. The arithmetic these force](#3-the-arithmetic-these-force)
+- [4. The station's new shape: two movements, and the rest moves to the middle](#4-the-stations-new-shape-two-movements-and-the-rest-moves-to-the-middle)
+- [5. The four demands, and what each cost](#5-the-four-demands-and-what-each-cost)
+  - [Motion is a modifier, not an alphabet](#motion-is-a-modifier-not-an-alphabet)
+  - [The threat that returns is not in the pilot, and why](#the-threat-that-returns-is-not-in-the-pilot-and-why)
+- [6. The pilot, as built](#6-the-pilot-as-built)
+- [7. What the pilot measured, including the part that says the plan was wrong](#7-what-the-pilot-measured-including-the-part-that-says-the-plan-was-wrong)
+  - [The completion criterion is met, and it is still the wrong instrument](#the-completion-criterion-is-met-and-it-is-still-the-wrong-instrument)
+  - [Where the pilot landed](#where-the-pilot-landed)
+- [8. The pilot was played, and both halves of the verdict were right](#8-the-pilot-was-played-and-both-halves-of-the-verdict-were-right)
+- [9. The second pass: four demands, and the length that came with them](#9-the-second-pass-four-demands-and-the-length-that-came-with-them)
+  - [What it measured, and the instrument it broke](#what-it-measured-and-the-instrument-it-broke)
+  - [What the second pass deliberately did not do](#what-the-second-pass-deliberately-did-not-do)
+- [10. Then it was played again, and the fall turned out to be free](#10-then-it-was-played-again-and-the-fall-turned-out-to-be-free)
+  - [The instrument that could not see it, and why](#the-instrument-that-could-not-see-it-and-why)
+  - [The fix is the medium's, and three reasons it is not the camera's](#the-fix-is-the-mediums-and-three-reasons-it-is-not-the-cameras)
+  - [`Medium.drag`: the air has a speed, and outrunning it burns](#mediumdrag-the-air-has-a-speed-and-outrunning-it-burns)
+  - [The measurement that says it is a demand and not a rail](#the-measurement-that-says-it-is-a-demand-and-not-a-rail)
+  - [Act VI already had a price on its fall, and it is called the course](#act-vi-already-had-a-price-on-its-fall-and-it-is-called-the-course)
+  - [The restart budget stopped being a constant](#the-restart-budget-stopped-being-a-constant)
+  - [...and the warning that had never been drawn](#and-the-warning-that-had-never-been-drawn)
+- [11. It was done six more times, and this is the circuit](#11-it-was-done-six-more-times-and-this-is-the-circuit)
+  - [...and the fall's price had to be re-measured, because the rebuild moved it](#and-the-falls-price-had-to-be-re-measured-because-the-rebuild-moved-it)
+- [12. What this cost, and what is left](#12-what-this-cost-and-what-is-left)
+- [13. Not reopened here](#13-not-reopened-here)
 
 ## 1. What the campaign measures today
 
@@ -67,7 +108,10 @@ Three readings, and only the third is a fault:
   floor under gap width, and tightening toward it is the cheapest and most frustrating
   difficulty there is.
 * **The free acts get harder too, in proportion.** Acts I and II are what the purchase is
-  decided on, so they show the game that is being bought.
+  decided on, so they show the game that is being bought. *(Since then: there is no
+  purchase. The game has no monetisation of any kind, so "free" meant only "the first
+  two acts", and the reasoning survives as: the opening is what a stranger judges the
+  whole game by.)*
 * **One act is built first and measured** before the other six are touched.
 
 ## 3. The arithmetic these force

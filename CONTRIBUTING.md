@@ -4,6 +4,16 @@ Thank you for looking. This is a finished game rather than a framework, so the m
 useful contributions are usually small and specific: a bug you can reproduce, a device
 the layout breaks on, a section that is unfair in a way you can describe.
 
+## Getting set up
+
+```bash
+npm install && npm run dev
+```
+
+Node 20 or newer (`.nvmrc` says 22). [docs/DEVELOPING.md](docs/DEVELOPING.md) has the
+commands, the layout of the code and the URL parameters that open the admin and debug
+surfaces.
+
 ## Before you open a pull request
 
 Run the gate:
