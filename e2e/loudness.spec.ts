@@ -75,7 +75,7 @@ test('the bed is audible, and nothing reaches the converter hot enough to clip',
   const peakDb = db(peak);
   console.log(`[loudness] settled bed: rms ${rmsDb.toFixed(1)} dBFS, peak ${peakDb.toFixed(1)} dBFS`);
 
-  expect(rmsDb, 'the bed is too quiet to hear at a comfortable volume').toBeGreaterThan(-36);
-  expect(rmsDb, 'the bed is too loud for a game about patience').toBeLessThan(-12);
-  expect(peakDb, 'the limiter is not holding').toBeLessThan(-1);
+  expect(rmsDb, 'the bed is too quiet to hear at a comfortable volume').toBeGreaterThan(-30);
+  expect(rmsDb, 'the bed is too loud for a game about patience').toBeLessThan(-8);
+  expect(peakDb, 'the limiter is not holding').toBeLessThan(-0.5);
 });

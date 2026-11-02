@@ -259,7 +259,7 @@ const CRYSTAL_GAIN = 0.016;
  * The gain at the top of the graph. Every other level in this file is relative to it,
  * so the whole game's loudness is this number and the limiter behind it.
  */
-const MASTER_GAIN = 7;
+const MASTER_GAIN = 14;
 /** Act III. One layer sliding past another, over ten to twenty seconds. */
 const SHEAR_GAIN = 0.02;
 /** Act III. The planet's waveguide. Low enough that most phones will not reproduce it. */
@@ -985,6 +985,9 @@ export class AudioEngine {
     // is why the game could not be heard at a comfortable system volume. Every voice
     // is mixed against every other, so the fix is one number at the top rather than
     // forty at the bottom.
+    // It was 7 for one release and still read as faint on a laptop: 14 settles act I at
+    // about -20 dBFS RMS with peaks held under the limiter, which is where a page that
+    // plays sound for a living sits.
     master.gain.value = MASTER_GAIN;
     // A compressor is the cheapest insurance against a rock strike that kills nine
     // individuals in one frame turning into nine overlapping thuds at full scale.
@@ -996,10 +999,10 @@ export class AudioEngine {
     // ...and a limiter behind it, because a compressor with a 20 ms attack lets the
     // first few milliseconds of a strike through, and at this master level those
     // milliseconds reach the converter. Fast, hard, and set where nothing in the
-    // game should ever be asked to go: six under full scale, so the converter keeps
+    // game should ever be asked to go: eight under full scale, so the converter keeps
     // headroom for the ringing of the limiter itself.
     const limiter = ctx.createDynamicsCompressor();
-    limiter.threshold.value = -6;
+    limiter.threshold.value = -8;
     limiter.knee.value = 0;
     limiter.ratio.value = 20;
     limiter.attack.value = 0.003;
