@@ -135,6 +135,7 @@ import {
 } from './Rescues';
 import { whaleGap, whalePhrase, type WhaleCall } from './Whale';
 import { ROOT_HZ, SCALE, degreeHz, snapHz } from './Scale';
+import { SilentLoop } from './SilentLoop';
 
 type Ctor = new () => AudioContext;
 
@@ -152,20 +153,25 @@ function contextCtor(): Ctor | null {
  * here would not add anything - it would hide the fact that the answer is on the
  * page. The Audio Session API is the switch that survives.
  *
- * The value used to be `playback`, which is this game's opposite. Playback means
- * "the sound is the point": it overrules the hardware silent switch and stops
- * whatever the player was already listening to. Slowblue is a bed to sit inside
- * for twenty minutes, and a phone set to silent is a person who has said no - so
- * the session is `ambient`, which respects the switch and mixes underneath the
- * player's own music. `auto` when nothing is audible, so a fully muted mixer does
- * not hold a session open for silence.
+ * The value is `playback`, and it has been `ambient` in between, which was wrong
+ * in a way only a phone could show. `ambient` respects the hardware silent switch,
+ * and the argument for it was that a phone set to silent is a person who has said
+ * no. In practice it is a person who keeps their phone on silent all day and
+ * opened a game whose whole design is a sound bed: the web build shipped with
+ * `ambient`, and the first report from a phone was "no sound, in any browser" -
+ * every iOS browser being WebKit, every one of them obeyed the switch. Nobody
+ * looks at the switch when a game is quiet; they decide the game is broken.
+ * `playback` is heard, at the cost of pausing the player's own music, and the
+ * corner button is the no that the switch was standing in for. `auto` when
+ * nothing is audible, so a fully muted mixer neither holds a session open for
+ * silence nor stops someone's music for it.
  */
 function setAudioSession(audible: boolean): void {
   const nav = globalThis.navigator as
     | (Navigator & { audioSession?: { type: string } })
     | undefined;
   try {
-    if (nav?.audioSession !== undefined) nav.audioSession.type = audible ? 'ambient' : 'auto';
+    if (nav?.audioSession !== undefined) nav.audioSession.type = audible ? 'playback' : 'auto';
   } catch {
     /* experimental API: Web Audio still works without it */
   }
@@ -339,6 +345,8 @@ export class AudioEngine {
   private lastLoss = 0;
   private lastStroke = 0;
   private failed = false;
+  /** The pre-iOS-17 half of `setAudioSession`. See `SilentLoop`. */
+  private readonly keepAlive = new SilentLoop();
   /**
    * True once the browser has actually let the context run, at any point in the
    * session. Never goes back to false.
@@ -508,6 +516,9 @@ export class AudioEngine {
     // over. See `parked`.
     this.parked = false;
     setAudioSession(this.hasAudibleTrack());
+    // Inside the gesture, before anything async: the loop's first `play()` is only
+    // allowed here, and every later one leans on it having happened.
+    this.keepAlive.hold(this.hasAudibleTrack());
     if (this.ctx === null) {
       const Ctx = contextCtor();
       if (Ctx === null) {
@@ -544,6 +555,9 @@ export class AudioEngine {
   setLevels(levels: AudioSettings): void {
     this.levels = levels;
     setAudioSession(this.hasAudibleTrack());
+    // Only ever *stops* the loop from here. Starting it belongs to a gesture or a
+    // return from a park, and settings are applied once at boot, before either.
+    if (!this.hasAudibleTrack()) this.keepAlive.release();
     const ctx = this.ctx;
     if (ctx === null) return;
     const t = ctx.currentTime;
@@ -588,11 +602,15 @@ export class AudioEngine {
     // Before the call, not after: the `statechange` this causes arrives while the
     // suspend is still in flight, and it has to find the flag already set.
     this.parked = true;
+    this.keepAlive.release();
     if (this.ctx?.state === 'running') void this.ctx.suspend().catch(() => undefined);
   }
 
   resume(): void {
     this.parked = false;
+    // Never before the first gesture: a loop started from here on a page nobody
+    // has touched would be refused, and is not what this method is asking for.
+    if (this.started) this.keepAlive.hold(this.hasAudibleTrack());
     void this.ensureRunning();
   }
 
@@ -3343,6 +3361,7 @@ export class AudioEngine {
   }
 
   dispose(): void {
+    this.keepAlive.dispose();
     for (const n of this.bedNodes) {
       try {
         n.stop();

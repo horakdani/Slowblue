@@ -24,7 +24,7 @@ import { boot, collectErrors, metrics } from './helpers';
  * turned out to be half wrong, which is worth writing down rather than quietly
  * working around. `smoke.spec.ts` already patches `AudioContext` to catch the
  * instance, asserts it reaches `running`, asserts `navigator.audioSession` is set
- * to `ambient`, suspends it by hand and asserts a tap brings it back. **The state
+ * to `playback`, suspends it by hand and asserts a tap brings it back. **The state
  * machine was covered.**
  *
  * What nothing covered is the failure the plan actually described: a game that
@@ -201,4 +201,76 @@ test('survives being unlocked on every touch for the rest of the session', async
   expect(await page.evaluate(() => (window as typeof window & { __contexts?: number }).__contexts))
     .toBe(1);
   expect(errors).toEqual([]);
+});
+
+/**
+ * An iPhone older than iOS 17, which is the one phone `navigator.audioSession`
+ * cannot reach: its Web Audio obeys the silent switch, and the only way out is a
+ * media element playing. See `SilentLoop`.
+ *
+ * Chromium cannot be told to have a silent switch, so this cannot hear the fix -
+ * it holds the part a browser can show: the loop is started by the tap that starts
+ * the game, it is a real unmuted element (a muted one does not move WebKit's
+ * session), and it stops when the game is backgrounded, which is what keeps the
+ * page off the lock screen's Now Playing card.
+ */
+test.describe('on an iPhone that cannot declare a session', () => {
+  test.use({
+    userAgent:
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 16_7 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1',
+  });
+
+  test('plays a silent loop under the game, and stops it when the game is put away', async ({
+    page,
+  }) => {
+    const errors = collectErrors(page);
+    await page.addInitScript(() => {
+      const w = window as typeof window & { __loops?: HTMLMediaElement[] };
+      w.__loops = [];
+      const play = HTMLMediaElement.prototype.play;
+      HTMLMediaElement.prototype.play = function (this: HTMLMediaElement) {
+        if (!w.__loops!.includes(this)) w.__loops!.push(this);
+        return play.call(this);
+      };
+    });
+    const loop = () =>
+      page.evaluate(() => {
+        const el = (window as typeof window & { __loops?: HTMLMediaElement[] }).__loops?.[0];
+        return el === undefined
+          ? null
+          : {
+              count: (window as typeof window & { __loops?: HTMLMediaElement[] }).__loops!.length,
+              playing: !el.paused,
+              loop: el.loop,
+              muted: el.muted,
+              volume: el.volume,
+              wav: el.src.startsWith('data:audio/wav'),
+            };
+      });
+
+    await page.goto('/?seed=4242');
+    await page.waitForTimeout(800);
+    // Nobody has touched the page: whatever was asked for, nothing is playing.
+    expect((await loop())?.playing ?? false).toBe(false);
+
+    await boot(page, 4242);
+    await expect.poll(async () => (await loop())?.playing, { timeout: 5000 }).toBe(true);
+    expect(await loop()).toMatchObject({
+      count: 1,
+      loop: true,
+      muted: false,
+      volume: 1,
+      wav: true,
+    });
+
+    await setHidden(page, true);
+    await expect.poll(async () => (await loop())?.playing, { timeout: 5000 }).toBe(false);
+
+    await setHidden(page, false);
+    await page.keyboard.press('Escape');
+    await expect.poll(async () => (await loop())?.playing, { timeout: 5000 }).toBe(true);
+    // Still the one element, after every gesture in between.
+    expect((await loop())?.count).toBe(1);
+    expect(errors).toEqual([]);
+  });
 });

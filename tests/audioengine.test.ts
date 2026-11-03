@@ -473,25 +473,24 @@ describe('an interruption, and a pause, which look the same', () => {
   });
 
   /**
-   * The session type, which is not about interruptions at all - it is the other
-   * half of the same promise. A game that recovers its own sound after a call and
-   * then plays over the player's music has not been polite, it has been loud.
+   * The session type, which is not about interruptions at all - it is whether a
+   * phone on silent hears the game. See `setAudioSession` for why that is yes.
    */
-  it('declares an ambient session, and only while something is audible', () => {
+  it('declares a playback session, and only while something is audible', () => {
     const nav = { audioSession: { type: 'auto' } };
     const previous = Object.getOwnPropertyDescriptor(globalThis, 'navigator')!;
     Object.defineProperty(globalThis, 'navigator', { configurable: true, value: nav });
     try {
       const engine = new AudioEngine();
       void engine.unlock();
-      // Not `playback`, which is what this was: playback overrules the hardware
-      // silent switch and stops whatever the player was listening to.
-      expect(nav.audioSession.type).toBe('ambient');
+      // Not `ambient`, which is what this was: ambient obeys the silent switch,
+      // and a web build that obeyed it was reported as having no sound at all.
+      expect(nav.audioSession.type).toBe('playback');
       // A muted game holds no session at all.
       engine.setMuted(true);
       expect(nav.audioSession.type).toBe('auto');
       engine.setMuted(false);
-      expect(nav.audioSession.type).toBe('ambient');
+      expect(nav.audioSession.type).toBe('playback');
       engine.dispose();
     } finally {
       Object.defineProperty(globalThis, 'navigator', previous);

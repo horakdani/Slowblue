@@ -377,10 +377,9 @@ test.describe('Slowblue mobile smoke', () => {
         (window as typeof window & { __audioProbe?: AudioContext }).__audioProbe?.state ===
         'running',
     );
-    // `ambient`, which is a claim about manners rather than about sound: it
-    // respects the hardware silent switch and mixes under the player's own music.
-    // This asserted `playback` - the opposite on both counts - until the iOS port
-    // made the difference something a reviewer would hear.
+    // `playback`, which overrules the hardware silent switch. This asserted
+    // `ambient` for a while, and the web build that shipped with it was silent on
+    // every iPhone kept on silent - which is most of them. See `setAudioSession`.
     expect(
       await page.evaluate(
         () =>
@@ -390,7 +389,7 @@ test.describe('Slowblue mobile smoke', () => {
             }
           ).audioSession?.type,
       ),
-    ).toBe('ambient');
+    ).toBe('playback');
 
     // Suspended by hand, and that is the whole reason the tap below is still
     // required. The engine recovers itself from WebKit's `interrupted` - a call

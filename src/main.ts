@@ -1325,6 +1325,15 @@ window.addEventListener('keydown', (e) => {
 // the context to `interrupted` after a tab/app switch, even if the first unlock
 // succeeded, so these listeners deliberately are not one-shot.
 document.addEventListener('pointerdown', () => void audio.unlock(), { capture: true });
+// ...and the *end* of a touch, because for a finger the start of one is not a
+// gesture at all. Browsers grant user activation on `pointerdown` only for a mouse;
+// a touch earns it at `pointerup`/`touchend`. So on a phone the listener above
+// creates a context it is not allowed to start, and a tap on the canvas mid-run -
+// which has no `click` behind it, unlike every shell button - could never bring a
+// stopped one back. Both, because WebKit has historically keyed its audio unlock
+// to `touchend` itself. `unlock()` is idempotent; see `e2e/unlock.spec.ts`.
+document.addEventListener('pointerup', () => void audio.unlock(), { capture: true });
+document.addEventListener('touchend', () => void audio.unlock(), { capture: true });
 /**
  * ...and the keyboard, which was not covered and had to be.
  *
