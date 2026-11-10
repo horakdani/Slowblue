@@ -12,7 +12,8 @@ breaking things that were already decided or re-learning things that were alread
 
 TypeScript + Vite, no framework. Canvas 2D (`src/render/`, no WebGL), procedural Web Audio
 (`src/audio/`), Pointer Events, fixed 1/60 s simulation step (`src/core/GameLoop.ts`),
-53k lines in `src/`, 788 unit tests, PWA with an offline service worker.
+53k lines in `src/`, nearly 800 unit tests (`npm test` counts them; a number written
+here goes stale with the next test), PWA with an offline service worker.
 
 **The campaign has been rebuilt: 432 sections and 144 authored minutes, from 182 and 72.**
 Six acts of about twenty-two minutes and act I frozen at ten, because it is the metronome
@@ -26,8 +27,8 @@ honest —
 `SLOWBLUE_ACT=reentry` for one act in two minutes). Do not hand-maintain a table of act
 lengths again; all three print one.
 
-**Nobody has played any of it.** Six of the seven acts were rebuilt in one afternoon and
-verified by tests, and tests answer *can this be flown* and *does it obey the rules* - not
+**The rebuild was verified by tests, not by a playthrough.** Six of the seven acts were
+rebuilt in one afternoon, and tests answer *can this be flown* and *does it obey the rules* - not
 whether act III still feels like patience or whether act II is still the act this repo is
 proudest of. `docs/DESIGN-LENGTH.md` §12 is the watch list, in the order a playthrough
 meets it.
@@ -96,6 +97,13 @@ before writing it if you were not the last one to touch it.
 history is hard to scrub — so no keys, no personal identifiers, no paths out of someone's
 home directory. There is nothing to sign and no secret the build needs: the deploy is a
 static `dist/` pushed to a branch, and it asks for nothing but a push.
+
+That includes the commit metadata. The first commits went out under a personal address,
+and rewriting published history to remove it was judged worse than leaving it; from
+2026-11-10 this clone's `.git/config` commits as the GitHub noreply address
+(`24735930+horakdani@users.noreply.github.com`). `.git/config` does not travel with a
+clone, so a fresh checkout has to set it again: `git config user.email` before the first
+commit.
 
 **`main` is the only branch** that holds work, and it is the default branch. `gh-pages`
 is build output and nothing else: `npm run deploy` replaces it with one orphan commit, so

@@ -26,8 +26,8 @@ happened when it was played**, twice, and they are the two most useful sections 
 first playthrough came back *"not harder, and not longer"* — both true, and only one of them
 a fault; the second came back with something neither pass had looked for, that **the fall
 was free**, and had been in every falling act since the campaign turned over. §9 is act V's
-second pass, §11 is the other six acts, and §12 is the part that is not done: **nobody has
-played any of it.**
+second pass, §11 is the other six acts, and §12 is what the tests cannot settle: **how the
+rebuilt acts feel in a hand**, and what to watch for while playing them.
 
 ## Contents
 
@@ -723,8 +723,8 @@ motion turned out to be one mechanism rather than fourteen shapes, the third pre
 silhouette is built, and the fall has a price. Every remaining demand is one line on any of
 the seventy shapes the game already draws, in any act.
 
-**What is not done, and it is the only thing that matters now: nobody has played it.** Six
-acts were rebuilt in one afternoon and verified by tests, and tests answer *can this be
+**What tests cannot settle, and a playthrough has to: how it feels.** When this was written,
+six acts had been rebuilt in one afternoon and verified only by tests, and tests answer *can this be
 flown* and *does it obey the rules*. They do not answer whether act III still feels like
 patience, whether act II is still the act this repo is proudest of, or whether twenty-two
 minutes is the right size for a station-and-a-half of attention. The things to watch, in the

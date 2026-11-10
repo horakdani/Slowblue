@@ -88,7 +88,7 @@ in [docs/GAME.md](docs/GAME.md).
 * **A fixed 1/60 s simulation step**, a hot path that allocates nothing, and a picture
   budget that adapts to the device instead of asking the player to.
 * **An installable PWA** with an offline service worker, served from GitHub Pages.
-* **788 unit tests, a browser suite, and balance sweeps** that play the whole campaign with
+* **Nearly 800 unit tests, a browser suite, and balance sweeps** that play the whole campaign with
   scripted hands. Every tuning number in the repo came out of a measurement, and the
   documents say which.
 
