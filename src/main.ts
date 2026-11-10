@@ -1493,6 +1493,9 @@ window.__slowblue = {
   advance: (seconds) => {
     const steps = Math.max(1, Math.round(seconds / loop.fixedDt));
     for (let i = 0; i < steps; i++) world.step(loop.fixedDt);
+    // However far that was, it was a jump: a frame eased across it would show the
+    // water the shoal left seconds ago. See `World.snapView`.
+    world.snapView();
     renderer.ingest(world.takeEvents());
     renderer.render(world, 0, loop.fixedDt, flags, loop.stats.fps);
     // The bed as well as the picture. This hook exists so a station can be looked

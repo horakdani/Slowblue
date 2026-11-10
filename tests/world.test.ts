@@ -185,6 +185,22 @@ describe('World lifecycle', () => {
     expect(world.viewCameraY).toBeCloseTo(world.cameraY, 6);
   });
 
+  it('draws where the rules are after the simulation is stepped by hand', () => {
+    // `__slowblue.advance` steps seconds in one call. Without the snap the drawn
+    // camera spent several real seconds closing a thousand-pixel gap, and the
+    // README's rock and rescue screenshots were frames of empty water.
+    const world = makeWorld();
+    drive(world, 60);
+    world.advanceView(1, 1 / 60);
+    drive(world, 420);
+    world.advanceView(1, 1 / 60);
+    expect(Math.abs(world.viewCameraY - world.cameraY)).toBeGreaterThan(100);
+
+    world.snapView();
+    world.advanceView(1, 1 / 60);
+    expect(world.viewCameraY).toBeCloseTo(world.cameraY, 6);
+  });
+
   it('loses individuals to rocks without ending the run', () => {
     const world = makeWorld(7);
     const blob = world.obstacles.activeBlobs[Math.floor(world.obstacles.activeBlobs.length / 2)]!;

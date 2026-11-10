@@ -841,6 +841,24 @@ export class World {
   }
 
   /**
+   * Declares the camera's last move a jump: the next frame draws where the rules
+   * are, instead of easing there.
+   *
+   * For whoever steps the simulation by hand, which is `__slowblue.advance` and
+   * everything driving it. The ease is sized for a ~100 px discontinuity and closes
+   * at three drifts a second; a hook that steps seven seconds in one call moves the
+   * simulated camera a thousand pixels, and the drawing then spends longer than any
+   * screenshot waits catching up - so the frame showed the water the shoal had left
+   * seconds earlier, with neither shoal nor course in it. That is what
+   * `docs/screens/03-rock.png` and `04-rescue.png` were for as long as this ease has
+   * existed, and the comment below saying the screenshot pass sees the rules'
+   * camera was true only until the first rAF frame established a drawn one.
+   */
+  snapView(): void {
+    this.drawCameraY = Number.NaN;
+  }
+
+  /**
    * The camera as the *drawing* sees it. The simulation keeps reading `cameraY`.
    *
    * Falls back to the interpolated simulation camera when no frame has run
