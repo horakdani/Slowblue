@@ -33,14 +33,13 @@ import { loadBundleMaps, type SourceMap } from './sourcemap';
  *
  * The criterion says gameplay inside three seconds. What it does not say, and what
  * this file had to be told, is where that clock starts. It starts at the title
- * screen. The studio ident and the sound card in front of it are the game's
- * opening, not its loading: they are kept, deliberately, and they are not charged
- * to this budget - a player is reading and listening through both, and any of it
- * is one tap away from being over.
+ * screen. The studio ident in front of it is the game's opening, not its loading:
+ * it is kept, deliberately, and it is not charged to this budget - a player is
+ * watching and listening through it, and it is one tap away from being over.
  *
  * So the same three seconds are asked of two things instead, and both are gated:
  * getting the title screen onto the glass, and getting from the press on it into
- * moving fish. What the budget refuses to cover is the seven seconds the studio's
+ * moving fish. What the budget refuses to cover is the seconds the studio's
  * name is on screen. `first launch` below measures those anyway, so the exclusion
  * is a number in the log rather than something this comment merely claims.
  */
@@ -76,11 +75,15 @@ declare global {
  * screen and the driver spends a websocket round trip, so the budget is measured
  * across `tapped -> playing`, which contains neither.
  *
- * `ready` watches for the primary button rather than for `.ui-title`, because the
- * sound card carries a `.ui-title` of its own - on the launch that actually shows
- * the card, the old condition marked the game ready while the card was still up
- * and nothing was pressable for another three and a half seconds. The card has
- * nothing to press; the title screen does. That is the difference worth reading.
+ * `ready` asks whether the primary button would *receive* a tap, not whether it has
+ * a box. The title screen is shown at the very start and the ident is laid over it
+ * as a full-screen layer, so the button has a box from the first frame while the
+ * whole glass belongs to the ident for six and a half seconds. The old condition -
+ * `getClientRects()` alone - was written when a sound card stood between the ident
+ * and the title and the title was not built until the card left; once the card was
+ * removed it marked the first launch ready at ~45 ms, under the ident, and the
+ * first-launch check below failed on every run for it. A hit test at the button's
+ * centre is the question a finger asks.
  */
 async function instrumentStartup(page: Page): Promise<void> {
   await page.addInitScript(() => {
@@ -99,7 +102,11 @@ async function instrumentStartup(page: Page): Promise<void> {
     const poll = (): void => {
       const play = document.querySelector('button.ui-btn.primary');
       if (marks.ready === undefined && window.__slowblue !== undefined && play !== null) {
-        if (play.getClientRects().length > 0) marks.ready = performance.now();
+        const box = play.getBoundingClientRect();
+        if (box.width > 0 && box.height > 0) {
+          const hit = document.elementFromPoint(box.left + box.width / 2, box.top + box.height / 2);
+          if (hit !== null && play.contains(hit)) marks.ready = performance.now();
+        }
       }
       if (window.__slowblue?.metrics().mode === 'playing') {
         marks.playing = performance.now();
@@ -197,30 +204,31 @@ test.describe('startup', () => {
   });
 
   /**
-   * What the very first launch costs, ident and sound card included.
+   * What the very first launch costs, ident included.
    *
    * Reported, not gated, and the two are the same decision: the opening is kept,
    * so the seconds it takes are not a defect to hold a budget against - but they
    * are also not seconds to leave unmeasured, because "the budget starts at the
    * title screen" is only honest if the part in front of it has a number too.
    *
-   * The run is unhurried on purpose. Both screens are one tap from over, and an
+   * The run is unhurried on purpose. The ident is one tap from over, and an
    * impatient player is the fast case; this is the slow one, which is the ceiling.
-   * `?intro=full&sound=ask` is how an automated browser asks for the launch a
-   * phone gets - webdriver skips both by default, which is why every other spec
-   * in this suite arrives straight at the title.
+   * `?intro=full` is how an automated browser asks for the launch a phone gets -
+   * webdriver skips the ident by default, which is why every other spec in this
+   * suite arrives straight at the title.
    */
   test('reports what the first launch costs before the title screen', async ({ page, context }) => {
     await instrumentStartup(page);
-    const first = await timeStartup(page, '/?intro=full&sound=ask');
+    const first = await timeStartup(page, '/?intro=full');
     console.log(
       `[startup first launch] ${JSON.stringify({ ...first, ...segments(first), budgetMs: TTI_BUDGET_MS })}`,
     );
 
     // Not a budget - a check that the number above is of the thing it says. The
-    // ident is 7.1 s and the card holds for 3.6 s after it, so a title screen
-    // that arrived before the ident ended means neither actually played.
-    expect(first.readyMs).toBeGreaterThan(7100);
+    // ident holds the glass for `DIGITAL_TULPA_IDENT_DURATION_MS` (6.6 s, in
+    // src/brand/digital-tulpa; not imported, because that module imports its CSS),
+    // so a title screen pressable before then means the ident did not play.
+    expect(first.readyMs).toBeGreaterThan(6600);
     // The budgeted segment is the budgeted segment on this launch too.
     expect(first.playingMs - first.tappedMs).toBeLessThan(TTI_BUDGET_MS);
     await context.close();
