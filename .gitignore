@@ -15,3 +15,6 @@ docs/screens/films/
 docs/screens/films-hc/
 .DS_Store
 *.local
+
+# Claude Code local settings: approved commands may contain secrets
+**/.claude/settings.local.json
