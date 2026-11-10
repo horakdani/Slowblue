@@ -667,8 +667,12 @@
         background: rgba(4, 16, 28, 0.86);
         box-shadow: 0 0 30px 18px rgba(4, 16, 28, 0.86);
         /* Quiet, but quiet against its own dark now instead of against the water:
-           at 0.52 over a moving flock the line was not dim, it was unreadable. */
-        color: rgba(200, 236, 255, 0.66);
+           at 0.52 over a moving flock the line was not dim, it was unreadable.
+           It was then raised to a literal 0.66 - a fourth pale blue, four hundredths
+           from `--ink-3`, which is the distinction nobody can see that the tokens
+           above exist to refuse, and the ninth tier `e2e/chrome.spec.ts` counted.
+           The quiet tier is the quiet tier; it clears AA on this dark too. */
+        color: var(--ink-3);
       }
       /* The primary, and the only control on the screen with two lines: the verb
          and where the verb goes. BEGIN and CONTINUE are different games. */
