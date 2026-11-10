@@ -412,8 +412,8 @@
            the margin gives up is a pixel of map. Still more than the four the
            picture itself leaves at the sides, so the screen is not tighter at the
            ends than it already is at the edges. */
-        padding-top: calc(env(safe-area-inset-top, 0px) + 10px);
-        padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+        padding-top: calc(var(--safe-t) + 10px);
+        padding-bottom: calc(var(--safe-b) + 10px);
       }
       .ui.titled .ui-panel {
         position: relative;

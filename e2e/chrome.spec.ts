@@ -1014,8 +1014,15 @@ test('the primary action is on the glass when the screen opens', async ({ page }
  * column, so it owes the two answers the column used to give for it: that it is
  * still out of the home indicator's way, and that it is not sitting on whatever
  * was under it. The second one is why the rule is `position: sticky` rather than
- * `fixed` - there are 150px of column below BEGIN, so scrolling to the end puts
- * its resting place above the pin line and it lets go on its own.
+ * `fixed` - there is column below the primary, so scrolling to the end puts its
+ * resting place above the pin line and it lets go on its own.
+ *
+ * Both halves open the station list first, and assert that the column overflows.
+ * The map stopped overflowing a 390x844 glass on its own once the sound card and
+ * the comfort screen left the shell, and from then on this test measured a primary
+ * sitting at its natural place, 200px clear of the edge, against a pinned seat -
+ * and its second half "scrolled to the end" of a column with nothing to scroll.
+ * A pin can only be checked where there is something to pin against.
  */
 test('the pinned primary clears the cutout and lets go at the end of the column', async ({
   page,
@@ -1026,14 +1033,25 @@ test('the pinned primary clears the cutout and lets go at the end of the column'
   await page.goto('/?skipIntro&second=1');
   await expect(page.locator('.ui-journey')).toBeVisible();
 
+  const openStations = async (): Promise<void> => {
+    await page.locator('.ui-journey').click();
+    await expect(page.locator('.ui-map')).toBeVisible();
+    await page.locator('.ui-map-core-open').click();
+    await expect(page.locator('.ui-stations')).toBeVisible();
+    const overflows = await page.evaluate(() => {
+      const ui = document.querySelector('.ui:not(.hidden)') as HTMLElement;
+      return ui.scrollHeight > ui.clientHeight;
+    });
+    expect(overflows).toBe(true);
+  };
+
   // The three bottom insets `safearea.spec.ts` wears: none, an iPhone's home
   // indicator, and an Android navigation bar.
   for (const inset of [0, 34, 48]) {
     await page.evaluate((v) => {
       document.documentElement.style.setProperty('--safe-b', `${v}px`);
     }, inset);
-    await page.locator('.ui-journey').click();
-    await expect(page.locator('.ui-map')).toBeVisible();
+    await openStations();
     const seat = await page.evaluate(() => {
       const r = document
         .querySelector('.ui:not(.hidden) .ui-btn.primary')!
@@ -1042,9 +1060,11 @@ test('the pinned primary clears the cutout and lets go at the end of the column'
     });
     const clearance = Math.round((seat.vh - inset - seat.bottom) * 10) / 10;
     console.log(`[shell pinned] ${JSON.stringify({ inset, bottom: seat.bottom, clearance })}`);
-    // The shell's own gutter, and no more: an offset that repeated the inset
-    // arithmetic the scrollport has already done would seat it two gutters up.
-    expect(clearance).toBeCloseTo(20, 1);
+    // The map's own gutter, and no more: ten pixels, not the shell's twenty -
+    // `.ui.mapped` gives the other ten to the picture - and an offset that
+    // repeated the inset arithmetic the scrollport has already done would seat it
+    // two gutters up.
+    expect(clearance).toBeCloseTo(10, 1);
     await page.getByRole('button', { name: /^back$/i }).last().click();
     await expect(page.locator('.ui-journey')).toBeVisible();
   }
@@ -1052,28 +1072,31 @@ test('the pinned primary clears the cutout and lets go at the end of the column'
   await page.evaluate(() => {
     document.documentElement.style.setProperty('--safe-b', '0px');
   });
-  await page.locator('.ui-journey').click();
-  await expect(page.locator('.ui-map')).toBeVisible();
+  await openStations();
   await page.evaluate(() => {
     const ui = document.querySelector('.ui:not(.hidden)') as HTMLElement;
     ui.scrollTop = ui.scrollHeight;
   });
   const ends = await page.evaluate(() => {
+    // The *last* match: the column has two ghosts now - START A NEW JOURNEY above
+    // the danger button and BACK below it - and the one that closes the column is
+    // the one this is about.
     const box = (s: string): { top: number; bottom: number } => {
-      const r = document.querySelector(`.ui:not(.hidden) ${s}`)!.getBoundingClientRect();
+      const all = document.querySelectorAll(`.ui:not(.hidden) ${s}`);
+      const r = all[all.length - 1]!.getBoundingClientRect();
       return { top: Math.round(r.top * 10) / 10, bottom: Math.round(r.bottom * 10) / 10 };
     };
     return {
       primary: box('.ui-btn.primary'),
       danger: box('.ui-btn.danger'),
-      ghost: box('.ui-btn.ghost'),
+      back: box('.ui-btn.ghost'),
       vh: window.innerHeight,
     };
   });
   console.log(`[shell released] ${JSON.stringify(ends)}`);
-  // Let go: the two controls below it are whole, on the glass, and under it.
+  // Let go: the controls below it are whole, on the glass, and under it.
   expect(ends.primary.bottom).toBeLessThanOrEqual(ends.danger.top);
-  expect(ends.danger.bottom).toBeLessThanOrEqual(ends.ghost.top);
-  expect(ends.ghost.bottom).toBeLessThanOrEqual(ends.vh + 0.5);
+  expect(ends.danger.bottom).toBeLessThanOrEqual(ends.back.top);
+  expect(ends.back.bottom).toBeLessThanOrEqual(ends.vh + 0.5);
   expect(errors).toEqual([]);
 });
