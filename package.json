@@ -1,6 +1,6 @@
 {
   "name": "slowblue",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "You do not control the fish. You control the ocean. A mobile-first web game: drag the water, and the water drags the shoal.",
   "license": "MIT",
