@@ -68,24 +68,22 @@ npm run sweep      # balance sweeps; the only thing that may justify a tuning nu
 `SLOWBLUE_E2E_PORT=4271 npm run e2e`, and build first — without it the suite silently runs
 against whatever was already on the port and dies in five-minute timeouts.
 
-**`npm run verify` is not green on `main`.** Three e2e tests fail at baseline, measured
-2026-08-11 against `899b187` in a clean detached worktree with no session work in it:
-`chrome.spec.ts:603`, `chrome.spec.ts:962`, `measure.spec.ts:213`. 66 pass; unit, lint,
-typecheck and build are fully green. **A red e2e run is not by itself evidence that you
-broke something** — check the failing set against those three first. All three are
-DOM/shell/ident tests; none of them touches the renderer or the simulation. The baseline
-was written before the act I visual merge and asked to be re-confirmed after it; that is
-done — re-measured 2026-08-11 on `feat/ios` (66 passed, 12.9 min), same three, same lines.
+**`npm run verify` is green on `main`, and a red run is yours now.** From 2026-08-11 to
+2026-11-10 three e2e tests failed on every clean checkout, and this file spent two
+paragraphs teaching people to ignore them by name. They were fixed on 2026-11-10 (79
+pass, 14.0 min), and none of the three was a flaky test - each was a correct test whose
+premise the shell had moved out from under, and two of them were hiding real drift:
+`every screen` counted a ninth ink tier, a literal `0.66` beside `--ink-3`'s `0.62`; `the
+pinned primary` measured a primary that was no longer pinned, because the map stopped
+overflowing a phone once the sound card left, and the map's padding still spelled
+`env(safe-area-inset-*)` so no test inset ever reached it; `first launch` marked the
+title ready at 45 ms while the ident still covered it. **The lesson is the one at the top
+of this file: a test that fails for months is a probe that stopped measuring the thing,
+and the fix is to find out which - not to learn its name.**
 
-**Check them by name, not by line.** Re-measured 2026-08-14 after the act V rebuild: same
-three, 72 pass, 12.5 min — but the second one had moved to `chrome.spec.ts:1020` as the
-file grew, which for a minute looked like a different failure. The names are `every
-screen: what can be read, and what can be hit`, `the pinned primary clears the cutout and
-lets go at the end of the column`, and `startup › reports what the first launch costs
-before the title screen`. Re-measured again 2026-08-14 after act V's second pass: same
-three, same names, 74 pass, 12.7 min. Re-measured a last time 2026-11-02, after the dev toolchain moved to vitest 5 and the
-admin surface was translated: same three, same names, 74 pass, 13.3 min, and again the same day once the output
-level had its own spec: 75 pass, 13.4 min.
+Pass extra Playwright flags to `npm run e2e`, never to `npm run verify`: npm appends them
+to the *last* command of the chain and eats `--trace` itself, so `npm run verify --
+--trace off` runs no e2e at all and says `No tests found`.
 
 **The screenshots are not deterministic.** `npm run screens` rewrites all eleven PNGs on
 every run, so a dirty `git status` proves nothing. Commit them only when you meant to.

@@ -53,8 +53,9 @@ Naming a port also turns reuse off, and the preview starts with `--strictPort`, 
 collision fails immediately instead of drifting to the next free port and leaving
 `baseURL` pointing at whatever was already there.
 
-`npm run verify` takes about a quarter of an hour, nearly all of it e2e, and three e2e
-specs fail on a clean checkout — see [CONTRIBUTING.md](../CONTRIBUTING.md) for their names.
+`npm run verify` takes about a quarter of an hour, nearly all of it e2e, and is green on a
+clean checkout. Pass Playwright flags to `npm run e2e` rather than to `verify`: npm hands
+them to the last command in the chain and swallows `--trace` on the way.
 
 ## How the code is laid out
 

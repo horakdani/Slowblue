@@ -27,14 +27,10 @@ order. **There is no CI here**, so it is the only gate there is: nothing runs on
 pull request, and a change that was not verified locally was not verified. The e2e half
 takes a quarter of an hour, which is the price of that.
 
-**Three e2e specs fail on a clean checkout, and have since 2026-08-11.** They are
-`every screen: what can be read, and what can be hit`, `the pinned primary clears the
-cutout and lets go at the end of the column`, and `startup > reports what the first
-launch costs before the title screen`. CLAUDE.md records that baseline and re-measures
-it; a red e2e run is not by itself evidence that you broke something, so check the
-failing set against those three names first — by name, not by line number, because the
-lines move as the files grow. If your failing set is those three and nothing else, you
-are where everyone else is.
+**The whole gate is green on a clean checkout**, so a red run is something to look at
+rather than something to recognise. If a test fails that you do not think you touched,
+say so in the pull request with the output; a test that is wrong is worth fixing, and a
+test that is quietly ignored stops guarding anything.
 
 If you touched gameplay numbers, also run `npm run sweep`. The balance sweeps are the
 only thing in this repo that may justify a tuning number, and "it felt better" is not
